@@ -1,3 +1,5 @@
+import list from '../list/index'
+
 /**
  * 环境中使用的框架
  * 框架序列即为环境
@@ -10,14 +12,13 @@ class frame {
             //throw SyntaxError();
         }
 
-        this.vars_values = {}
+        this.vars_values = new list()
 
+        
         vars.forEach((element, index) => {
             this.insert_var_value_frame(element, values[index])
         });
-
         this.insert_var_value_frame("_args", tools.array_to_list(values))
-
         this.out_env = null
     }
 
