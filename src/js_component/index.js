@@ -1,45 +1,13 @@
 import { the_null } from './aotom_constant/index.js';
+import cons from './cons/index.js';
 import list from './list/index.js';
+import json from './json/index.js';
 
 function loveAsBefore() {
-    let oneList = new list(
-        1, 2, 3, 4, 5,
-        1, 2, 3, 4, 5,
-        1, 2, 3, 4, 5,
-        1, 2, 3, 4, 5,
-        1, 2, 3, 4, 5,
-        1, 2, 3, 4, 5,
-        1, 2, 3, 4, 5,
-        1, 2, 3, 4, 5,
-        1, 2, 3, 4, 5,
-        1, 2, 3, 4, 5,
-        1, 2, 3, 4, 5,
-        1, 2, 3, 4, 5,
-    )
-    console.log(oneList)
-    console.log(oneList.getClone())
-    console.log(oneList.map((x) => x * 2))
-    console.log(oneList.forEach((x) => x + 1))
-    console.log(oneList.length())
-    let twoList = new list(
-        new list(
-            "x", 2, 3, 4, 5,6,
-            "x", 2, 3, 4, 5,6,
-            "x", 2, 3, 4, 5,6,
-        ),
-        new list(
-            1, 2, 3, 4, 5,6,
-            1, 2, 3, 4, 5,6,
-            1, 2, 3, 4, 5,6,
-        ),
-        3,
-        new list(
-            1, 2, 3, 4, 5
-        ),
-        5
-    )
-    console.log(twoList)
-    console.log(twoList.show)
+    let one = new cons(1, 2);
+    let two = new cons(3, 4);
+    let three = new cons(5, 4);
+    console.log(new json(one, two, three))
 }
 
 export {

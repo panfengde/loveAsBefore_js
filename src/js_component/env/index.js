@@ -1,12 +1,27 @@
+import cons from '../cons/index'
 import list from '../list/index'
-
 /**
  * 环境中使用的框架
  * 框架序列即为环境
  */
-class frame {
+
+class frame extends list {
+    constructor(vars = [], values = []) {
+        super();
+        this.special_var_values = new list();//存储特殊的变量和值，如 arguments,this,等
+        this.user_var_values = new list();//存储用户命名的变量和值
+        this.frame_values = new list(this.special_varValues, this.user_varValues);//存储框架内的变量和值
+        this.frame_values_and_father_Addr = new list(this.var_values);//存储框架内的变量和值，并存储下一个框架的地址,初始的father地址为空
+    }
+}
+
+
+
+
+class xxxx extends list {
     constructor(vars = [], values = []) {
         //环境也应该是cons结构构成
+        super();
         if (vars.length != values.length) {
             console.warn("变量和变量值个数是否需要一致", vars, values)
             //throw SyntaxError();
@@ -14,7 +29,6 @@ class frame {
 
         this.vars_values = new list()
 
-        
         vars.forEach((element, index) => {
             this.insert_var_value_frame(element, values[index])
         });
@@ -30,7 +44,8 @@ class frame {
         //增加判断，variable, values要存在
         this.vars_values[variable] = values;
         // return 'ok'
-        /* if (variable in this.vars_values) {
+        /* 
+        if (variable in this.vars_values) {
              console.log("变量在该环境中已声明")
          } else {
              this.vars_values[variable] = values

@@ -18,6 +18,10 @@ class cons {
     set_cdr(cdr) {
         this.cdr = cdr
     }
+
+    get show() {
+        return `( ${this.car} . ${this.cdr} )`;
+    }
 }
 
 

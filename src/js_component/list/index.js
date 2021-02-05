@@ -3,16 +3,14 @@
 import cons from '../cons/index.js';
 import { is_cdr_list, is_car_list, is_list } from "../../utils/tools"
 
-
 //list组合最后的的那个list小块，一定是不会包含cdr
-
 /* todo_list
 !!!!
 函数内部再声明函数,性能非常差，要修改
-
 需要尾递归优化！！！！！！！！！！！！
 !!!!
 */
+
 class list extends cons {
     constructor(car, ...extra) {
         //console.log(cdr.length,cdr)
@@ -22,8 +20,71 @@ class list extends cons {
             this.set_cdr(new list(...extra))
         }
     }
-    find(index) {
 
+    index(index) {
+        let length = this.length()
+        if (index > (length - 1)) {
+            //console.error("索引地址超过list的所存储的值的地址",index,this.show)
+            throw SyntaxError("索引地址超过list的所存储的值的地址", index, this.show)
+        }
+        let temp = this
+        for (let i = 1; i <= index; i++) {
+            temp = temp.cdr;
+        }
+        return temp.car
+    }
+
+    set_by_index(index, value) {
+        let length = this.length()
+        if (index > (length - 1)) {
+            //console.error("索引地址超过list的所存储的值的地址",index,this.show)
+            throw SyntaxError("索引地址超过list的所存储的值的地址", index, this.show)
+        }
+        let temp = this
+        for (let i = 1; i <= index; i++) {
+            temp = temp.cdr;
+        }
+        temp.car = value
+    }
+
+    find(conditon) {
+        let temp;
+        function iteration(pair) {
+            if (is_cdr_list(pair)) {
+                if (conditon(pair.car)) {
+                    temp = pair.car
+                    return
+                }
+                iteration(pair.cdr)
+            } else {
+                if (conditon(pair)) {
+                    temp = pair.car
+                    return
+                }
+            }
+        }
+        iteration(this)
+        return temp
+    }
+
+    findIndex(conditon) {
+        let index = 0;
+        function iteration(pair) {
+            if (is_cdr_list(pair)) {
+                if (conditon(pair.car)) {
+                    return
+                }
+                index += 1;
+                iteration(pair.cdr)
+            } else {
+                if (conditon(pair.car)) {
+                    return
+                }
+                index = -1;
+            }
+        }
+        iteration(this)
+        return index
     }
 
     /**
@@ -35,7 +96,6 @@ class list extends cons {
     }
 
     getClone() {
-        let _this = this;
         function iteration(pair) {
             if (is_cdr_list(pair)) {
                 let result = new list(pair.car)
@@ -58,6 +118,7 @@ class list extends cons {
                 return pair
             }
         }
+
         return iteration(this)
     }
 
@@ -88,6 +149,7 @@ class list extends cons {
                 return new list(fun(pair.car))
             }
         }
+        
         return iteration(this)
     }
 
@@ -100,7 +162,6 @@ class list extends cons {
                 fun(pair.car)
             }
         }
-
         iteration(this)
     }
 
@@ -115,7 +176,6 @@ class list extends cons {
                 length = length + 1;
             }
         }
-
         iteration(this)
         return length;
     }
