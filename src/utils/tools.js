@@ -1,5 +1,5 @@
 function judge_arr_exist(obj, key) {
-    return obj.hasOwnProperty(key)
+    return (obj instanceof Object) && obj.hasOwnProperty(key)
 }
 
 
@@ -15,10 +15,11 @@ function is_cdr_list(obj, key) {
     }
 
     return judge_arr_exist(obj, "cdr")
+
 }
 
-function is_car_list(obj, key) {
-    return judge_arr_exist(obj, "car") && (obj.car.type == "list" || obj.car.type == "cons")
+function is_car_list_cons_json(obj, key) {
+    return judge_arr_exist(obj, "car") && (obj.car.type == "list" || obj.car.type == "cons" || obj.car.type == "json")
 }
 
 
@@ -38,4 +39,4 @@ function is_car_list(obj, key) {
     }
 } */
 
-export { judge_arr_exist, is_cdr_list, is_car_list, is_list }
+export { judge_arr_exist, is_cdr_list, is_car_list_cons_json, is_list }

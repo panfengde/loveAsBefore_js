@@ -1,7 +1,7 @@
 "use strict";
 
 import cons from '../cons/index.js';
-import { is_cdr_list, is_car_list, is_list } from "../../utils/tools"
+import { is_cdr_list, is_car_list_cons_json, is_list } from "../../utils/tools"
 
 //list组合最后的的那个list小块，一定是不会包含cdr
 /* todo_list
@@ -50,6 +50,7 @@ class list extends cons {
     find(conditon) {
         let temp;
         function iteration(pair) {
+
             if (is_cdr_list(pair)) {
                 if (conditon(pair.car)) {
                     temp = pair.car
@@ -90,8 +91,14 @@ class list extends cons {
     /**
      * 将两个list或者 list+cons整合为一个list
      */
-    push(cdr_list) {
-        this.last_items().set_cdr(cdr_list)
+    push(value) {
+        let last_items = this.last_items()
+    
+        if (last_items.car) {
+            last_items.set_cdr(new list(value))
+        } else {
+            last_items.set_car(value)
+        }
         return this
     }
 
@@ -111,6 +118,7 @@ class list extends cons {
 
 
     last_items() {
+
         function iteration(pair) {
             if (is_cdr_list(pair)) {
                 return iteration(pair.cdr)
@@ -120,6 +128,7 @@ class list extends cons {
         }
 
         return iteration(this)
+
     }
 
     map(fun) {
@@ -149,7 +158,7 @@ class list extends cons {
                 return new list(fun(pair.car))
             }
         }
-        
+
         return iteration(this)
     }
 
@@ -182,14 +191,14 @@ class list extends cons {
 
     get show() {
         function iteration(pairs, result = "(") {
-            if (is_car_list(pairs)) {
-                result += " " + iteration(pairs.car);
+            if (is_car_list_cons_json(pairs)) {
+                result += " " + pairs.car.show;
                 return iteration(pairs.cdr, result)
             } else if (is_cdr_list(pairs)) {
                 result += " " + pairs.car
                 return iteration(pairs.cdr, result)
             } else {
-                return result += " " + pairs.car + " )"
+                return result += " " + (pairs ? pairs.car : "") + " )"
             }
         }
         return iteration(this)

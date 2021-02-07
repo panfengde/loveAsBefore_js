@@ -20,7 +20,7 @@ class cons {
     }
 
     get show() {
-        return `( ${this.car} . ${this.cdr} )`;
+        return `( ${this.car instanceof Object ? this.car.show : this.car} : ${this.cdr instanceof Object ? this.cdr.show : this.cdr} )`;
     }
 }
 
