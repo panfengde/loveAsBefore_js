@@ -39,7 +39,7 @@ class frame extends cons {
     }
 
     special_insert_var_value(variable, values) {
-        this.user_var_values.insert_key_value(variable, values)
+        this.special_var_values.insert_key_value(variable, values)
     }
 
     look_vars_frame(variable) {
@@ -56,13 +56,13 @@ class frame extends cons {
         let _temp;
         _temp = this.look_vars_frame(variable)
         if (_temp != the_undefined) {
-            return _temp
+            return _temp;
         } else if (this.father_frame != the_null) {
             return this.father_frame.look_variable_env(variable)
         } else {
             console.error("环境中没有该变量", variable)
-            //throw SyntaxError("环境中没有该变量" + variable);
-            return the_undefined
+            throw SyntaxError("环境中没有该变量" + variable);
+            return the_undefined;
         }
     }
 

@@ -1,7 +1,7 @@
 "use strict";
 
 import cons from '../cons/index.js';
-import { is_cdr_list, is_car_list_cons_json, is_list } from "../../utils/tools"
+import { judge_arr_exist, is_cdr_list, is_car_list_cons_json, is_list } from "../../utils/tools"
 
 //list组合最后的的那个list小块，一定是不会包含cdr
 /* todo_list
@@ -50,15 +50,14 @@ class list extends cons {
     find(conditon) {
         let temp;
         function iteration(pair) {
-
             if (is_cdr_list(pair)) {
-                if (conditon(pair.car)) {
+                if (pair.car && conditon(pair.car)) {
                     temp = pair.car
                     return
                 }
                 iteration(pair.cdr)
             } else {
-                if (conditon(pair)) {
+                if (pair.car && conditon(pair)) {
                     temp = pair.car
                     return
                 }
@@ -78,7 +77,7 @@ class list extends cons {
                 index += 1;
                 iteration(pair.cdr)
             } else {
-                if (conditon(pair.car)) {
+                if (pair.car && conditon(pair.car)) {
                     return
                 }
                 index = -1;
@@ -93,7 +92,7 @@ class list extends cons {
      */
     push(value) {
         let last_items = this.last_items()
-    
+
         if (last_items.car) {
             last_items.set_cdr(new list(value))
         } else {
@@ -103,13 +102,30 @@ class list extends cons {
     }
 
     getClone() {
+
         function iteration(pair) {
-            if (is_cdr_list(pair)) {
-                let result = new list(pair.car)
-                result.set_cdr(iteration(pair.cdr))
-                return result
+            if (is_list(pair)) {
+                let result;
+                if (is_list(pair.car)) {
+                    result = new list(iteration(pair.car))
+                } else {
+                    result = new list(pair.car)
+                }
+
+                if (is_cdr_list(pair)) {
+                    result.set_cdr(iteration(pair.cdr))
+                    return result
+
+                } else if (judge_arr_exist(pair, "cdr")) {
+                    result.set_cdr(pair.cdr)
+                    return result
+
+                } else {
+                    return result
+                }
+
             } else {
-                return new list(pair.car)
+                return pair
             }
         }
 
@@ -187,6 +203,17 @@ class list extends cons {
         }
         iteration(this)
         return length;
+    }
+    concat(then_data) {
+        if (is_list(then_data)) {
+            then_data.forEach((cons) => {
+                //两个list的拼接
+                this.push(cons)
+            })
+        } else {
+            this.push(then_data)
+        }
+        return this
     }
 
     get show() {

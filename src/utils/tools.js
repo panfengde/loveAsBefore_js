@@ -5,7 +5,7 @@ function judge_arr_exist(obj, key) {
 
 function is_list(obj) {
     //数据结构导致，cdr存在时，它的数据类型就是list
-    return obj.type == "list";
+    return (obj instanceof Object) && obj.type == "list";
 }
 
 function is_cdr_list(obj, key) {
@@ -21,6 +21,12 @@ function is_cdr_list(obj, key) {
 function is_car_list_cons_json(obj, key) {
     return judge_arr_exist(obj, "car") && (obj.car.type == "list" || obj.car.type == "cons" || obj.car.type == "json")
 }
+
+function is_car_list(obj, key) {
+    return judge_arr_exist(obj, "car") && obj.car.type == "list"
+}
+
+
 
 
 /* function global_iter(judge_exp, true_callback, false_callback, true_param_get, false_param_get, obj,) {
@@ -39,4 +45,4 @@ function is_car_list_cons_json(obj, key) {
     }
 } */
 
-export { judge_arr_exist, is_cdr_list, is_car_list_cons_json, is_list }
+export { judge_arr_exist, is_cdr_list, is_car_list_cons_json, is_list, is_car_list }

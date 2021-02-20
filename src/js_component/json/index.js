@@ -48,8 +48,8 @@ class json extends list {
     }
 
     is_key_exist(key) {
-        let find = this.find((_key) => _key.car == key)
-        return (find ? true : false)
+        let index = this.findIndex((_key) => _key.car == key)
+        return (index != -1 ? true : false)
         /* if (find) {
             console.err("重复的key值", key)
             throw SyntaxError("重复的key值")
