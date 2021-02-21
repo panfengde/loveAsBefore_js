@@ -28,7 +28,7 @@ class frame extends cons {
         this.special_insert_var_value("this", "待定")
         this.special_insert_var_value("arguments", "待定")
     }
-    
+
     extend_env(base_env) {
         this.father_frame = base_env;
         //this.frame_and_father_Addr.set_by_index(1, base_env)
@@ -44,19 +44,21 @@ class frame extends cons {
 
     look_vars_frame(variable) {
         if (this.user_var_values.is_key_exist(variable)) {
-            return this.user_var_values.get_value_by_key(variable)
+            return { find: true, value: this.user_var_values.get_value_by_key(variable) }
+
         } else if (this.special_var_values.is_key_exist(variable)) {
-            return this.special_var_values.get_value_by_key(variable)
+            return { find: true, value: this.special_var_values.get_value_by_key(variable) }
+
         } else {
-            return the_undefined
+            return { find: false, value: the_undefined }
         }
     }
 
     look_variable_env(variable) {
-        let _temp;
-        _temp = this.look_vars_frame(variable)
-        if (_temp != the_undefined) {
-            return _temp;
+        
+        let { find, value } = this.look_vars_frame(variable)
+        if (find) {
+            return value;
         } else if (this.father_frame != the_null) {
             return this.father_frame.look_variable_env(variable)
         } else {

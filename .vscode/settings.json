@@ -1,0 +1,12 @@
+{
+    "liveServer.settings.port": 5501,
+    "code-runner.executorMapByGlob": {
+        "*.lab": "Racket",
+    },
+    "code-runner.executorMap": {
+        "Racket": "Racket",
+    },
+    "files.associations": {
+        "*.lab": "scheme"
+    },
+}

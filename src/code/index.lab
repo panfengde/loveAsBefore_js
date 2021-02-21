@@ -1,0 +1,75 @@
+//#lang sicp
+
+(let* 
+    (
+        (a 10)
+        (b (+ a 10))
+    )
+    (cond
+        ((= b 10) (display "b"))
+        ((= a 10) (display "a"))
+    )
+)
+
+
+(define (pask row)
+    (define (pask_iter row line)
+        (cond
+            ((= row line) 1)
+            ((= row 1) 1)
+            ((= line 1) 1)
+            (else
+               (+
+                 (pask_iter (- row 1 ) (- line 1))
+                 (pask_iter (- row 1 ) line)
+               )
+            )
+        )
+    )
+    (define (foreach row line)
+            (display (pask_iter row line))
+            (cond
+                ((= row line 1) (display ""))
+                ((= line 1) (begin (display "\r\n")  (foreach (- row 1) (-  row 1)) ))
+                (else (foreach row (- line 1)))
+            )
+    )
+    (foreach row row)
+)
+
+(define (fib n)
+    (cond
+        ((= n 0) 0)
+        ((= n 1) 1)
+        (else  (+ (fib (- n 1)) (fib (- n 2))))
+    )
+)
+
+
+(define (fib2 n)
+    (define (square a _n)
+        (if (= _n 1)
+            a
+            (* a (square a (- _n 1)))
+        )
+     )
+    (/ (square 1.618 n) 2.2360679774998)
+)
+
+(fib 5) 
+(fib 6)  
+(fib2 5)
+(fib2 6) 
+
+
+
+// (define (fib_good n)
+//     (define  (fib_iter a b count)
+//         (if (= count 0)
+//             b
+//             (fib_iter (+ a b) a (- count 1))
+//         )
+//     )
+//     (fib_iter 1 0 n)
+// )
+

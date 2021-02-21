@@ -6,8 +6,8 @@ class cons {
         if (arguments.length != 2) {
             throw SyntaxError("cons的参数必须是2个")
         }
-        car && (this.car = car);
-        cdr && (this.cdr = cdr);
+        typeof car != "undefined" && (this.car = car);
+        typeof cdr != "undefined" && (this.cdr = cdr);
         this.type = "cons"
     }
 

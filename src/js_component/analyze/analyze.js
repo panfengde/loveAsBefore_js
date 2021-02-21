@@ -82,10 +82,11 @@ class analyze {
     static _if(code_op) {
         let prediction = analyze_entry(code_op.cdr.car);
         let true_action = analyze_entry(code_op.cdr.cdr.car);
-        var false_action = code_op.cdr.cdr.cdr;
+        var false_action = code_op.cdr.cdr.cdr.car;
 
         //if (code_op.cdr.cdr.cdr == "()") {
-        if (false_action) {
+        //console.log(false_action)
+        if (typeof false_action == "undefined") {
             false_action = function (env) {
                 console.error("使用的if缺少否定运行");
                 throw SyntaxError();
@@ -179,8 +180,8 @@ class analyze {
                 let this_condition = conditions.car
                 let rest_condition = conditions.cdr
                 let var_args = this_condition.car.cdr
-                console.log("params__", params)
-                console.log("vargs__", var_args)
+                //console.log("params__", params)
+                //console.log("vargs__", var_args)
 
                 if (params_args_match(var_args, params)) {
                     return this_condition
@@ -297,8 +298,10 @@ class analyze {
         function replace(vars, template, params) {
 
             function add(origin, get_cons) {
+
                 //console.log("宿主", origin.show)
                 if (get_cons.car) {
+
                     if (get_cons.car == "...") {
                         origin.concat(get_cons.cdr)
                     } else if (get_cons.car == "word" || get_cons.car == "no_find") {
@@ -326,6 +329,7 @@ class analyze {
                     if ((typeof template) == "undefined") {
                         //console.log("走到头", result.show)
                     } else {
+
                         add(result, loop_word(template, vars, params));
                     }
 
@@ -336,6 +340,7 @@ class analyze {
 
 
                     } else {
+
                         add(result, loop_word(template.car, vars, params))
                         //console.log(result)
                         loop_template(template.cdr, result)
@@ -346,17 +351,23 @@ class analyze {
 
             function loop_word(word, vars, params) {
                 //word一定不会是undefined
-
+                // return new cons("word", word)
                 // VARS (_ ((p1 v1) (p2 v2) ...) b ...)
                 // params (let* ((a 1)(b a)) (+ a 1) (+ a b) )
 
-                //return new cons("word", word)
-
+                //return new co console.log()
                 if (!is_list(vars)) {
+                    //迭代完全了
+                    //return new cons("no_find", word)
+                    return new cons("no_find", word)
+
+                    /* console.log(".......................................", vars)
                     if (word == vars) {
+                        alert("为什么这里没用呢")
                         if (word === "...") {
                             if (is_list(params)) {
-                                return new cons("...", new list(params))
+                                console.log(".......................................", params)
+                                return new cons("...", params)
                             } else {
                                 if (typeof params == "undefined") {
                                     //特殊情况，...对应空
@@ -367,29 +378,29 @@ class analyze {
                                 }
                             }
                         } else {
-                            return new cons("word", params)
+                            
+                            return new cons("word", params.car)
                         }
                     } else {
                         return new cons("no_find", word)
-                    }
+                    } */
+
                 } else {
                     if (is_list(vars.car)) {
-                        let temp = loop_word(word, vars.car, params.car)
-                        if (temp.car !== "no_find") {
-                            if (vars.car == "...") {
-                                //将用过的...替换为其他
-                                vars.car = Math.random();
-                            }
-                            return temp
-                        } else {
+                        let temp = loop_word(word, vars.car, params.car);
+
+                        if (temp.car == "no_find") {
                             return loop_word(word, vars.cdr, params.cdr)
+                        } else {
+                            return temp
                         }
                     } else {
-
                         if (word == vars.car) {
-                            if (word === "...") {
+                            if (word == "...") {
+                                vars.car = Math.random();
                                 if (is_list(params)) {
-                                    return new cons("...", new list(params))
+                                    //console.log(".......................................", params)
+                                    return new cons("...", params)
                                 } else {
                                     if (typeof params == "undefined") {
                                         //特殊情况，...对应空
@@ -400,13 +411,22 @@ class analyze {
                                     }
                                 }
                             } else {
-                                return new cons("word", params)
+                                if (is_list(params)) {
+                                    return new cons("word", params.car)
+                                } else {
+                                    if (typeof params == "undefined") {
+                                        //特殊情况，...对应空
+                                        //可能会有问题
+                                        return new cons("none", null)
+                                    } else {
+                                        return new cons("word", params.car)
+                                    }
+                                }
                             }
                         } else {
                             if ((typeof params) == "undefined") {
                                 return new cons("no_find", word)
                             } else {
-
                                 return loop_word(word, vars.cdr, params.cdr)
                             }
 
@@ -432,17 +452,16 @@ class analyze {
                 console.log("condition-------", condition)
                 throw SyntaxError("错误")
             }
-            console.log("找到的宏-------", condition)
+            //console.log("找到的宏-------", condition)
             // console.log("lengthlength", params.length())
             let template = condition.cdr.car
             let vars = condition.car.cdr
 
             let cloneVars = vars.getClone();
 
-            console.log("宏的实际参数", params)
-            console.log("宏的虚拟参数", vars.getClone())
+
             let result = replace(cloneVars, template, params)
-            console.log("宏替换结果-------", result)
+            //console.log("宏替换结果-------", result)
             return result
         }
 
@@ -543,7 +562,7 @@ function eval_app(operate, operands, exp, exp_env) {
 
             //console.log(rule_list.show, macro_params.show)
             let marco_replace_result = analyze.parse_macro(rule_list, macro_params)
-            console.log("宏----", marco_replace_result)
+            //console.log("宏----", marco_replace_result)
             return run_eval(marco_replace_result, exp_env)
         default:
             console.error("错误的操作符", operate)

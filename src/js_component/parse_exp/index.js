@@ -162,11 +162,11 @@ class Parse {
 
         } else {
             //exp_str = this.kill_startEnd_rubbish(exp_str)
-            if (exp_str == "false") {
-                reulst = (false)
+            if /* (exp_str == "false") {
+                reulst = false
             } else if (exp_str == "true") {
-                reulst = (true)
-            } else if (Number(exp_str) === 0) {
+                reulst = true
+            } else if */(Number(exp_str) === 0) {
                 reulst = (0)
             } else {
                 reulst = (Number(exp_str) || exp_str)
