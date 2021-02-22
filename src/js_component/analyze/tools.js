@@ -1,3 +1,5 @@
+import { _number, _string } from './baseType'
+
 /**
  * 工具函数
  */
@@ -66,6 +68,36 @@ let tools = {
     array_to_list: function (array) {
         return new list(...array)
     },
+    checkTag_and_packageClass(code_pairs) {
+        if (typeof code_pairs != "object") {
+            if (this.code_number_type(code_pairs)) {
+                return ["number", new _number(code_pairs)]
+            } else if (this.code_string_type(code_pairs)) {
+                return ["string", new _string(code_pairs)]
+            } else if (this.code_variable_type(code_pairs)) {
+                return ["variable", code_pairs]
+            }
+        } else {
+            let keyword = new Set([
+                "define",
+                "quote",
+                "if",
+                "begin",
+                "set!",
+                "lambda",
+                "define-syntax",
+                "cons",
+                "let",
+                "'",
+                ".",
+            ])
+            if (keyword.has(code_pairs.car)) {
+                return [code_pairs.car, code_pairs]
+            } else {
+                return ["app", code_pairs]
+            }
+        }
+    }
 
     /* last_items: function (code_pairs) {
         function iteration(pairs) {

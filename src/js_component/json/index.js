@@ -57,7 +57,7 @@ class json extends list {
             throw SyntaxError("重复的key值")
         } */
     }
-    
+
     get show() {
         function iteration(pairs, result = "\n{\n") {
             if (is_car_list_cons_json(pairs)) {

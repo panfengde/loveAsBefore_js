@@ -11,8 +11,8 @@ import test from './labCode/functionTest/index.lab'
 function component() {
   console.time(1)
   // lodash，现在通过一个 script 引入
-  loveAsBefore(test)
-  //loveAsBefore(macro, code)
+  //loveAsBefore(test)
+  loveAsBefore(macro, code)
   console.timeEnd(1)
 
 

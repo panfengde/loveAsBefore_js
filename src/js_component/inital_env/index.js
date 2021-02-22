@@ -3,24 +3,16 @@ import list from '../list/index'
 import frame from '../frame/index'
 import json from '../json/index'
 import { is_car_list, is_cdr_list, is_list, is_car_list_cons_json } from '../../utils/tools'
+import { base } from '../analyze/baseType.js'
 
 function inital_env() {
     let shemeOp_to_jsOp = {
-        add: function (...args) {
-            return args.reduce((a, b) => (a + b), 0)
-        },
-
-        subtract: function (first, ...args) {
-            return args.reduce((a, b) => (a - b), first)
-        },
-
-        multiplication: function (...args) {
-            return args.reduce((a, b) => (a * b), 1)
-        },
-
-        number_equal: function (...args) {
-            return args.every((x) => (x == args[0]))
-        },
+        add: base.add,
+        subtract: base.subtract,
+        multiplication: base.multiplication,
+        division: base.division,
+        
+        equal: base.equal,
         greater: function (...args) {
             let flag = true;
             for (let i = 0, length = args.length; i < length; i++) {
@@ -44,15 +36,9 @@ function inital_env() {
         not_equal: function (a, b) {
             return a != b
         },
-
-        division: function (first, ...args) {
-            return args.reduce((a, b) => (a / b), first)
-        },
-
         remainder: function (a, b) {
             return a % b
         },
-
         cons_scheme: function (a, b) {
             return new cons(a, b)
         },
@@ -70,7 +56,6 @@ function inital_env() {
                 throw SyntaxError();
             }
         },
-
         display: function (...pairsAll) {
             console.log("打印开始:---------")
             pairsAll.forEach((pairs) => {
@@ -89,7 +74,7 @@ function inital_env() {
         json: function (...elemnts) {
             return new json(...elemnts)
         },
-        /*  eval:function(pairs){
+        /* eval:function(pairs){
              run_eval()
          } */
     }
@@ -100,7 +85,7 @@ function inital_env() {
         "-": new list("original", shemeOp_to_jsOp.subtract),
         "*": new list("original", shemeOp_to_jsOp.multiplication),
         "/": new list("original", shemeOp_to_jsOp.division),
-        "=": new list("original", shemeOp_to_jsOp.number_equal),
+        "=": new list("original", shemeOp_to_jsOp.equal),
         ">": new list("original", shemeOp_to_jsOp.greater),
         "<": new list("original", shemeOp_to_jsOp.less),
         "!=": new list("original", shemeOp_to_jsOp.not_equal),

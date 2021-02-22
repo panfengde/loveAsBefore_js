@@ -1,5 +1,3 @@
-
-
 (define-syntax let*
     (syntax-rules ()
       ((_ ((p v)) b ...)
@@ -58,15 +56,15 @@
     (+ x 1)
 )
 
-(go 1)
+(go 10000)
 
-(define (hello params)
-    (lambda () 
+// (define (hello params)
+//     (lambda () 
 
-    )
-)
+//     )
+// )
 
-()
+// ()
 
 
 

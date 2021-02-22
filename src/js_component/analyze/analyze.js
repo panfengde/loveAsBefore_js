@@ -8,18 +8,8 @@ import tools from './tools.js'
 import global_env from '../inital_env/index.js';
 import { is_cdr_list, is_car_list, is_list } from "../../utils/tools"
 
-class _number {
-    constructor(x) {
-        this.value = x
-        return this.value
-    }
-    go() {
-        this.value += 1;
-        return this.value
-    }
 
-}
-
+let null_list = new list()
 
 /**
  *表达式的操作符所对应的分析和操作逻辑
@@ -33,14 +23,44 @@ class analyze {
 
     static string(code_op) {
         return function (env) {
-            return code_op.replace(/^\"|\"$/g, "")
+            return code_op
+            //return code_op.replace(/^\"|\"$/g, "")
         }
     }
 
+
+
+
     static variable(code_op) {
         return function (env) {
-            //console.log(env)
+            //console.log(code_op)
             return env.look_variable_env(code_op)
+        }
+    }
+
+    static getArr(code_op) {
+        //获取对象,json,lis的属性或值
+        //(. jsons "hello")
+        //(. list "hello")
+        //(. Number "hello")
+        //(. class "hello")
+
+        let obj = analyze_entry(code_op.cdr.car);
+        let arr = analyze_entry(code_op.cdr.cdr.car);
+
+        return function (env) {
+            console.log("还没做完的")
+            if (obj.type == "list") {
+                alert("按地址获取list值还没做")
+            } else if (obj.type == "json") {
+                alert("按地址获取json值还没做")
+            } else {
+                //原生方法
+                console.log("这里获取的原生方法，还做完的")
+                return new list("original", obj(env)[arr(env).value]);
+            }
+
+            //return env.look_variable_env(code_op)
         }
     }
 
@@ -64,9 +84,9 @@ class analyze {
             let name = code_op.cdr.car.car;
             let args = code_op.cdr.car.cdr;
             let body = code_op.cdr.cdr;
-            let _lambda = analyze._make_lambda(args, body)
+            let _lambda = analyze._make_lambda(args, body);
             //console.log(_lambda)
-            let ananlyzed_body = analyze_entry(_lambda)
+            let ananlyzed_body = analyze_entry(_lambda);
             return function (env) {
                 return env.user_insert_var_value(
                     name,
@@ -78,7 +98,7 @@ class analyze {
             let name = code_op.cdr.car;
             let value = analyze_entry(code_op.cdr.cdr.car);
             return function (env) {
-                return env.user_insert_var_value(name, value(env))
+                return env.user_insert_var_value(name, value(env));
             }
         }
     }
@@ -147,6 +167,7 @@ class analyze {
     static lambda(code_op) {
         // (lambda (xxx) (saf)(asdf))
         let args = code_op.cdr.car;
+        //let body = code_op.cdr.cdr;
         let body = code_op.cdr.cdr.car;
         let ananlyzed_body = this._sequences_analyze(body)
         return function (env) {
@@ -164,7 +185,6 @@ class analyze {
             )
         )
         */
-
         let syntax_body = code_op.cdr.cdr.car
         let syntax_name = code_op.cdr.car
         //可以提前分析好宏得每一种情况
@@ -204,8 +224,6 @@ class analyze {
             }
         }
 
-
-
         function params_args_match(var_args, params) {
             if (is_list(var_args) && is_list(params)) {
                 if (var_args.last_items().car == "...") {
@@ -228,85 +246,6 @@ class analyze {
             }
 
         }
-
-
-
-        /* function _replace(vars, template, params) {
-            //console.log("变量————",vars)
-            function loop_template(rest_template) {
-                function iteration(rest_template, temp_result = new list()) {
-                    if (is_car_list(rest_template)) {
-                        let _temp = iteration(rest_template.car);
-                        temp_result.push(_temp);
-                    } else if (rest_template.car == "...") {
-                        let __temp = loop_vars(rest_template.car, vars, params);
-                        console.log(rest_template.show, vars.show, params.show)
-                        console.log(__temp.show)
-                        temp_result = add(temp_result, __temp)
-
-                    } else {
-                        let __temp2 = loop_vars(rest_template.car, vars, params)
-                        temp_result = add(temp_result, __temp2)
-                    }
-
-                    if (is_cdr_list(rest_template)) {
-                        return iteration(rest_template.cdr, temp_result)
-                    } else {
-                        return temp_result
-                    }
-                }
-
-                return iteration(rest_template)
-            }
-
-
-            function loop_vars(word, vars, params) {
-                //word模板中的该单词,
-                //vars,模板中变量
-                //params，实参
-
-                if (!is_list(vars)) {
-                    //都找完了，还没找到
-                    return new cons("word", word)
-                } else if (is_car_list(vars)) {
-                    let result_word = loop_vars(word, vars.car, params.car)
-                    if (result_word.car == "word" && result_word.cdr != word) {
-                        //不相同，就代表一定找到了。
-                        return new cons("word", result_word.cdr)
-                    } else {
-                        return loop_vars(word, vars.cdr, params.cdr)
-                    }
-                } else if (word == vars.car) {
-                    if (word == "...") {
-                        vars.set_car(Math.random())
-                        //param为空的时候！！！！！！！！
-                        //这里应该有bug
-                        //console.log("paramsparamsparamsparamsparamsparams",params)
-                        if (params && is_list(params.car)) {
-
-                            return new cons("...", new list(params.car))
-                        } else if (params && params.car) {
-                            return new cons("word", params.car)
-                        } else {
-                            //return new cons("none", new list())
-                            return new cons("none", null)
-                        }
-                    } else {
-                        //return params.car
-                        return new cons("word", params.car)
-                    }
-
-                } else {
-                    if (is_list(vars) && is_list(params)) {
-                        return loop_vars(word, vars.cdr, params.cdr)
-                    } else {
-                        return new cons("none", word)
-                    }
-                }
-            }
-
-            return loop_template(template)
-        } */
 
         function replace(vars, template, params) {
 
@@ -482,11 +421,13 @@ class analyze {
     }
 
     static app(code_op) {
-        //console.log(code_op)
+
         let operate = analyze_entry(code_op.car)
-        if (is_list(code_op.cdr)) {
+        if (is_cdr_list(code_op)) {
             return function (env) {
+
                 let true_operate = operate(env)
+                //console.log("****",code_op, true_operate)
                 if (true_operate.car == "macro") {
                     return eval_app(
                         true_operate,
@@ -497,6 +438,7 @@ class analyze {
                 } else {
                     //需要确认操作不是宏的时候，再去执行参数分析，不然会错误
                     //原来，是将参数的分析，放在外面，导致宏参数分析报错
+                    //let operands = code_op.cdr ? code_op.cdr.map(analyze_entry) : new list()
                     let operands = code_op.cdr.map(analyze_entry)
                     return eval_app(
                         true_operate,
@@ -509,11 +451,10 @@ class analyze {
                 }
             }
         } else {
-            let operands = analyze_entry(code_op.cdr)
             return function (env) {
                 return eval_app(
                     operate(env),
-                    operands(env),
+                    null_list,
                     code_op,
                     env
                 )
@@ -557,8 +498,7 @@ function eval_app(operate, operands, exp, exp_env) {
     switch (operate.car) {
         case "original":
             let operate_fun = operate.cdr.car
-            let operands_values = tools.list_to_array(operands).map((obj) => obj.value)
-            return operate_fun(...tools.list_to_array(operands_values))
+            return operate_fun(...tools.list_to_array(operands))
         case "compound":
             //list("compound", args, ananlyzed_body, env)
             let args = tools.list_to_array(operate.cdr.car) //形式参数

@@ -14,7 +14,6 @@ class frame extends cons {
         this.frame = new list(this.special_var_values, this.user_var_values);//存储框架内的变量和值
         this.father_frame = the_null
         this.frame_and_father_Addr = new list(this.frame, this.father_frame);//存储框架内的变量和值，并存储下一个框架的地址,初始的father地址为空
-
         this.car = this.frame
         this.cdr = this.father_frame
 
@@ -55,7 +54,6 @@ class frame extends cons {
     }
 
     look_variable_env(variable) {
-
         let { find, value } = this.look_vars_frame(variable)
         if (find) {
             return value;
