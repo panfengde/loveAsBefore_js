@@ -1,4 +1,4 @@
-//#lang sicp
+
 
 (let* 
     (
@@ -10,7 +10,6 @@
         ((= a 10) (display "a"))
     )
 )
-
 
 (define (pask row)
     (define (pask_iter row line)
@@ -44,7 +43,6 @@
         (else  (+ (fib (- n 1)) (fib (- n 2))))
     )
 )
-
 
 (define (fib2 n)
     (define (square a _n)

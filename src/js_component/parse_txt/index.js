@@ -1,7 +1,9 @@
 function parse_txt(txt) {
     //去掉收尾得空格和换行注释行等
     //txt = txt.replace(/\;+.*\n|\;+.*\r\n/g, "")
-    txt = txt.replace(/^\/\/+.*\r\n|^\;+.*\r\n|^\#\#+.*\r\n/g, "")
+    //txt = txt.replace(/^\/\/+.*\r\n|^\;+.*\r\n|^\#\#+.*\r\n/g, "")
+
+    txt = txt.replace(/^[\/\/]+.*|^\;+.*|^\#+.*/mg, "")
     txt = txt.replace(/\r\n|\n/g, " ")
     txt = txt.replace(/^\s*|\s*$|\n/g, "")
 

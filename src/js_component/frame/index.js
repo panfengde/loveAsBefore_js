@@ -25,8 +25,8 @@ class frame extends cons {
         vars.forEach((element, index) => {
             this.user_insert_var_value(element, values[index])
         });
-        this.special_insert_var_value("this", "待定")
-        this.special_insert_var_value("arguments", "待定")
+        this.special_insert_var_value("this", this)
+        this.special_insert_var_value("_arguments", this.user_var_values)
     }
 
     extend_env(base_env) {
@@ -55,7 +55,7 @@ class frame extends cons {
     }
 
     look_variable_env(variable) {
-        
+
         let { find, value } = this.look_vars_frame(variable)
         if (find) {
             return value;

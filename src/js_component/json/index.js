@@ -10,13 +10,15 @@ import cons from '../cons/index.js';
 !!!!
 */
 class json extends list {
-    constructor() {
+    constructor(...lists) {
         //暂定 key value 用cons结构来表达
         super()
         this.type = "json";
-        /*  for (let i = 0; i < lists.length; i++) {
-             this.insert_key_value(lists[i]);
-         } */
+
+        for (let i = 0; i < lists.length; i++) {
+            let _temp = lists[i]
+            this.insert_key_value(_temp.car, _temp.cdr);
+        }
     }
 
     insert_key_value(key, Value) {
@@ -55,7 +57,7 @@ class json extends list {
             throw SyntaxError("重复的key值")
         } */
     }
-
+    
     get show() {
         function iteration(pairs, result = "\n{\n") {
             if (is_car_list_cons_json(pairs)) {
@@ -70,7 +72,6 @@ class json extends list {
         }
         return iteration(this)
     }
-
 }
 
 export default json;

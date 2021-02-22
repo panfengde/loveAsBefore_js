@@ -39,4 +39,61 @@
     )
 )
 
+(define-syntax :
+    (syntax-rules ()
+    ((_ key value) (cons key value))
+    )
+)
+
+(define-syntax .
+    (syntax-rules ()
+        ((_ obj key ...) ((obj key) obj ...))
+    )
+)
+
+(define (go x)
+    (display "111")
+    (display this)
+    (display _arguments)
+    (+ x 1)
+)
+
+(go 1)
+
+(define (hello params)
+    (lambda () 
+
+    )
+)
+
+()
+
+
+
+// (define (class params)
+//     (
+//         (lambda ()
+//         )
+//     )
+// )
+
+// (list 1 2 3 4)
+// (quote ( 1 2 3 4))
+
+// (json (: 1 2) (: 3 4))
+
+
+// (define-syntax list
+//     (syntax-rules ()
+//         ((_ a ) (quote (a)))
+//         ((_ a b ...) (quote (a b ...)))
+//     )
+// )
+
+// (define-syntax json
+//     (syntax-rules ()
+//         ((_ a ) (quote (a)))
+//         ((_ a b ...) (quote (a b ...)))
+//     )
+// )
 

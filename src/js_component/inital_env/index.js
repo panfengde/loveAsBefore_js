@@ -1,6 +1,8 @@
 import cons from '../cons/index'
 import list from '../list/index'
 import frame from '../frame/index'
+import json from '../json/index'
+import { is_car_list, is_cdr_list, is_list, is_car_list_cons_json } from '../../utils/tools'
 
 function inital_env() {
     let shemeOp_to_jsOp = {
@@ -70,32 +72,22 @@ function inital_env() {
         },
 
         display: function (...pairsAll) {
-            function iteration(pairs, result = "(") {
-                if (pairs.car && (pairs.car.type == "list")) {
-                    result += iteration(pairs.car);
-                    return iteration(pairs.cdr, result)
-                } else if (pairs != "()") {
-                    result += pairs.car + " "
-                    if (pairs.cdr.type) {
-                        return iteration(pairs.cdr, result)
-                    } else {
-                        return result += (pairs.cdr == "()" ? "" : pairs.cdr + " ") + ")"
-                    }
-                } else if (pairs == "()") {
-                    return result += ")"
-                }
-            }
-
             console.log("打印开始:---------")
             pairsAll.forEach((pairs) => {
-                if (!pairs || !pairs.type) {
-                    console.log("    ", pairs)
+                if (is_list(pairs)) {
+                    console.log("    ", pairs.show)
                 } else {
-                    console.log("    ", iteration(pairs))
+                    console.log("    ", pairs)
                 }
             })
             console.log("打印结束:---------")
 
+        },
+        list: function (...elemnts) {
+            return new list(...elemnts)
+        },
+        json: function (...elemnts) {
+            return new json(...elemnts)
         },
         /*  eval:function(pairs){
              run_eval()
@@ -117,6 +109,8 @@ function inital_env() {
         "car": new list("original", shemeOp_to_jsOp.car_scheme),
         "cdr": new list("original", shemeOp_to_jsOp.cdr_scheme),
         "display": new list("original", shemeOp_to_jsOp.display),
+        "json": new list("original", shemeOp_to_jsOp.json),
+        "list": new list("original", shemeOp_to_jsOp.list),
         "judge_null": new list("original", shemeOp_to_jsOp.nullCons),
         "true": true,
         "false": false,

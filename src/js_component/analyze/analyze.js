@@ -8,6 +8,19 @@ import tools from './tools.js'
 import global_env from '../inital_env/index.js';
 import { is_cdr_list, is_car_list, is_list } from "../../utils/tools"
 
+class _number {
+    constructor(x) {
+        this.value = x
+        return this.value
+    }
+    go() {
+        this.value += 1;
+        return this.value
+    }
+
+}
+
+
 /**
  *表达式的操作符所对应的分析和操作逻辑
  */
@@ -544,7 +557,8 @@ function eval_app(operate, operands, exp, exp_env) {
     switch (operate.car) {
         case "original":
             let operate_fun = operate.cdr.car
-            return operate_fun(...tools.list_to_array(operands))
+            let operands_values = tools.list_to_array(operands).map((obj) => obj.value)
+            return operate_fun(...tools.list_to_array(operands_values))
         case "compound":
             //list("compound", args, ananlyzed_body, env)
             let args = tools.list_to_array(operate.cdr.car) //形式参数
@@ -559,7 +573,6 @@ function eval_app(operate, operands, exp, exp_env) {
         case "macro":
             let macro_params = exp.cdr
             let rule_list = operate.cdr.car
-
             //console.log(rule_list.show, macro_params.show)
             let marco_replace_result = analyze.parse_macro(rule_list, macro_params)
             //console.log("宏----", marco_replace_result)

@@ -18,7 +18,7 @@ let tools = {
         }
     },
     code_variable_type: function (code_pairs) {
-        let re = /^[.a-zA-Z_+\-*!><=\/]+\w*$/;
+        let re = /^[.a-zA-Z_+\-*!><=\/:,]+\w*$/;
         if (re.test(code_pairs)) {
             return "variable";
         }
@@ -66,7 +66,7 @@ let tools = {
     array_to_list: function (array) {
         return new list(...array)
     },
-    
+
     /* last_items: function (code_pairs) {
         function iteration(pairs) {
             if (pairs.cdr == "()") {

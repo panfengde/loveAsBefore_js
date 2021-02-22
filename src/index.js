@@ -3,14 +3,16 @@ import {
   loveAsBefore
 } from './js_component/index.js'
 
-import macro from './lab/macro.lab'
-import code from './code/index.lab'
+import macro from './labCode/macro/macro.lab'
+import code from './labCode/code/index.lab'
+import test from './labCode/functionTest/index.lab'
 
 
 function component() {
   console.time(1)
   // lodash，现在通过一个 script 引入
-  loveAsBefore(macro, code)
+  loveAsBefore(test)
+  //loveAsBefore(macro, code)
   console.timeEnd(1)
 
 
