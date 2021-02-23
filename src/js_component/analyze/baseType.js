@@ -26,6 +26,7 @@ class base {
         });
         return new _number(tmep)
     }
+
     static multiplication(...datas) {
         let tmep = datas[0].value;
         datas.forEach((obj, i) => {
@@ -35,6 +36,7 @@ class base {
         });
         return new _number(tmep)
     }
+
     static division(...datas) {
         let tmep = datas[0].value;
         datas.forEach((obj, i) => {
@@ -44,11 +46,13 @@ class base {
         });
         return new _number(tmep)
     }
+
     static equal(a, b) {
         return a.value === b.value
     }
-
+    
 }
+
 
 
 class _number extends base {
@@ -68,8 +72,11 @@ class _string extends base {
         this.type = "string"
         this.value = props.replace(/^\"|\"$/g, "")
     }
-
 }
+
+
+
+
 
 
 export { base, _number, _string };

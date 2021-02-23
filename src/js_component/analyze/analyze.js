@@ -29,8 +29,6 @@ class analyze {
     }
 
 
-
-
     static variable(code_op) {
         return function (env) {
             //console.log(code_op)
@@ -148,7 +146,6 @@ class analyze {
         let _lambda = analyze._make_lambda(args_name, body_sequence)
         let let_to_lambda = new cons(_lambda, args_value)
         //((lambda (a b) (+ a b) ) 1 2)
-
         let parsed_let = analyze_entry(let_to_lambda)
         return function (env) {
             return parsed_let(env)
@@ -170,6 +167,7 @@ class analyze {
         //let body = code_op.cdr.cdr;
         let body = code_op.cdr.cdr.car;
         let ananlyzed_body = this._sequences_analyze(body)
+
         return function (env) {
             return new list("compound", args, ananlyzed_body, env)
         }
@@ -425,7 +423,6 @@ class analyze {
         let operate = analyze_entry(code_op.car)
         if (is_cdr_list(code_op)) {
             return function (env) {
-
                 let true_operate = operate(env)
                 //console.log("****",code_op, true_operate)
                 if (true_operate.car == "macro") {
@@ -503,7 +500,7 @@ function eval_app(operate, operands, exp, exp_env) {
             //list("compound", args, ananlyzed_body, env)
             let args = tools.list_to_array(operate.cdr.car) //形式参数
             let params = tools.list_to_array(operands) //实际参数
-            /* console.log("形式参数", args)
+            /*console.log("形式参数", args)
             console.log("实际参数", operands) */
             let ananlyzed_body = operate.cdr.cdr.car //被分析后的过程
             let env = operate.cdr.cdr.cdr.car //过程的定义环境

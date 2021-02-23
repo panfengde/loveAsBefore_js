@@ -24,7 +24,7 @@ class frame extends cons {
         vars.forEach((element, index) => {
             this.user_insert_var_value(element, values[index])
         });
-        this.special_insert_var_value("this", this)
+        //this.special_insert_var_value("this", this)
         this.special_insert_var_value("_arguments", this.user_var_values)
     }
 
