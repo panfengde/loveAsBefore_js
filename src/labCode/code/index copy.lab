@@ -16,20 +16,6 @@
     )
 )
 
-(display "let--cond")
-(let 
-    (
-        (n 3)
-    )
-    (display n)
-    (cond 
-        ((= n 2) 1)
-        ((= n 3) 3)
-        (else "other")
-    )
-)
-
-
 (define (pask row)
     (define (pask_iter row line)
         (cond
@@ -45,6 +31,7 @@
         )
     )
     (define (foreach row line)
+            (display (pask_iter row line))
             (cond
                 ((= row line 1) (display ""))
                 ((= line 1) (begin (display "\r\n")  (foreach (- row 1) (-  row 1)) ))
@@ -77,16 +64,6 @@
 (fib2 5)
 (fib2 16) 
 
-
-(define (forEach list fun)
-    (if (nullList  list)
-        '()
-        (begin (fun (car list) ) (forEach (cdr list) fun))
-    )
-)
-
-(forEach  '(1 2 3 4)  (lambda (x) (+ x 10)))
-
 // (define (fib_good n)
 //     (define  (fib_iter a b count)
 //         (if (= count 0)
@@ -96,6 +73,4 @@
 //     )
 //     (fib_iter 1 0 n)
 // )
-
-
 

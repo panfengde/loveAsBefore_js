@@ -12,9 +12,10 @@ import baseTest from './labCode/baseTest/index.lab'
 function component() {
   console.time(1)
   // lodash，现在通过一个 script 引入
-  loveAsBefore(baseTest)
+  //loveAsBefore(baseTest)
   //loveAsBefore(test)
-  //loveAsBefore(macro, code)
+  //loveAsBefore(macro)
+  loveAsBefore(macro, code)
   console.timeEnd(1)
 
 

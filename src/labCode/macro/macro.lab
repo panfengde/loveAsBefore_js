@@ -1,5 +1,3 @@
-(display "a")
-
 (define-syntax let*
     (syntax-rules ()
       ((_ ((p v)) b ...)
@@ -54,27 +52,32 @@
 
 
 
-// (define (hello params)
-//     (lambda () 
+; (define-syntax class 
+;     (syntax-rules ()
+;         (_ 
+;             name 
+;             (constructor ( ... ) ...) 
+;         ) 
+        
+;          (define name 
+;                 (lambda ( ... )
+;                     (lambda ( )
+;                         ...
+;                     )
+;                 )
+;          )
+;     )
+; )
 
-//     )
-// )
+; ;定义类
+; (class animal
+;     (constructor (name_num mouse_num) 
+;         (set. (. this "name") name_num)
+;         (set. (. this "mouse") mouse_num)
+;     )
+; )
 
-// ()
 
-
-
-// (define (class params)
-//     (
-//         (lambda ()
-//         )
-//     )
-// )
-
-// (list 1 2 3 4)
-// (quote ( 1 2 3 4))
-
-// (json (: 1 2) (: 3 4))
 
 
 // (define-syntax list

@@ -1,35 +1,54 @@
-(+ 1 1)
-(define a 10)
-a
-
-((lambda (x) (+ x 1) (+ x 1000)) 10)
-
-
-(let 
-    (
-        (a 10)
-    )
-    (+ a 100)
-    
-    )
-
-(define-syntax let*
+(define-syntax class 
     (syntax-rules ()
-      ((_ ((p v)) b ...)
-       (let ((p v)) b ...))
-      ((_ ((p1 v1) (p2 v2) ...) b ...)
-       (let ((p1 v1))
-         (let* ((p2 v2) ...)
-          b ...))))
-          )
-
-(cons 1 2)
-
-
-(let* 
-    (
-        (a 10)
-        (b (+ a 10))
+        (
+            (_ 
+                name 
+                (constructor (...) ...) 
+            ) 
+            (begin 
+                (define name 
+                        (lambda (...)
+                            (
+                                (lambda ()
+                                ...
+                                )
+                            )
+                        )
+                )
+                name
+            )     
+        )       
     )
-    (display b)
 )
+
+;定义类
+(class animal
+    (constructor (name_num mouse_num) 
+        (define (. this "name") name_num)
+        (define (. this "mouse") mouse_num)
+    )
+)
+(animal 1 2)
+
+
+
+((lambda (x y) 
+    (
+        (lambda ()
+            (display this)
+            (display (. this "x"))
+            (display (. this "y"))
+            (set! (. this "x") 10)
+        )
+    )
+    (display x)
+) 1 "---" )
+
+(set. this "hello" 10)
+
+(set. this "hello" "go" 10)
+
+(_ obj a ) ()
+
+; (set! (. this "name") name_num)
+; (set! (. this "mouse") mouse_num)

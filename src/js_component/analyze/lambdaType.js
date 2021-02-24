@@ -3,7 +3,7 @@ import list from '../list/index';
 
 // new list("compound", args, ananlyzed_body, env)
 class lambdaBase {
-    constructor(args, body,env) {
+    constructor(args, body, env) {
         this.value = "[lambda native code]"
         this.args = args;
         this.ananlyzed_body = body;

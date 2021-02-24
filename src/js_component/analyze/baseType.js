@@ -1,3 +1,5 @@
+import { is_car_list, is_cdr_list, is_list, is_car_list_cons_json, judge_arr_exist } from '../../utils/tools'
+
 let string_exp_test = new RegExp(/^\"[\s\S]*\"$/g)
 
 class base {
@@ -51,7 +53,7 @@ class base {
     }
 
     static equal(a, b) {
-        return a.value === b.value
+        return new _boolean(a.value === b.value)
     }
 
     static setTypeValue(valueString) {
@@ -98,6 +100,13 @@ class _boolean extends base {
         super(props)
         this.type = "boolean"
         this.value = Boolean(props)
+    }
+    static nullList(list) {
+        if (is_list(list)) {
+            return new _boolean(!judge_arr_exist(list, "car"))
+        } else {
+            return new _boolean(true)
+        }
     }
 }
 

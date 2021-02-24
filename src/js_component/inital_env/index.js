@@ -3,7 +3,7 @@ import list from '../list/index'
 import frame from '../frame/index'
 import json from '../json/index'
 import { is_car_list, is_cdr_list, is_list, is_car_list_cons_json, judge_arr_exist } from '../../utils/tools'
-import { base } from '../analyze/baseType.js'
+import { base, _boolean } from '../analyze/baseType.js'
 
 function inital_env() {
     let shemeOp_to_jsOp = {
@@ -47,13 +47,7 @@ function inital_env() {
         cdr_scheme: function (cons) {
             return cons.cdr
         },
-        nullCons: function (cons) {
-            if (is_list(cons)) {
-                return judge_arr_exist(cons, "car")
-            } else {
-                return false
-            }
-        },
+        nullList: _boolean.nullList,
         display: function (...pairsAll) {
             console.log("打印开始:---------")
             pairsAll.forEach((pairs) => {
@@ -93,7 +87,7 @@ function inital_env() {
         "display": new list("original", shemeOp_to_jsOp.display),
         "json": new list("original", shemeOp_to_jsOp.json),
         "list": new list("original", shemeOp_to_jsOp.list),
-        "judge_null": new list("original", shemeOp_to_jsOp.nullCons),
+        "nullList": new list("original", shemeOp_to_jsOp.nullList),
         /*"true": true,
          "false": false,
          "else": true, */

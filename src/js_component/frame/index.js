@@ -56,13 +56,14 @@ class frame extends cons {
     look_variable_env(variable) {
         let { find, value } = this.look_vars_frame(variable)
         if (find) {
-            return value;
+            return [true, value];
         } else if (this.father_frame != the_null) {
             return this.father_frame.look_variable_env(variable)
         } else {
-            console.error("环境中没有该变量", variable)
+            return [false]
+            /* console.error("环境中没有该变量", variable)
             throw SyntaxError("环境中没有该变量" + variable);
-            return the_undefined;
+            return the_undefined; */
         }
     }
 
