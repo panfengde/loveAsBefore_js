@@ -16,7 +16,7 @@ class frame extends cons {
         this.frame_and_father_Addr = new list(this.frame, this.father_frame);//存储框架内的变量和值，并存储下一个框架的地址,初始的father地址为空
         this.car = this.frame
         this.cdr = this.father_frame
-
+        this.type = "frame"
         if (vars.length != values.length) {
             console.warn("变量和变量值个数是否需要一致", vars, values)
             //throw SyntaxError();

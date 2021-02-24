@@ -6,6 +6,7 @@ import analyze_entry from './index'
 import run_eval from '../run_eval/index'
 import tools from './tools.js'
 import global_env from '../inital_env/index.js';
+import { lambdaBase } from './lambdaType'
 import { is_cdr_list, is_car_list, is_list } from "../../utils/tools"
 
 
@@ -27,11 +28,15 @@ class analyze {
             //return code_op.replace(/^\"|\"$/g, "")
         }
     }
+    static boolean(code_op) {
+        return function (env) {
+            return code_op
+        }
+    }
 
 
     static variable(code_op) {
         return function (env) {
-            //console.log(code_op)
             return env.look_variable_env(code_op)
         }
     }
@@ -42,20 +47,22 @@ class analyze {
         //(. list "hello")
         //(. Number "hello")
         //(. class "hello")
-
+        //console.log("code_op",code_op)
         let obj = analyze_entry(code_op.cdr.car);
         let arr = analyze_entry(code_op.cdr.cdr.car);
 
+
         return function (env) {
-            console.log("还没做完的")
-            if (obj.type == "list") {
-                alert("按地址获取list值还没做")
-            } else if (obj.type == "json") {
-                alert("按地址获取json值还没做")
+            let true_obj = obj(env)
+            let true_arr = arr(env).value
+            //console.log("true_obj",true_obj)
+            //console.log("true_arr", true_arr)
+            if (true_obj.type == "frame") {
+                return true_obj.look_variable_env(true_arr)
             } else {
                 //原生方法
-                console.log("这里获取的原生方法，还做完的")
-                return new list("original", obj(env)[arr(env).value]);
+                //console.log("这里获取的原生方法，还做完的")
+                return new list("original", true_obj[true_arr]);
             }
 
             //return env.look_variable_env(code_op)
@@ -63,6 +70,7 @@ class analyze {
     }
 
     static quote(code_op) {
+        //console.log(code_op);
         return function (env) {
             return code_op.cdr.car
         }
@@ -138,13 +146,12 @@ class analyze {
     static _let(code_op) {
         let arg_partment = code_op.cdr.car
         let body_sequence = code_op.cdr.cdr
-        /* console.log(arg_partment)
-        console.log(body_sequence) */
         let args_name = arg_partment.map((arg_exp_cons) => (arg_exp_cons.car))
         let args_value = arg_partment.map((arg_exp_cons) => (arg_exp_cons.cdr.car))
 
         let _lambda = analyze._make_lambda(args_name, body_sequence)
-        let let_to_lambda = new cons(_lambda, args_value)
+        let let_to_lambda = new list(_lambda).concat(args_value)
+        console.log(let_to_lambda)
         //((lambda (a b) (+ a b) ) 1 2)
         let parsed_let = analyze_entry(let_to_lambda)
         return function (env) {
@@ -164,12 +171,13 @@ class analyze {
     static lambda(code_op) {
         // (lambda (xxx) (saf)(asdf))
         let args = code_op.cdr.car;
-        //let body = code_op.cdr.cdr;
-        let body = code_op.cdr.cdr.car;
+        let body = code_op.cdr.cdr;
+        //let body = code_op.cdr.cdr.car;
+
         let ananlyzed_body = this._sequences_analyze(body)
 
         return function (env) {
-            return new list("compound", args, ananlyzed_body, env)
+            return new list("compound", new lambdaBase(args, ananlyzed_body, env))
         }
     }
 
@@ -396,10 +404,7 @@ class analyze {
 
             let condition = find_conditon(params, conditions_list)
             if (!is_list(condition)) {
-                console.log("condition-------")
-                console.log(conditions_list)
-                console.log(params)
-                console.log("condition-------", condition)
+
                 throw SyntaxError("错误")
             }
             //console.log("找到的宏-------", condition)
@@ -419,7 +424,7 @@ class analyze {
     }
 
     static app(code_op) {
-
+        //console.log(code_op)
         let operate = analyze_entry(code_op.car)
         if (is_cdr_list(code_op)) {
             return function (env) {
@@ -449,8 +454,10 @@ class analyze {
             }
         } else {
             return function (env) {
+                let true_operate = operate(env)
+                console.log("app****app****app", code_op, true_operate)
                 return eval_app(
-                    operate(env),
+                    true_operate,
                     null_list,
                     code_op,
                     env
@@ -461,6 +468,7 @@ class analyze {
 
     //序列的分析
     static _sequences_analyze(sequences) {
+        //console.log("sequences",sequences)
         function seqeunces_analyze(first, second) {
             return function (env) {
                 first(env)
@@ -486,27 +494,30 @@ class analyze {
     }
 
     static _make_lambda(args, body) {
-        return new list("lambda", args, body)
+        return new list("lambda", args).concat(body)
     }
 }
 
 
 function eval_app(operate, operands, exp, exp_env) {
+    //console.log("xxxxxxxxx",operate)
     switch (operate.car) {
         case "original":
             let operate_fun = operate.cdr.car
             return operate_fun(...tools.list_to_array(operands))
         case "compound":
+            let the_function = operate.cdr.car;//实例化的获取函数对象
             //list("compound", args, ananlyzed_body, env)
-            let args = tools.list_to_array(operate.cdr.car) //形式参数
+            let args = tools.list_to_array(the_function.args) //形式参数
             let params = tools.list_to_array(operands) //实际参数
-            /*console.log("形式参数", args)
+            /* console.log("形式参数", args)
             console.log("实际参数", operands) */
-            let ananlyzed_body = operate.cdr.cdr.car //被分析后的过程
-            let env = operate.cdr.cdr.cdr.car //过程的定义环境
+            let ananlyzed_body = the_function.ananlyzed_body //被分析后的过程
+            let define_env = the_function.define_env //过程的定义环境
             let function_env = new frame(args, params) //形参和实参构成的框架
-            function_env.extend_env(env) //将过程的定义框架，链接入过程定义的环境中
-            return ananlyzed_body(function_env)
+            function_env.extend_env(define_env) //将过程的定义框架，链接入过程定义的环境中
+            function_env.user_insert_var_value("this", function_env)//函数作用域中的this指向当前这个函数的作用域
+            return ananlyzed_body(function_env);
         case "macro":
             let macro_params = exp.cdr
             let rule_list = operate.cdr.car

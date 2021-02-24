@@ -2,7 +2,7 @@ import cons from '../cons/index'
 import list from '../list/index'
 import frame from '../frame/index'
 import json from '../json/index'
-import { is_car_list, is_cdr_list, is_list, is_car_list_cons_json } from '../../utils/tools'
+import { is_car_list, is_cdr_list, is_list, is_car_list_cons_json, judge_arr_exist } from '../../utils/tools'
 import { base } from '../analyze/baseType.js'
 
 function inital_env() {
@@ -11,7 +11,6 @@ function inital_env() {
         subtract: base.subtract,
         multiplication: base.multiplication,
         division: base.division,
-        
         equal: base.equal,
         greater: function (...args) {
             let flag = true;
@@ -49,11 +48,10 @@ function inital_env() {
             return cons.cdr
         },
         nullCons: function (cons) {
-            if (cons.type && cons.type == "list") {
-                return Boolean(cons || cons == "()")
+            if (is_list(cons)) {
+                return judge_arr_exist(cons, "car")
             } else {
-                console.error("不是cons结构，不能使用nullCons判断")
-                throw SyntaxError();
+                return false
             }
         },
         display: function (...pairsAll) {
@@ -78,7 +76,6 @@ function inital_env() {
              run_eval()
          } */
     }
-
     let inital_op = {
         //"eval": new list("original", shemeOp_to_jsOp.eval),
         "+": new list("original", shemeOp_to_jsOp.add),
@@ -97,9 +94,9 @@ function inital_env() {
         "json": new list("original", shemeOp_to_jsOp.json),
         "list": new list("original", shemeOp_to_jsOp.list),
         "judge_null": new list("original", shemeOp_to_jsOp.nullCons),
-        "true": true,
-        "false": false,
-        "else": true,
+        /*"true": true,
+         "false": false,
+         "else": true, */
     }
 
     let names = []

@@ -1,0 +1,49 @@
+10
+"字符串"
+false
+true
+(define a 100)
+a
+'(1 2 3)
+(quote (1 2 3))
+((. 1 "hello"))
+(set! a 1000)
+
+(if (= a 1000)
+    (display "set! 和 if ok")
+    (display "set! 和 if  error")
+)
+
+(cons 1 2)
+
+(let 
+    (
+        (x 900)
+        (y 100)
+    )
+    (+ x y)
+)
+
+((lambda (x) (+ 1 2) (+ x 900)) 100)
+
+(define (go x) (+ 1 2) (+ x 900) )
+(go 100)
+
+(define-syntax let*
+    (syntax-rules ()
+      ((_ ((p v)) b ...)
+       (let ((p v)) b ...))
+      ((_ ((p1 v1) (p2 v2) ...) b ...)
+       (let ((p1 v1))
+         (let* ((p2 v2) ...)
+          b ...))))
+          )
+
+(let* 
+    (
+        (a 10)
+        (b (+ a 10))
+    )
+    (display b)
+    (display (+ a b))
+)

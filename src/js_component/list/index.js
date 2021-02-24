@@ -222,10 +222,10 @@ class list extends cons {
                 result += " " + pairs.car.show;
                 return iteration(pairs.cdr, result)
             } else if (is_cdr_list(pairs)) {
-                result += " " + pairs.car
+                result += " " + (pairs.car && (pairs.car.value || pairs.car))
                 return iteration(pairs.cdr, result)
             } else {
-                return result += " " + (pairs ? pairs.car : "") + " )"
+                return result += " " + (pairs ? (pairs.car && (pairs.car.value || pairs.car)) : "") + " )"
             }
         }
         return iteration(this)

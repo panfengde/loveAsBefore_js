@@ -1,3 +1,10 @@
+
+
+
+; (define a 10)
+; (set! a 15)
+; a
+
 (let* 
     (
         (a 10)
@@ -53,9 +60,9 @@
 )
 
 (fib 5) 
-(fib 6)  
+(fib 16)  
 (fib2 5)
-(fib2 6) 
+(fib2 16) 
 
 // (define (fib_good n)
 //     (define  (fib_iter a b count)

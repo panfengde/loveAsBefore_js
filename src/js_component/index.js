@@ -13,9 +13,10 @@ import run_eval from './run_eval/index.js';
 function loveAsBefore(...labCodeFiles) {
     labCodeFiles.forEach((labCodes) => {
         parse_txt(labCodes).forEach((code) => {
+            //console.log(Parse.strExp_to_List(code))
             let result = run_eval(Parse.strExp_to_List(code), global_env)
-            console.log(result)
-            //console.log(result.show || result.value || result)
+            console.log(result )
+            //console.log(result ? (result.show || result.value || result) : result)
         })
     })
 

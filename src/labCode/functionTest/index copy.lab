@@ -1,0 +1,70 @@
+('(1 2 3 ) 1)
+
+
+(define (forEach list fun)
+         (if (judge_null  list)
+            '()
+            (begin (fun (car list) ) (forEach (cdr list) fun))
+        )
+)
+(forEach  '(1 2 3 4)  (lambda (x) (+ x 10)))
+
+'(1 2 3 4)
+
+((. (quote (1 2 3 4) ) "forEach") (lambda (x) (display x)))
+
+(define (a)
+    this
+    (define p 10)
+    (. this "p")
+)
+
+(define (animal name eys mouse )
+    (lambda () 
+        (define eys eys)
+        (define mouse mouse)
+        
+        define
+    )
+
+)
+
+(define (map items proc )
+    (if (judge_null  items)
+        '()
+        (cons (proc (car items)) (map proc (cdr items)))
+    )
+)
+
+
+
+
+(define-syntax class 
+    (syntax-rules ()
+        (_ 
+            name 
+            args 
+            body
+        ) 
+        (define (name args)
+            
+            (lambda (args) 
+                (define _this this)
+                ((. args forEach ) (lambda (keyValue) (set! (. _this (car  keyValue)) (cdr  keyValue))))
+
+            )
+        )
+    )
+)
+
+
+(class 
+    animal
+    (
+        (: "name" "hello")
+        (: "name" "hello")
+    )
+    (
+
+    )
+)

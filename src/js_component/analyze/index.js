@@ -6,39 +6,43 @@ import analyze from './analyze.js'
  *  根据代码的操作符，选择相应的逻辑
  */
 function analyze_entry(parsed_code) {
+    
+    let tag = tools.checkTag_and_packageClass(parsed_code)
 
-    let tag_value = tools.checkTag_and_packageClass(parsed_code)
-    switch (tag_value[0]) {
+    //console.log("****",tag,parsed_code)
+    switch (tag) {
         case "number":
-            return analyze.number(tag_value[1]);
+            return analyze.number(parsed_code);
         case "string":
-            return analyze.string(tag_value[1]);
+            return analyze.string(parsed_code);
+        case "boolean":
+            return analyze.boolean(parsed_code);
         case "variable":
-            return analyze.variable(tag_value[1]);
+            return analyze.variable(parsed_code);
         case ".":
-            return analyze.getArr(tag_value[1]);
+            return analyze.getArr(parsed_code);
         case "quote":
-            return analyze.quote(tag_value[1]);
+            return analyze.quote(parsed_code);
         case "set!":
-            return analyze.set(tag_value[1]);
+            return analyze.set(parsed_code);
         case "if":
-            return analyze._if(tag_value[1]);
+            return analyze._if(parsed_code);
         case "cons":
-            return analyze.cons(tag_value[1]);
+            return analyze.cons(parsed_code);
         case "define":
-            return analyze.define(tag_value[1]);
+            return analyze.define(parsed_code);
         case "begin":
-            return analyze.begin(tag_value[1]);
+            return analyze.begin(parsed_code);
         case "let":
-            return analyze._let(tag_value[1]);
+            return analyze._let(parsed_code);
         case "lambda":
-            return analyze.lambda(tag_value[1]);
+            return analyze.lambda(parsed_code);
         case "define-syntax":
-            return analyze.defineSyntax(tag_value[1]);
+            return analyze.defineSyntax(parsed_code);
         case "app":
-            return analyze.app(tag_value[1]);
+            return analyze.app(parsed_code);
         default:
-            console.error("未定义的操作符", code_op, tag_value[1])
+            console.error("未定义的操作符", code_op, parsed_code)
             throw SyntaxError();
     }
 }

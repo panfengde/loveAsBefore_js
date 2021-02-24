@@ -1,5 +1,5 @@
-import { _number, _string } from './baseType'
-
+import { is_list } from '../../utils/tools';
+import { _number, _string, _boolean } from './baseType'
 /**
  * 工具函数
  */
@@ -7,7 +7,7 @@ let tools = {
     jude_cons: function (data) {
         return (data.type && data.type == "list")
     },
-    code_number_type: function (code_pairs) {
+    /* code_number_type: function (code_pairs) {
         let re = /^\-?\d+\.?\d*$/;
         if (re.test(code_pairs)) {
             return "number";
@@ -24,8 +24,8 @@ let tools = {
         if (re.test(code_pairs)) {
             return "variable";
         }
-    },
-    code_check_tag: function (code_pairs) {
+    }, */
+    /* code_check_tag: function (code_pairs) {
         if (typeof code_pairs != "object") {
             if (this.code_number_type(code_pairs)) {
                 return "number"
@@ -53,11 +53,10 @@ let tools = {
                 return "app"
             }
         }
-    },
+    }, */
     list_to_array: function (list) {
         //将cons组成的list数据结构转换为js数组的数据结构
-
-        if (list.type && list.type == "list") {
+        if (is_list(list)) {
             let result = []
             list.forEach((e) => (result.push(e)))
             return result
@@ -69,14 +68,17 @@ let tools = {
         return new list(...array)
     },
     checkTag_and_packageClass(code_pairs) {
-        if (typeof code_pairs != "object") {
-            if (this.code_number_type(code_pairs)) {
-                return ["number", new _number(code_pairs)]
+        //console.log("checkTag_and_packageClass------",code_pairs)
+        if (!is_list(code_pairs)) {
+            let _temp = code_pairs.type;
+            return (_temp == "number" || _temp == "string" || _temp == "boolean") ? _temp : "variable"
+            /* if (this.code_number_type(code_pairs)) {
+                return "number"
             } else if (this.code_string_type(code_pairs)) {
-                return ["string", new _string(code_pairs)]
+                return "string"
             } else if (this.code_variable_type(code_pairs)) {
-                return ["variable", code_pairs]
-            }
+                return "variable"
+            }*/
         } else {
             let keyword = new Set([
                 "define",
@@ -92,9 +94,9 @@ let tools = {
                 ".",
             ])
             if (keyword.has(code_pairs.car)) {
-                return [code_pairs.car, code_pairs]
+                return code_pairs.car
             } else {
-                return ["app", code_pairs]
+                return "app"
             }
         }
     }

@@ -1,5 +1,5 @@
+import { base } from '../analyze/baseType';
 import list from '../list/index'
-
 let testHandle = false;
 
 function testLog(...txt) {
@@ -37,7 +37,32 @@ class Parse {
         testLog('quoteHandle-------', code_str)
         if (this.jude_quote(code_str)) {
             code_str = code_str.replace(/^\s*[\r\n]*\s*'/, "")
-            return "(quote " + code_str + ")"
+
+
+            let temp = [1]
+            let car_over = false
+            let car = "("
+            let cdr = "";
+            for (let i = 1; i < code_str.length; i++) {
+                let world = code_str[i];
+                if (world == "(") {
+                    temp.unshift(1)
+                } else if (world == ")") (
+                    temp.pop()
+                )
+
+                if (!car_over) {
+                    car += world
+                } else {
+                    cdr += world
+                }
+                if (temp.length == 0 && !car_over) {
+                    car_over = true
+                }
+
+            }
+
+            return "(quote " + car + ") " + cdr
         } else {
             return code_str
         }
@@ -159,18 +184,18 @@ class Parse {
             reulst.push(Parse.strExp_to_List(car))
             Parse.strExp_to_List(cdr, reulst)
             //reulst.push(Parse.strExp_to_List(cdr))
-
         } else {
+            reulst = base.setTypeValue(exp_str)
             //exp_str = this.kill_startEnd_rubbish(exp_str)
-            if /* (exp_str == "false") {
+            /* if (exp_str == "false") {
                 reulst = false
             } else if (exp_str == "true") {
                 reulst = true
-            } else if */(Number(exp_str) === 0) {
+            } else if(Number(exp_str) === 0) {
                 reulst = (0)
             } else {
                 reulst = (Number(exp_str) || exp_str)
-            }
+            } */
         }
         return reulst
     }

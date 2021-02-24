@@ -1,3 +1,5 @@
+(display "a")
+
 (define-syntax let*
     (syntax-rules ()
       ((_ ((p v)) b ...)
@@ -45,18 +47,12 @@
 
 (define-syntax .
     (syntax-rules ()
-        ((_ obj key ...) ((obj key) obj ...))
+        ((_ obj key ) (_ obj key))
+        ((_ obj key ... ) (. (_ obj key) ...))
     )
 )
 
-(define (go x)
-    (display "111")
-    (display this)
-    (display _arguments)
-    (+ x 1)
-)
 
-(go 10000)
 
 // (define (hello params)
 //     (lambda () 
