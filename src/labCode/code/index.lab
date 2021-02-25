@@ -29,7 +29,6 @@
     )
 )
 
-
 (define (pask row)
     (define (pask_iter row line)
         (cond
@@ -78,22 +77,25 @@
 // (fib2 16) 
 
 (class animal
-    (constructor (name_num mouse_num) 
+    (constructor (name_num mouse_num go) 
         (set! (this "name") name_num)
         (set! (this "mouse") mouse_num)
+        (set! (this "go") go)
     )
     (define (a x) (display (. this "name")  x "okokokokok??????????"))
 )
 
 
-(define a (animal "name-------1111-----" "aaaa"))
+(define a (animal "name-------1111-----"    "aaaa"   111555 ))
+(. a "go")
 (. a "name")
-((. a "a") "hello aaaa")
+((. a "a") "123455")
 
+(define b (animal "name-------222-----"     "bbbbb" 22))
 
-(define b (animal "name-------222-----" "bbbbb"))
 (. b "name")
-((. b "a") "hello bbbb")
+
+((. b "a") "xcvbn")
 
 
 (define (forEach list fun)

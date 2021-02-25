@@ -49,7 +49,6 @@ function inital_env() {
         },
         nullList: _boolean.nullList,
         display: function (...pairsAll) {
-
             /*  pairsAll.forEach((pairs) => {
                  if (is_list(pairs)) {
                      console.log("    ", pairs.show)

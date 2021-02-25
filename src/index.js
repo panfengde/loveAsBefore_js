@@ -13,9 +13,9 @@ function component() {
   console.time(1)
   // lodash，现在通过一个 script 引入
   //loveAsBefore(baseTest)
-  loveAsBefore(test)
+  //loveAsBefore(test)
   //loveAsBefore(macro)
-  //loveAsBefore(macro, code)
+  loveAsBefore(macro, code)
   console.timeEnd(1)
 
 
