@@ -47,7 +47,7 @@ class frame extends cons {
 
         } else if (this.special_var_values.is_key_exist(variable)) {
             return { find: true, value: this.special_var_values.get_value_by_key(variable) }
-
+            
         } else {
             return { find: false, value: the_undefined }
         }

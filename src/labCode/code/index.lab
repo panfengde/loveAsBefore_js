@@ -73,9 +73,27 @@
 )
 
 (fib 5) 
-(fib 16)  
+// (fib 16)  
 (fib2 5)
-(fib2 16) 
+// (fib2 16) 
+
+(class animal
+    (constructor (name_num mouse_num) 
+        (set! (this "name") name_num)
+        (set! (this "mouse") mouse_num)
+    )
+    (define (a x) (display (. this "name")  x "okokokokok??????????"))
+)
+
+
+(define a (animal "name-------1111-----" "aaaa"))
+(. a "name")
+((. a "a") "hello aaaa")
+
+
+(define b (animal "name-------222-----" "bbbbb"))
+(. b "name")
+((. b "a") "hello bbbb")
 
 
 (define (forEach list fun)
@@ -85,7 +103,9 @@
     )
 )
 
-(forEach  '(1 2 3 4)  (lambda (x) (+ x 10)))
+(forEach  '(1 2 3 4)  (lambda (x) (display (+ x 10))))
+
+
 
 // (define (fib_good n)
 //     (define  (fib_iter a b count)

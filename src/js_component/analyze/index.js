@@ -37,6 +37,8 @@ function analyze_entry(parsed_code) {
             return analyze._let(parsed_code);
         case "lambda":
             return analyze.lambda(parsed_code);
+        case "class":
+            return analyze._class(parsed_code);
         case "define-syntax":
             return analyze.defineSyntax(parsed_code);
         case "app":

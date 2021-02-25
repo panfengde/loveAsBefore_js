@@ -8,7 +8,7 @@ import tools from './tools.js'
 import global_env from '../inital_env/index.js';
 import { lambdaBase } from './lambdaType'
 import { is_cdr_list, is_car_list, is_list } from "../../utils/tools"
-import {the_null} from '../aotom_constant/index'
+import { the_null } from '../aotom_constant/index'
 
 let null_list = new list()
 
@@ -34,7 +34,6 @@ class analyze {
         }
     }
 
-
     static variable(code_op) {
         return function (env) {
             let result = env.look_variable_env(code_op)
@@ -57,7 +56,6 @@ class analyze {
         let obj = analyze_entry(code_op.cdr.car);
         let arr = analyze_entry(code_op.cdr.cdr.car);
 
-
         return function (env) {
             let true_obj = obj(env)
             let true_arr = arr(env).value
@@ -66,7 +64,13 @@ class analyze {
             if (true_obj.type == "frame") {
                 let result = true_obj.look_variable_env(true_arr)
                 if (result[0]) {
-                    return result[0]
+                    if (is_list(result[1]) && result[1].car == "compound") {
+                        result[1].cdr.car = result[1].cdr.car.call(true_obj);
+                        return result[1]
+                    } else {
+                        return result[1];
+                    }
+
                 } else {
                     return the_null
                 }
@@ -75,7 +79,6 @@ class analyze {
                 //console.log("这里获取的原生方法，还做完的")
                 return new list("original", true_obj[true_arr]);
             }
-
             //return env.look_variable_env(code_op)
         }
     }
@@ -89,14 +92,30 @@ class analyze {
 
     static set(code_op) {
         //let name = code_op.cdr.car;
-        let name = analyze_entry(code_op.cdr.car);
+        let setObj = code_op.cdr.car
         let value = analyze_entry(code_op.cdr.cdr.car);
-        return function (env) {
-            //console.log("set----", name(env))
-            name(env).value = value(env)
-            //env.set_variable_value_env(name(env), value(env))
-        }
+        if (is_list(setObj)) {
+            return function (env) {
+                let frame = analyze_entry(setObj.car)(env);
+                let name = analyze_entry(setObj.cdr.car)(env).value;
 
+                let result = frame.look_variable_env(name)
+                //console.log(value(env))
+                if (result[0]) {
+                    result[1].value = value(env).value
+                } else {
+                    //console.log(frame)
+                    frame.user_insert_var_value(name, value(env))
+                }
+            }
+        } else {
+            let name = analyze_entry(setObj);
+            return function (env) {
+                //console.log("set----", name(env))
+                name(env).value = value(env)
+                //env.set_variable_value_env(name(env), value(env))
+            }
+        }
     }
 
     static define(code_op) {
@@ -189,10 +208,40 @@ class analyze {
         //let body = code_op.cdr.cdr.car;
 
         let ananlyzed_body = this._sequences_analyze(body)
-
         return function (env) {
             return new list("compound", new lambdaBase(args, ananlyzed_body, env))
         }
+    }
+
+    static _class(code_op) {
+        let name = code_op.cdr.car
+        let constructor = code_op.cdr.cdr.car
+        let constructor_args = constructor.cdr.car
+        let constructor_body = constructor.cdr.cdr
+        constructor_body.push("this")
+        let methods = code_op.cdr.cdr.cdr
+        let ananlyzed_methods = this._sequences_analyze(methods)
+        //分析方法并插入作用域中
+        let ananlyzed_constructor_body = this._sequences_analyze(constructor_body)
+
+        return function (env) {
+            //这个域用来存储公用的方法
+            let new_env = new frame() //形参和实参构成的框架
+            new_env.extend_env(env)
+
+            new_env.user_insert_var_value("this", new_env);
+            //挂载类的方法
+            ananlyzed_methods(new_env)
+
+
+            //console.log("new_envnew_envnew_envnew_env",new_env)
+            let constructor_lambda = new lambdaBase(constructor_args, ananlyzed_constructor_body, new_env);
+            return env.user_insert_var_value(name,
+                new list("compound", constructor_lambda)
+            )
+        }
+
+
     }
 
     static defineSyntax(code_op) {
@@ -235,7 +284,6 @@ class analyze {
                 let var_args = this_condition.car.cdr
                 //console.log("params__", params)
                 //console.log("vargs__", var_args)
-
                 if (params_args_match(var_args, params)) {
                     return this_condition
                 } else {
@@ -246,7 +294,9 @@ class analyze {
 
         function params_args_match(var_args, params) {
             if (is_list(var_args) && is_list(params)) {
-                if (var_args.last_items().car == "...") {
+                let _temp = var_args.last_items()
+                //console.log(_temp)
+                if (_temp && _temp.car && _temp.car.substr && _temp.car.substr(0, 3) == "...") {
                     if (params.length() >= (var_args.length() - 1)) {
                         return true && params_args_match(var_args.car, params.car) && params_args_match(var_args.car, params.car)
                     } else {
@@ -259,7 +309,7 @@ class analyze {
                         return false
                     }
                 }
-            } else if (var_args && var_args.car == "...") {
+            } else if (var_args && var_args.car && var_args.car.substr(0, 3) == "...") {
                 return true
             } else {
                 return (typeof params) !== "undefined"
@@ -273,7 +323,6 @@ class analyze {
 
                 //console.log("宿主", origin.show)
                 if (get_cons.car) {
-
                     if (get_cons.car == "...") {
                         origin.concat(get_cons.cdr)
                     } else if (get_cons.car == "word" || get_cons.car == "no_find") {
@@ -333,29 +382,6 @@ class analyze {
                     //return new cons("no_find", word)
                     return new cons("no_find", word)
 
-                    /* console.log(".......................................", vars)
-                    if (word == vars) {
-                        alert("为什么这里没用呢")
-                        if (word === "...") {
-                            if (is_list(params)) {
-                                console.log(".......................................", params)
-                                return new cons("...", params)
-                            } else {
-                                if (typeof params == "undefined") {
-                                    //特殊情况，...对应空
-                                    //可能会有问题
-                                    return new cons("none", null)
-                                } else {
-                                    return new cons("word", params)
-                                }
-                            }
-                        } else {
-                            
-                            return new cons("word", params.car)
-                        }
-                    } else {
-                        return new cons("no_find", word)
-                    } */
 
                 } else {
                     if (is_list(vars.car)) {
@@ -368,8 +394,8 @@ class analyze {
                         }
                     } else {
                         if (word == vars.car) {
-                            if (word == "...") {
-                                vars.car = Math.random();
+                            if (word.substr(0, 3) == "...") {
+                                //vars.car = Math.random();
                                 if (is_list(params)) {
                                     //console.log(".......................................", params)
                                     return new cons("...", params)
@@ -530,14 +556,14 @@ function eval_app(operate, operands, exp, exp_env) {
             let define_env = the_function.define_env //过程的定义环境
             let function_env = new frame(args, params) //形参和实参构成的框架
             function_env.extend_env(define_env) //将过程的定义框架，链接入过程定义的环境中
-            function_env.user_insert_var_value("this", exp_env)//函数作用域中的this指向当前这个函数的作用域
+            function_env.user_insert_var_value("this", define_env);
             return ananlyzed_body(function_env);
         case "macro":
             let macro_params = exp.cdr
             let rule_list = operate.cdr.car
-            //console.log(rule_list.show, macro_params.show)
+
             let marco_replace_result = analyze.parse_macro(rule_list, macro_params)
-            //console.log("宏----", marco_replace_result)
+            //console.log("宏替换结果", marco_replace_result)
             return run_eval(marco_replace_result, exp_env)
         default:
             console.error("错误的操作符", operate)

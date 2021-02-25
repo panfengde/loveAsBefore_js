@@ -49,15 +49,23 @@ function inital_env() {
         },
         nullList: _boolean.nullList,
         display: function (...pairsAll) {
-            console.log("打印开始:---------")
-            pairsAll.forEach((pairs) => {
+
+            /*  pairsAll.forEach((pairs) => {
+                 if (is_list(pairs)) {
+                     console.log("    ", pairs.show)
+                 } else {
+                     console.log("    ", pairs && (pairs.value || pairs))
+                 }
+             }) */
+            let result = pairsAll.map((pairs) => {
                 if (is_list(pairs)) {
-                    console.log("    ", pairs.show)
+                    return ("    ", pairs.show)
                 } else {
-                    console.log("    ", pairs)
+                    return ("    ", (pairs.value || pairs))
                 }
             })
-            console.log("打印结束:---------")
+            console.log(result.join(","))
+
 
         },
         list: function (...elemnts) {

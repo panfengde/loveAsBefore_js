@@ -87,6 +87,7 @@ let tools = {
                 "begin",
                 "set!",
                 "lambda",
+                "class",
                 "define-syntax",
                 "cons",
                 "let",

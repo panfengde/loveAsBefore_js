@@ -1,54 +1,77 @@
-(define-syntax class 
-    (syntax-rules ()
-        (
-            (_ 
-                name 
-                (constructor (...) ...) 
-            ) 
-            (begin 
-                (define name 
-                        (lambda (...)
-                            (
-                                (lambda ()
-                                ...
-                                )
-                            )
-                        )
-                )
-                name
-            )     
-        )       
+
+
+
+(class animal_2
+    (constructor (color_1 wheel_1) 
+        (set! (this "color") color_1)
+        (set! (this "wheel") wheel_1)
     )
+    (define (a x) (display (. this "color")  x "okokokokok??????????"))
 )
 
 ;定义类
 (class animal
     (constructor (name_num mouse_num) 
-        (define (. this "name") name_num)
-        (define (. this "mouse") mouse_num)
+        (set! (this "name") name_num)
+        (set! (this "mouse") mouse_num)
     )
+    (define (a x) (display (. this "name")  x "okokokokok??????????"))
 )
-(animal 1 2)
 
 
 
-((lambda (x y) 
-    (
-        (lambda ()
-            (display this)
-            (display (. this "x"))
-            (display (. this "y"))
-            (set! (. this "x") 10)
-        )
-    )
-    (display x)
-) 1 "---" )
+(define r (animal_2 "aaa" 11111))
+(define l (animal_2 "aaa" 11111))
+(define x (animal "aaa" 11111))
+(define y (animal "bbb" 22222))
 
-(set. this "hello" 10)
 
-(set. this "hello" "go" 10)
+(. r "color")
+(. l "color")
 
-(_ obj a ) ()
 
-; (set! (. this "name") name_num)
-; (set! (. this "mouse") mouse_num)
+((. r "a") "10000")
+((. l "a") "10000")
+((. r "a") "10000")
+
+
+
+(. x "name")
+((. x "a") "hello-aaaa")
+
+
+
+(. y "name")
+((. y "a") "hello-bbbb")
+
+(. x "name")
+((. x "a") "hello-aaaa")
+
+(. y "name")
+((. y "a") "hello-bbbb")
+
+// ( 
+//     (lambda () 
+//         ( define frame this ) 
+//         ( define ( a x ) ( display  x )  )
+//         (lambda ( name_num mouse_num ) 
+//              (set! ( this "name" ) name_num )
+//              ( set! ( this "mouse" ) mouse_num ) 
+//              ( set! frame this ) 
+//              frame 
+//         )  
+//     )
+// )
+
+// ( ( lambda () 
+//     ( define ( a x ) ( display ( . this "name" ) x )  ) 
+//     ( lambda (name_num mouse_num )
+//              ( begin 
+//                 ( set! ( this "name" ) name_num )
+//                 ( set! ( this "mouse" ) mouse_num )  
+//             ) 
+//         this 
+//     ) 
+//    ) 
+// )
+

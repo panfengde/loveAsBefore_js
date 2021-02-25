@@ -15,8 +15,8 @@ function loveAsBefore(...labCodeFiles) {
         parse_txt(labCodes).forEach((code) => {
             //console.log(Parse.strExp_to_List(code))
             let result = run_eval(Parse.strExp_to_List(code), global_env)
-            console.log(result )
-            //console.log(result ? (result.show || result.value || result) : result)
+            //console.log(result )
+            console.log(result ? (result.show || result.value || result) : result)
         })
     })
 
