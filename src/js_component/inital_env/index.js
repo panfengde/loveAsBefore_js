@@ -1,17 +1,16 @@
-import cons from '../cons/index'
-import list from '../list/index'
-import frame from '../frame/index'
-import json from '../json/index'
-import { is_car_list, is_cdr_list, is_list, is_car_list_cons_json, judge_arr_exist } from '../../utils/tools'
-import { base, _boolean } from '../analyze/baseType.js'
+import frame from '../frame/index';
+import { is_car_list, is_cdr_list, is_list, is_car_list_cons_json, judge_arr_exist } from '../../utils/tools';
+import { base, _boolean, _number, _class, cons, list, json } from "../analyze/types/index"
+
 
 function inital_env() {
     let shemeOp_to_jsOp = {
-        add: base.add,
-        subtract: base.subtract,
-        multiplication: base.multiplication,
-        division: base.division,
-        equal: base.equal,
+        add: base.__add,
+        subtract: base.__subtract,
+        multiplication: base.__multiplication,
+        division: base.__division,
+        equal: base.__equal,
+        reverse: base.__reverse,
         greater: function (...args) {
             let flag = true;
             for (let i = 0, length = args.length; i < length; i++) {
@@ -22,23 +21,14 @@ function inital_env() {
             }
             return flag
         },
-        less: function (...args) {
-            let flag = true;
-            for (let i = 0, length = args.length; i < length; i++) {
-                if (i != 0 && (args[i] < args[i - 1])) {
-                    flag = false;
-                    return flag
-                }
-            }
-            return flag
-        },
-        not_equal: function (a, b) {
-            return a != b
-        },
+        less: _number.__less,
+        not_equal: base.__not_equal,
         remainder: function (a, b) {
             return a % b
         },
         cons_scheme: function (a, b) {
+            alert(1)
+            console.log(a, b)
             return new cons(a, b)
         },
         car_scheme: function (cons) {
@@ -47,7 +37,7 @@ function inital_env() {
         cdr_scheme: function (cons) {
             return cons.cdr
         },
-        nullList: _boolean.nullList,
+        nullList: _boolean.__nullList,
         display: function (...pairsAll) {
             /*  pairsAll.forEach((pairs) => {
                  if (is_list(pairs)) {
@@ -84,6 +74,7 @@ function inital_env() {
         "*": new list("original", shemeOp_to_jsOp.multiplication),
         "/": new list("original", shemeOp_to_jsOp.division),
         "=": new list("original", shemeOp_to_jsOp.equal),
+        "!": new list("original", shemeOp_to_jsOp.reverse),
         ">": new list("original", shemeOp_to_jsOp.greater),
         "<": new list("original", shemeOp_to_jsOp.less),
         "!=": new list("original", shemeOp_to_jsOp.not_equal),

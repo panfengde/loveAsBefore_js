@@ -28,8 +28,8 @@
         (define (. this "mouse") mouse_num)
     )
 )
-(animal 1 2)
 
+(animal 1 2)
 
 
 ((lambda (x y) 

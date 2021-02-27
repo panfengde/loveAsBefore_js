@@ -1,0 +1,87 @@
+(define xml "<div id="test">loveAsBefore <span>xxxx</span> </div>")
+
+//宏定义
+(define-syntax +=
+    (syntax-rules ()
+        ((_ a b) (set! a (+ a b)))
+        ((_ a b ...) (set! a (+ a b ...)))
+    )
+)
+
+//解析xml字符串，获取信息
+(define (parseComponents xml)
+    (define _temp "")
+    (define _start false)
+    (define _end false)
+    (define flag '() )
+    ((. xml "forEach") 
+        (lambda (x) 
+            (if (! _end) 
+                (begin
+                    (if (! _start)
+                        (if (= x "<") (set! _start true) '() )
+                        '()
+                    )
+                     (if _start
+                        (begin 
+                            (if (and _start  (!= x "<") (!= x ">"))
+                                (+= _temp x)
+                                '()
+                            )
+                            (if (= x ">") (set! _end true) '() )
+                        )
+                        '()
+                    )
+                )
+                '()
+            )
+        )
+    )
+    _temp
+)
+
+(parseComponents xml)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// txt
+// (cons "hello" "world")
+//  (json 
+//     (: "tag" "div")
+//     (: "id" "a")
+//  )
+
+//  (define a (json 
+//                  (: "tag" "div")
+//                  (: "id" "a")
+//  )
+//  )
+//  (define b (json 
+//                  (: "tag" "span")
+//                  (: "id" "b")
+//  ))
+
+//  (define c (json 
+//                  (: "a" a)
+//                  (: "b" b)
+//  ))
+
+//  (define xmlList (list 
+//                  a
+//                  b
+//                  c
+//  ))
+
+//  xmlList

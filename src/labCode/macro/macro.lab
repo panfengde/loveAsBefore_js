@@ -12,6 +12,7 @@
       ((_ pred b1 ...)
        (if pred (begin b1 ...) '()))))
 
+
 (define-syntax cond
     (syntax-rules ()
         ((_ (else e1 ...))
@@ -25,17 +26,19 @@
 
 (define-syntax and
     (syntax-rules ()
-        ((_ e) e)
+        ((_ e) (begin e))
         ((_ e1 e2 )
-        (if e1
-            (and e2)
-            '()))
+            (if e1
+                (and e2)
+                '()))
         ((_ e1 e2 ...)
-        (if e1
-            (and e2 ...)
-            ))
+            (if e1
+                (and e2 ...)
+                '()
+                ))
     )
 )
+
 
 (define-syntax :
     (syntax-rules ()
@@ -43,54 +46,6 @@
     )
 )
 
-(define-syntax .
-    (syntax-rules ()
-        ((_ obj key ) (_ obj key))
-        ((_ obj key ... ) (. (_ obj key) ...))
-    )
-)
 
 
-
-; (define-syntax class 
-;     (syntax-rules ()
-;         (_ 
-;             name 
-;             (constructor ( ... ) ...) 
-;         ) 
-        
-;          (define name 
-;                 (lambda ( ... )
-;                     (lambda ( )
-;                         ...
-;                     )
-;                 )
-;          )
-;     )
-; )
-
-; ;定义类
-; (class animal
-;     (constructor (name_num mouse_num) 
-;         (set. (. this "name") name_num)
-;         (set. (. this "mouse") mouse_num)
-;     )
-; )
-
-
-
-
-// (define-syntax list
-//     (syntax-rules ()
-//         ((_ a ) (quote (a)))
-//         ((_ a b ...) (quote (a b ...)))
-//     )
-// )
-
-// (define-syntax json
-//     (syntax-rules ()
-//         ((_ a ) (quote (a)))
-//         ((_ a b ...) (quote (a b ...)))
-//     )
-// )
 

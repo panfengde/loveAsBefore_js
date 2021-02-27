@@ -1,5 +1,6 @@
-import { base } from '../analyze/baseType';
-import list from '../list/index'
+'use strict';
+
+import { base, list } from "../analyze/types/index"
 let testHandle = false;
 
 function testLog(...txt) {
@@ -171,6 +172,7 @@ class Parse {
 
 
     static strExp_to_List(exp_str, reulst) {
+       
         if (this.jude_pair(exp_str) || this.jude_quote(exp_str)) {
             if (!reulst) {
                 reulst = new list()
@@ -186,6 +188,7 @@ class Parse {
             //reulst.push(Parse.strExp_to_List(cdr))
         } else {
             reulst = base.setTypeValue(exp_str)
+
             //exp_str = this.kill_startEnd_rubbish(exp_str)
             /* if (exp_str == "false") {
                 reulst = false
@@ -197,6 +200,7 @@ class Parse {
                 reulst = (Number(exp_str) || exp_str)
             } */
         }
+       
         return reulst
     }
 

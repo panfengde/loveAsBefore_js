@@ -1,5 +1,6 @@
 import { is_list } from '../../utils/tools';
-import { _number, _string, _boolean } from './baseType'
+
+import { _number, _string, _boolean } from './types/index'
 /**
  * 工具函数
  */

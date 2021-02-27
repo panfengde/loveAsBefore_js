@@ -4,9 +4,13 @@ import {
 } from './js_component/index.js'
 
 import macro from './labCode/macro/macro.lab'
+
 import code from './labCode/code/index.lab'
 import test from './labCode/functionTest/index.lab'
 import baseTest from './labCode/baseTest/index.lab'
+
+
+import parseXml from './xml2layout/parseXml/index.lab'
 
 
 function component() {
@@ -16,10 +20,14 @@ function component() {
   //loveAsBefore(test)
   //loveAsBefore(macro)
   loveAsBefore(macro, code)
+
+  loveAsBefore(parseXml)
+
   console.timeEnd(1)
 
 
 
+  //下面不要动
   const element = document.createElement('div');
   element.innerHTML = _.join([], ' ');
   return element;

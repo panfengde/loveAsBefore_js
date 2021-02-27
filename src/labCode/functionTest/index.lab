@@ -1,77 +1,26 @@
 
-
-
-(class animal_2
-    (constructor (color_1 wheel_1) 
-        (set! (this "color") color_1)
-        (set! (this "wheel") wheel_1)
-    )
-    (define (a x) (display (. this "color")  x "okokokokok??????????"))
+(define txt "<div>
+    <span></span>
+</div>"
 )
 
-;定义类
-(class animal
-    (constructor (name_num mouse_num) 
-        (set! (this "name") name_num)
-        (set! (this "mouse") mouse_num)
-    )
-    (define (a x) (display (. this "name")  x "okokokokok??????????"))
+txt
+(define thel  ((. txt "length")))
+'(1 2 3 4)
+thel
+(define 
+    (CharByaddr txt index)
+    ((. txt "index") index)
 )
 
+((lambda (x) (display x)) 1)
 
+(+ (CharByaddr txt 1) (CharByaddr txt 2))
 
-(define r (animal_2 "aaa" 11111))
-(define l (animal_2 "aaa" 11111))
-(define x (animal "aaa" 11111))
-(define y (animal "bbb" 22222))
+(define result "")
 
+((. txt "forEach" ) (lambda (x) (set! result (+ result x ))))
 
-(. r "color")
-(. l "color")
+result
 
-
-((. r "a") "10000")
-((. l "a") "10000")
-((. r "a") "10000")
-
-
-
-(. x "name")
-((. x "a") "hello-aaaa")
-
-
-
-(. y "name")
-((. y "a") "hello-bbbb")
-
-(. x "name")
-((. x "a") "hello-aaaa")
-
-(. y "name")
-((. y "a") "hello-bbbb")
-
-// ( 
-//     (lambda () 
-//         ( define frame this ) 
-//         ( define ( a x ) ( display  x )  )
-//         (lambda ( name_num mouse_num ) 
-//              (set! ( this "name" ) name_num )
-//              ( set! ( this "mouse" ) mouse_num ) 
-//              ( set! frame this ) 
-//              frame 
-//         )  
-//     )
-// )
-
-// ( ( lambda () 
-//     ( define ( a x ) ( display ( . this "name" ) x )  ) 
-//     ( lambda (name_num mouse_num )
-//              ( begin 
-//                 ( set! ( this "name" ) name_num )
-//                 ( set! ( this "mouse" ) mouse_num )  
-//             ) 
-//         this 
-//     ) 
-//    ) 
-// )
-
+(display result)

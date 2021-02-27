@@ -1,12 +1,10 @@
 
-import list from '../list/index'
-import cons from '../cons/index'
 import frame from '../frame/index'
 import analyze_entry from './index'
 import run_eval from '../run_eval/index'
 import tools from './tools.js'
 import global_env from '../inital_env/index.js';
-import { lambdaBase,_class } from './lambdaType'
+import { base, _number, _string, _boolean, lambdaBase, _class, cons, list, json } from './types/index'
 import { is_cdr_list, is_car_list, is_list } from "../../utils/tools"
 import { the_null } from '../aotom_constant/index'
 
@@ -75,9 +73,15 @@ class analyze {
                     return the_null
                 }
             } else {
-                //原生方法
-                //console.log("这里获取的原生方法，还做完的")
-                return new list("original", true_obj[true_arr]);
+                //调用类的原生方法
+                /**
+                 * 对于原生的方法，可能传递回调函数进去运行
+                 * 所以这里将参数，环境，运行接口都传进去，让回调函数使
+                 * 可能有很多问题的
+                 * @params 参数 @env 环境 @eval_app 运行入口
+                 */
+                console.log("__" + true_arr)
+                return new list("original", (params,) => { return true_obj["__" + true_arr](params, env, eval_app) });
             }
             //return env.look_variable_env(code_op)
         }
@@ -113,7 +117,7 @@ class analyze {
             let name = analyze_entry(setObj);
             return function (env) {
                 //console.log("set----", name(env))
-                name(env).value = value(env)
+                name(env).value = value(env).value
                 //env.set_variable_value_env(name(env), value(env))
             }
         }
@@ -224,7 +228,6 @@ class analyze {
         let ananlyzed_methods = this._sequences_analyze(methods)
         //分析方法并插入作用域中
         let ananlyzed_constructor_body = this._sequences_analyze(constructor_body)
-
         return function (env) {
             //这个域用来存储公用的方法
             let new_env = new frame() //形参和实参构成的框架
@@ -233,15 +236,12 @@ class analyze {
             new_env.user_insert_var_value("this", new_env);
             //挂载类的方法
             ananlyzed_methods(new_env)
-
             //console.log("new_envnew_envnew_envnew_env",new_env)
             let constructor_class = new _class(constructor_args, ananlyzed_constructor_body, new_env);
             return env.user_insert_var_value(name,
                 new list("compound", constructor_class)
             )
         }
-
-
     }
 
     static defineSyntax(code_op) {
@@ -331,7 +331,6 @@ class analyze {
 
                     }
                 }
-
                 /* console.log("宿主", origin.show)
                 console.log("要拼接的", get_cons.show)
                 console.log("拼接结果", origin.show) */
@@ -464,7 +463,6 @@ class analyze {
     }
 
     static app(code_op) {
-
         let operate = analyze_entry(code_op.car)
         if (is_cdr_list(code_op)) {
             return function (env) {
@@ -544,6 +542,7 @@ function eval_app(operate, operands, exp, exp_env) {
     switch (operate.car) {
         case "original":
             let operate_fun = operate.cdr.car
+            //return operate_fun(...tools.list_to_array(operands))
             return operate_fun(...tools.list_to_array(operands))
         case "compound":
             let the_function = operate.cdr.car;//实例化的获取函数对象
@@ -555,18 +554,19 @@ function eval_app(operate, operands, exp, exp_env) {
             let ananlyzed_body = the_function.ananlyzed_body //被分析后的过程
             let define_env = the_function.define_env //过程的定义环境
             let function_env = new frame(args, params) //形参和实参构成的框架
-            if(the_function.type==="class"){
-                let class_example_env= new frame();
+            if (the_function.type === "class") {
+                let class_example_env = new frame();
                 class_example_env.extend_env(define_env)
                 class_example_env.user_insert_var_value("this", class_example_env);
-                 //形参和实参构成的框架
+                //形参和实参构成的框架
                 function_env.extend_env(class_example_env) //将过程的定义框架，链接入过程定义的环境中
-            }else{
+            } else {
                 function_env.extend_env(define_env) //将过程的定义框架，链接入过程定义的环境中
                 function_env.user_insert_var_value("this", function_env);
             }
 
             return ananlyzed_body(function_env);
+
         case "macro":
             let macro_params = exp.cdr
             let rule_list = operate.cdr.car

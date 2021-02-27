@@ -6,9 +6,7 @@ import analyze from './analyze.js'
  *  根据代码的操作符，选择相应的逻辑
  */
 function analyze_entry(parsed_code) {
-    
     let tag = tools.checkTag_and_packageClass(parsed_code)
-
     //console.log("****",tag,parsed_code)
     switch (tag) {
         case "number":
