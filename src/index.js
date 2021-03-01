@@ -18,8 +18,8 @@ function component() {
   // lodash，现在通过一个 script 引入
   //loveAsBefore(baseTest)
   //loveAsBefore(test)
-  //loveAsBefore(macro)
-  loveAsBefore(macro, code)
+  loveAsBefore(macro)
+  //loveAsBefore(macro, code)
 
   loveAsBefore(parseXml)
 

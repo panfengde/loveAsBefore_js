@@ -2,6 +2,13 @@ import { is_car_list, is_cdr_list, is_list, is_car_list_cons_json, judge_arr_exi
 let string_exp_test = new RegExp(/^\"[\s\S]*\"$/g)
 
 
+class _null {
+    constructor() {
+        this.type = "null"
+    }
+}
+
+
 /**
  * !重要提示
  * @被lab使用的方法  以"__"开始的方法，都是可以被lab语言调用的方法，
@@ -105,6 +112,10 @@ class _number extends base {
     static __less(a, b) {
         return new _boolean(a.value < b.value)
     }
+
+    static __greater(a, b) {
+        return new _boolean(a.value > b.value)
+    }
 }
 
 class _string extends base {
@@ -123,12 +134,20 @@ class _string extends base {
         return new _number(this.value.length)
     }
 
+    __length() {
+        return new _number(this.value.length)
+    }
     __forEach(fun, env, eval_app) {
         if (fun) {
             for (let i = 0, legnth = this.value.length; i < legnth; i++) {
-                eval_app(fun, new list(new _string(this.value[i])), null, env)
+                eval_app(fun, new list(new _string(this.value[i]), new _number(i)), null, env)
             }
         }
+    }
+    __index(addr) {
+        //let charIndex=eval_app(addr, new list(), null, env)
+        //console.log(this.value,this.value[addr.value],"xxxxxxxxxpppppppppppp")
+        return new _string(this.value[addr.value])
     }
 }
 
@@ -138,6 +157,7 @@ class _boolean extends base {
         this.type = "boolean"
         this.value = Boolean(props)
     }
+
     static __nullList(list) {
         if (is_list(list)) {
             return new _boolean(!judge_arr_exist(list, "car"))
@@ -192,8 +212,6 @@ class cons {
         return `( ${this.car instanceof Object ? (this.car.value || this.car.value) : this.car} : ${this.cdr instanceof Object ? (this.cdr.show || this.cdr.value) : this.cdr} )`;
     }
 }
-
-
 
 class list extends cons {
     constructor(car, ...extra) {
@@ -371,6 +389,17 @@ class list extends cons {
         iteration(this)
     }
 
+    concat(then_data) {
+        if (is_list(then_data)) {
+            then_data.forEach((cons) => {
+                //两个list的拼接
+                this.push(cons)
+            })
+        } else {
+            this.push(then_data)
+        }
+        return this
+    }
 
     length() {
         let length = 0;
@@ -384,18 +413,6 @@ class list extends cons {
         }
         iteration(this)
         return length;
-    }
-
-    concat(then_data) {
-        if (is_list(then_data)) {
-            then_data.forEach((cons) => {
-                //两个list的拼接
-                this.push(cons)
-            })
-        } else {
-            this.push(then_data)
-        }
-        return this
     }
 
     get show() {
@@ -412,17 +429,58 @@ class list extends cons {
         }
         return iteration(this)
     }
+    __length() {
+        let length = 0;
+        function iteration(pair) {
+            if (is_cdr_list(pair)) {
+                length = length + 1;
+                iteration(pair.cdr)
+            } else {
+                length = length + 1;
+            }
+        }
+        iteration(this)
+        return new _number(length);
+    }
+    __push(data) {
+        this.push(data)
+    }
+    __pop() {
+        //删除最后的元素
+        if (is_cdr_list(this) && is_cdr_list(this.cdr)) {
+            return this.cdr.__pop()
+        } else if (is_cdr_list(this)) {
+            let temp = this.cdr;
+            delete this.cdr;
+            return temp
+        } else {
+            if (this.car) {
+                let temp = this.car;
+                delete this.car;
+                return temp
+            } else {
+                return new _null()
+            }
+
+        }
+
+    }
+
 }
 
 class json extends list {
-    constructor(...lists) {
+    constructor(...elemnts) {
         //暂定 key value 用cons结构来表达
         super()
         this.type = "json";
-        for (let i = 0; i < lists.length; i++) {
-            let _temp = lists[i]
-            this.insert_key_value(_temp.car, _temp.cdr);
+        //console.log(elemnts)
+        if (elemnts[0]) {
+            for (let i = 0; i < elemnts.length; i++) {
+                let _temp = elemnts[i]
+                this.insert_key_value(_temp.car, _temp.cdr);
+            }
         }
+
     }
 
     insert_key_value(key, Value) {
@@ -476,9 +534,24 @@ class json extends list {
         }
         return iteration(this)
     }
+
+    __insert(keyValue) {
+        console.log("-----", keyValue)
+        // !!注意：
+        //这里需要用快速算法，按规则插入
+        //这样将始查询时间大大的减少
+        if (this.is_key_exist(keyValue.car.value)) {
+            console.error("重复的key值", key)
+            //this.set_value_by_key(keyValue.car.value,keyValue.cdr)
+            throw SyntaxError("重复的key值")
+        } else {
+            this.push(new cons(keyValue.car.value, keyValue.cdr))
+        }
+    }
+
 }
 
 
 export {
-    base, _number, _string, _boolean, lambdaBase, _class, cons, list, json,
+    _null, base, _number, _string, _boolean, lambdaBase, _class, cons, list, json,
 }

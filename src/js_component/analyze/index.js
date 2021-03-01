@@ -7,7 +7,7 @@ import analyze from './analyze.js'
  */
 function analyze_entry(parsed_code) {
     let tag = tools.checkTag_and_packageClass(parsed_code)
-    //console.log("****",tag,parsed_code)
+    // console.log("****",tag,parsed_code)
     switch (tag) {
         case "number":
             return analyze.number(parsed_code);
@@ -17,6 +17,8 @@ function analyze_entry(parsed_code) {
             return analyze.boolean(parsed_code);
         case "variable":
             return analyze.variable(parsed_code);
+        case "null":
+            return analyze.null(parsed_code);
         case ".":
             return analyze.getArr(parsed_code);
         case "quote":

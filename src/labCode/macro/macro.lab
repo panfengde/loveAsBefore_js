@@ -30,14 +30,27 @@
         ((_ e1 e2 )
             (if e1
                 (and e2)
-                '()))
+                ))
         ((_ e1 e2 ...)
             (if e1
-                (and e2 ...)
-                '()
+                (and e2 ... )
                 ))
     )
 )
+
+
+
+(define-syntax do
+    (syntax-rules ()
+        ((_ e b) 
+            (if e 
+                b
+                (begin b (do e b) ) 
+            )
+        )
+    )
+)
+
 
 
 (define-syntax :
@@ -47,5 +60,18 @@
 )
 
 
+(define-syntax +=
+    (syntax-rules ()
+        ((_ a b) (begin (set! a (+ a b)) a))
+        ((_ a b ...) (begin (set! a (+ a b ...)) a))
+    )
+)
+
+(define-syntax -=
+    (syntax-rules ()
+        ((_ a b) (begin (set! a (- a b)) a))
+        ((_ a b ...) (begin (set! a (- a b ...)) a))
+    )
+)
 
 

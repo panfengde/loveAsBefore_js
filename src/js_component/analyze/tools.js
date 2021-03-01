@@ -72,7 +72,7 @@ let tools = {
         //console.log("checkTag_and_packageClass------",code_pairs)
         if (!is_list(code_pairs)) {
             let _temp = code_pairs.type;
-            return (_temp == "number" || _temp == "string" || _temp == "boolean") ? _temp : "variable"
+            return (_temp == "number" || _temp == "string" || _temp == "boolean" || _temp == "null") ? _temp : "variable"
             /* if (this.code_number_type(code_pairs)) {
                 return "number"
             } else if (this.code_string_type(code_pairs)) {

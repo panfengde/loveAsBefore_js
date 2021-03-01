@@ -4,9 +4,9 @@ import analyze_entry from './index'
 import run_eval from '../run_eval/index'
 import tools from './tools.js'
 import global_env from '../inital_env/index.js';
-import { base, _number, _string, _boolean, lambdaBase, _class, cons, list, json } from './types/index'
+import { base, _number, _string, _boolean, lambdaBase, _class, cons, list, json, _null } from './types/index'
 import { is_cdr_list, is_car_list, is_list } from "../../utils/tools"
-import { the_null } from '../aotom_constant/index'
+
 
 let null_list = new list()
 
@@ -32,13 +32,19 @@ class analyze {
         }
     }
 
+    static null(code_op) {
+        return function (env) {
+            return code_op
+        }
+    }
+
     static variable(code_op) {
         return function (env) {
             let result = env.look_variable_env(code_op)
             if (result[0]) {
                 return result[1]
             } else {
-                return the_null
+                return new _null()
             }
 
         }
@@ -57,8 +63,8 @@ class analyze {
         return function (env) {
             let true_obj = obj(env)
             let true_arr = arr(env).value
-            //console.log("true_obj",true_obj)
-            //console.log("true_arr", true_arr)
+            // console.log("true_obj",true_obj)
+            // console.log("true_arr", true_arr)
             if (true_obj.type == "frame") {
                 let result = true_obj.look_variable_env(true_arr)
                 if (result[0]) {
@@ -68,9 +74,8 @@ class analyze {
                     } else {
                         return result[1];
                     }
-
                 } else {
-                    return the_null
+                    return new _null()
                 }
             } else {
                 //调用类的原生方法
@@ -80,7 +85,7 @@ class analyze {
                  * 可能有很多问题的
                  * @params 参数 @env 环境 @eval_app 运行入口
                  */
-                console.log("__" + true_arr)
+                //console.log("__" + true_arr)
                 return new list("original", (params,) => { return true_obj["__" + true_arr](params, env, eval_app) });
             }
             //return env.look_variable_env(code_op)
@@ -102,7 +107,6 @@ class analyze {
             return function (env) {
                 let frame = analyze_entry(setObj.car)(env);
                 let name = analyze_entry(setObj.cdr.car)(env).value;
-
                 let result = frame.look_variable_env(name)
                 //console.log(value(env))
                 if (result[0]) {
@@ -160,19 +164,20 @@ class analyze {
     static _if(code_op) {
         let prediction = analyze_entry(code_op.cdr.car);
         let true_action = analyze_entry(code_op.cdr.cdr.car);
-        var false_action = code_op.cdr.cdr.cdr.car;
-
+        var false_action = code_op.cdr.cdr.cdr ? code_op.cdr.cdr.cdr.car : new list("quote", "()")
         //if (code_op.cdr.cdr.cdr == "()") {
         //console.log(false_action)
-        if (typeof false_action == "undefined") {
+        /* if (typeof false_action == "undefined") {
             false_action = function (env) {
+
                 console.error("使用的if缺少否定运行");
                 throw SyntaxError();
                 return false;
             }
         } else {
             false_action = analyze_entry(false_action);
-        }
+        } */
+        false_action = analyze_entry(false_action);
         return function (env) {
             if (prediction(env).value) {
                 return true_action(env)
@@ -538,7 +543,7 @@ class analyze {
 
 
 function eval_app(operate, operands, exp, exp_env) {
-    //console.log("xxxxxxxxx",operate)
+    //console.log("xxxxxxxxx",exp)
     switch (operate.car) {
         case "original":
             let operate_fun = operate.cdr.car
@@ -566,7 +571,6 @@ function eval_app(operate, operands, exp, exp_env) {
             }
 
             return ananlyzed_body(function_env);
-
         case "macro":
             let macro_params = exp.cdr
             let rule_list = operate.cdr.car

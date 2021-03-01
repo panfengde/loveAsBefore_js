@@ -11,17 +11,8 @@ function inital_env() {
         division: base.__division,
         equal: base.__equal,
         reverse: base.__reverse,
-        greater: function (...args) {
-            let flag = true;
-            for (let i = 0, length = args.length; i < length; i++) {
-                if (i != 0 && (args[i] > args[i - 1])) {
-                    flag = false;
-                    return flag
-                }
-            }
-            return flag
-        },
         less: _number.__less,
+        greater: _number.__greater,
         not_equal: base.__not_equal,
         remainder: function (a, b) {
             return a % b
@@ -61,7 +52,8 @@ function inital_env() {
             return new list(...elemnts)
         },
         json: function (...elemnts) {
-            return new json(...elemnts)
+            console.log(elemnts[0] ? [...elemnts] : [])
+            return new json(elemnts[0] ? [...elemnts] : null)
         },
         /* eval:function(pairs){
              run_eval()
