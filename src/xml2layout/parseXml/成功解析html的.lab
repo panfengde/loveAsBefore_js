@@ -13,7 +13,10 @@ This text contains
 <sup>superscript</sup>
 </body>"
 )
+
+
 //html分割
+
 (define (xml2list xml)
     (define result (list ))
     (define oneChild "")
@@ -30,7 +33,6 @@ This text contains
             )
             (if (and txtType (!= oneChild "") (= x "<"))
                 (begin 
-                        "文字结束逻辑"
                         ((. result "push") oneChild)
                         (set! oneChild "") 
                         (set! start true) 
@@ -51,7 +53,7 @@ This text contains
                         )
                         (if ( and (= componentFlag 0) (= x ">"))
                             (begin
-                                
+                                (display "push")
                                 ((. result "push") oneChild)
                                 (set! oneChild "") 
                                 (set! start false) 
@@ -71,9 +73,11 @@ This text contains
             )
         )
         
-))
-result
+    ))
+    (display result)
+    result
 )
+
 
 
 //解析html字符串，获取tag和child字符串
@@ -210,8 +214,9 @@ result
         )
         result
 )
-(parse xml)
-// (xml2list xml)
-//(parseComponents xml)
-//(parseTag xml)
 
+//(parse xml)
+(xml2list xml)
+(display "?")
+(parseComponents xml)
+(parseTag xml)

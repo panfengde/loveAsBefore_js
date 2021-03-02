@@ -79,14 +79,20 @@
 (fib2 5)
 (fib2 16) 
 
-(class animal
+
+(class animal2
     (constructor (name_num mouse_num go) 
         (set! (this "name") name_num)
         (set! (this "mouse") mouse_num)
-        (set! (this "go") go)
+        (set! (this "go") go)       
     )
-    (define (a x) (display (. this "name")  x "okokokokok??????????"))
+    (define (a x) (display x (. this "go") "-------") (display "hhhhhh"))
 )
+
+(define xxx "hello class")
+
+(define temp_ (animal2 "pf" 1 xxx))
+((. temp_ "a") 1)
 
 (define a (animal "name-------1111-----"    "aaaa"   111555 ))
 
@@ -94,10 +100,10 @@
 (. a "name")
 ((. a "a") "123455")
 
-
 (define b (animal "name-------222-----"     "bbbbb" 22))
 (. b "name")
 ((. b "a") "xcvbn")
+
 (define (forEach list fun)
     (if (nullList  list)
         '()

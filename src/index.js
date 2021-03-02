@@ -21,8 +21,6 @@ function component() {
     
   loveAsBefore(macro)
 
-  loveAsBefore( code)
-
   loveAsBefore(parseXml)
 
   console.timeEnd(1)

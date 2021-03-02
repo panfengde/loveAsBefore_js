@@ -1,222 +1,224 @@
 //解析xml字符串，获取信息
-(define xml "<div id=test ids=texst >loveAsBefore<span>xxxx</span></div>")
-; (define xml "<body>
-; <b id=test>This text is bold</b>
-; <strong>This text is strong</strong>
-; <big>This text is big</big>
-; <em>This text is emphasized</em>
-; <i>This text is italic</i>
-; <small>This text is small</small>
-; This text contains
-; <sub>subscript</sub>
-; This text contains
-; <sup>superscript</sup>
-; </body>"
-; )
+//(define xml "<div id=test ids=texst >loveAsBefore<span>xxxx</span></div>")
+(define xml "<body>
+<b id=test>This text is bold</b>
+<strong>This text is strong</strong>
+<big>This text is big</big>
+<em>This text is emphasized</em>
+<i>This text is italic</i>
+<small>This text is small</small>
+This text contains
+<sub>subscript</sub>
+This text contains
+<sup>superscript</sup>
+</body>"
+)
 
 
-//html分割
 
-(define (xml2list xml)
-    (define result (list ))
-    (define oneChild "")
-    (define start false)
-    (define txtType false)
-    (define componentType false)
-    (define componentFlag 0)
-    ((. xml "forEach") (lambda (x)
-        "选择逻辑"
-        (if (! start)
-            (begin 
-                (if (and (!= x " " ) (!= x "<" )) (begin (set! start true) (set! txtType true) (set! componentType false))) 
-                (if (= x "<")  (begin (set! start true) (set! componentType true) (set! txtType false)) )
-            )
-            (if (and txtType (!= oneChild "") (= x "<"))
+(class html2json
+    (constructor (sxml) 
+        (set! (this "html") sxml)
+        (set! (this "result")  ((. this "parse") (. this "html")) )
+       
+    )
+    //html分割
+    (define (xml2list xml)
+        (define result (list ))
+        (define oneChild "")
+        (define start false)
+        (define txtType false)
+        (define componentType false)
+        (define componentFlag 0)
+        ((. xml "forEach") (lambda (x)
+            "选择逻辑"
+            (if (! start)
                 (begin 
-                        ((. result "push") oneChild)
-                        (set! oneChild "") 
-                        (set! start true) 
-                        (set! componentType true) 
-                        (set! txtType false) 
+                    (if (and (!= x " " ) (!= x "<" )) (begin (set! start true) (set! txtType true) (set! componentType false))) 
+                    (if (= x "<")  (begin (set! start true) (set! componentType true) (set! txtType false)) )
                 )
-            )
-        )
-
-        (if start
-            (cond
-                (componentType 
-                    (begin
-                        (+= oneChild x)
-                        (cond
-                            ((= x "<") (+=  componentFlag 1))
-                            ((= x "/") (-=  componentFlag 2))
-                        )
-                        (if ( and (= componentFlag 0) (= x ">"))
-                            (begin
-                                (display "push")
-                                ((. result "push") oneChild)
-                                (set! oneChild "") 
-                                (set! start false) 
-                                (set! txtType false) 
-                                (set! componentType false) 
-                                (set! componentFlag 0) 
-                            )
-                        )
-                    )
-                )
-                (txtType 
-                    (begin
-                        "文字逻辑"
-                        (+= oneChild x)
+                (if (and txtType (!= oneChild "") (= x "<"))
+                    (begin 
+                            "文字结束逻辑"
+                            ((. result "push") oneChild)
+                            (set! oneChild "") 
+                            (set! start true) 
+                            (set! componentType true) 
+                            (set! txtType false) 
                     )
                 )
             )
-        )
-        
-    ))
-    (display result)
-    result
-)
 
-
-
-//解析html字符串，获取tag和child字符串
-(define (parseComponents xml )
-    (define tagResult "")
-    (define _start false)
-    (define _tagInfoEnd false)
-    (define _childFlag  1)
-    (define _getChild "")
-    (define childResult "")
-    (define componentResult null)
-    (if (= ((. xml "index") 0) "<")
-        (begin
-             ((. xml "forEach")
-                (lambda (x index) 
-                    (if (! _tagInfoEnd) 
+            (if start
+                (cond
+                    (componentType 
                         (begin
-                            (if (! _start)
-                                (if (= x "<") (set! _start true)  )
+                            (+= oneChild x)
+                            (cond
+                                ((= x "<") (+=  componentFlag 1))
+                                ((= x "/") (-=  componentFlag 2))
                             )
-                            (if _start
-                                (begin 
-                                    (if (and _start  (!= x "<") (!= x ">"))
-                                        (+= tagResult x)
-                                    )
-                                    (if (= x ">") (begin (set! _tagInfoEnd true)))
+                            (if ( and (= componentFlag 0) (= x ">"))
+                                (begin
+                                    
+                                    ((. result "push") oneChild)
+                                    (set! oneChild "") 
+                                    (set! start false) 
+                                    (set! txtType false) 
+                                    (set! componentType false) 
+                                    (set! componentFlag 0) 
                                 )
                             )
                         )
-                        (if (!=  _childFlag 0)
-                            (begin 
-                                (cond 
-                                    ((= x "<") (+= _childFlag 1))
-                                    ((= x "/") (-= _childFlag 2))
-                                )
-                                (+= _getChild x)
-                            )
+                    )
+                    (txtType 
+                        (begin
+                            "文字逻辑"
+                            (+= oneChild x)
                         )
                     )
                 )
             )
-            
-            (define __childLength ((. _getChild "length")))
-            (if (= ((. _getChild "index") (- __childLength 1)) "/") 
-                (begin
-                    (define _temp __childLength)
-                    (define _temp2 __childLength)
-                    (do (= _temp _temp2) 
-                        (if (= ((. _getChild "index")  (- __childLength 1 ) ) "<")
-                            (set! _temp (-= __childLength 1))
-                            (-= __childLength 1 )
-                        )
-                    )
-                    ((. _getChild "forEach") 
-                        (lambda (x index)
-                            (if (< index (- _temp 1))
-                                (+= childResult x)
-                            )
-                        )
-                    )
-                )
-            )
-            
-            (set! componentResult (parseTag tagResult))
-            ((. componentResult "insert") (: "child" (parse childResult)) )    
-        )
-        (begin
-            (define temp (json ))
-             ((. temp "insert") (: "tag" "txt"))
-             ((. temp "insert") (: "txt" xml))
-             (set! componentResult temp)
-        )
+        ))
+        result
     )
-    componentResult
-)
 
-//解析html组件，获取到组件标签、属性、并继续解析child
-(define (parseTag tagIngo)
-    (define tag "")
-    (define tagEnd false)
-    (define child false)
-    (define arrInfo (json ))
-    (define arrName "")
-    (define arrNamestart false)
-    (define arrNameEnd false)
-    (define arrValue "")
-    ((. tagIngo "forEach") (lambda (x)
-        (if tagEnd
+    //"解析html字符串，获取tag和child字符串"
+    (define (parseComponents xml )
+        (define tagResult "")
+        (define _start false)
+        (define _tagInfoEnd false)
+        (define _childFlag  1)
+        (define _getChild "")
+        (define childResult "")
+        (define componentResult null)
+        (if (= ((. xml "index") 0) "<")
             (begin
-                (if (= x "=")
-                    (set! arrNameEnd true)
-                )
-
-                (if (and (!= x " ") (!= x "="))
-                    (if arrNameEnd (+= arrValue x)  (+= arrName x))
-                )
-                (if (and (= x " ") arrNameEnd )
-                    (begin
-                        ((. arrInfo "insert") (: arrName arrValue))
-                        (set! arrName "")
-                        (set! arrNamestart false)
-                        (set! arrNameEnd false)
-                        (set! arrValue "")
+                ((. xml "forEach")
+                    (lambda (x index) 
+                        (if (! _tagInfoEnd) 
+                            (begin
+                                (if (! _start)
+                                    (if (= x "<") (set! _start true)  )
+                                )
+                                (if _start
+                                    (begin 
+                                        (if (and _start  (!= x "<") (!= x ">"))
+                                            (+= tagResult x)
+                                        )
+                                        (if (= x ">") (begin (set! _tagInfoEnd true)))
+                                    )
+                                )
+                            )
+                            (if (!=  _childFlag 0)
+                                (begin 
+                                    (cond 
+                                        ((= x "<") (+= _childFlag 1))
+                                        ((= x "/") (-= _childFlag 2))
+                                    )
+                                    (+= _getChild x)
+                                )
+                            )
+                        )
                     )
                 )
+                
+                (define __childLength ((. _getChild "length")))
+                (if (= ((. _getChild "index") (- __childLength 1)) "/") 
+                    (begin
+                        (define _temp __childLength)
+                        (define _temp2 __childLength)
+                        (do (= _temp _temp2) 
+                            (if (= ((. _getChild "index")  (- __childLength 1 ) ) "<")
+                                (set! _temp (-= __childLength 1))
+                                (-= __childLength 1 )
+                            )
+                        )
+                        ((. _getChild "forEach") 
+                            (lambda (x index)
+                                (if (< index (- _temp 1))
+                                    (+= childResult x)
+                                )
+                            )
+                        )
+                    )
+                )
+                
+                (set! componentResult (parseTag tagResult))
+                ((. componentResult "insert") (: "child" ((. this "parse") childResult)) )    
             )
-            (if (= x " ")
-                (if (!= tag "") (set! tagEnd true))
-                (+= tag x)
+            (begin
+                (define temp (json ))
+                ((. temp "insert") (: "tag" "txt"))
+                ((. temp "insert") (: "txt" xml))
+                (set! componentResult temp)
             )
-
         )
-    
-    ))
-    "这里是上面未添加的属性，最后处理一下"
-    (if (!= arrValue "")
-        ((. arrInfo "insert") (: arrName arrValue))
+        componentResult
     )
-    ((. arrInfo "insert") (: "tag" tag))
-    arrInfo
- )
- 
-(define (parse xml)
+
+    "解析html组件，获取到组件标签、属性、并继续解析child"
+    (define (parseTag tagIngo)
+        (define tag "")
+        (define tagEnd false)
+        (define child false)
+        (define arrInfo (json ))
+        (define arrName "")
+        (define arrNamestart false)
+        (define arrNameEnd false)
+        (define arrValue "")
+        ((. tagIngo "forEach") (lambda (x)
+            (if tagEnd
+                (begin
+                    (if (= x "=")
+                        (set! arrNameEnd true)
+                    )
+
+                    (if (and (!= x " ") (!= x "="))
+                        (if arrNameEnd (+= arrValue x)  (+= arrName x))
+                    )
+                    (if (and (= x " ") arrNameEnd )
+                        (begin
+                            ((. arrInfo "insert") (: arrName arrValue))
+                            (set! arrName "")
+                            (set! arrNamestart false)
+                            (set! arrNameEnd false)
+                            (set! arrValue "")
+                        )
+                    )
+                )
+                (if (= x " ")
+                    (if (!= tag "") (set! tagEnd true))
+                    (+= tag x)
+                )
+
+            )
+        
+        ))
+        "这里是上面未添加的属性，最后处理一下"
+        (if (!= arrValue "")
+            ((. arrInfo "insert") (: arrName arrValue))
+        )
+        ((. arrInfo "insert") (: "tag" tag))
+        arrInfo
+    )
+
+    (define (parse xml)
         (define result (list ))
         (let 
             (
-                (components (xml2list xml) )
+                (components ((. this "xml2list") xml) )
             )
-            
             ((. components "forEach") (lambda (oneComonents)   
-                    ((. result "push") (parseComponents oneComonents))
+                    ((. result "push") ((. this "parseComponents") oneComonents))
                 ) 
             )
         )
         result
+    )
+
 )
 
-//(parse xml)
-(xml2list xml)
-(display "?")
-(parseComponents xml)
-(parseTag xml)
+(define body (html2json xml ))
+
+(. body "result")
