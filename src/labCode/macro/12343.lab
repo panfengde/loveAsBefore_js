@@ -13,6 +13,16 @@
        (if pred (begin b1 ...) '()))))
 
 
+; (define-syntax cond
+;     (syntax-rules ()
+;         ((_ (else e1 ...))
+;         (begin e1 ...))
+;         ((_ (e1 e2 ...))
+;         (when e1 e2 ...))
+;         ((_ (e1 e2 ...1) (c1 ...2) ...3)
+;         (if e1
+;         (begin e2 ...1)
+;         (cond (c1 ...2) ...3)))))
 
 
 (define-syntax and
@@ -29,6 +39,24 @@
     )
 )
 
+
+(define-syntax cond
+    (syntax-rules ()
+        (
+            (_ (e1 e2 ...1) ) (if e1 (begin e2 ...1))
+        )
+        (
+            (_ (e1 e2 ...1) (c1 ...2))
+            (if e1
+                (begin e2 ...1)
+                (cond (c1 ...2))
+            )
+        )
+    )
+)
+
+
+
 (define-syntax do
     (syntax-rules ()
         ((_ e b) 
@@ -41,11 +69,13 @@
 )
 
 
+
 (define-syntax :
     (syntax-rules ()
     ((_ key value) (cons key value))
     )
 )
+
 
 (define-syntax +=
     (syntax-rules ()
@@ -55,47 +85,10 @@
 )
 
 (define-syntax -=
-    (syntax-rules   ()
+    (syntax-rules ()
         ((_ a b) (begin (set! a (- a b)) a))
         ((_ a b ...) (begin (set! a (- a b ...)) a))
     )
 )
 
 
-
-
-
-; (define-syntax  cond
-;     (syntax-rules ()
-;         (
-;             (_ (e1 ...1) ) (if e1 (begin ...1))
-;         )
-;         (
-;             (_ (e1 ...1) ...2)
-;             (if e1
-;                 (begin ...1)
-;                 (cond (...2))
-;             )
-;         )
-;     )
-; )
-
-(define-syntax cond
-    (syntax-rules ()
-        ((_ ( e1 ...))
-        (if e1 (begin ...)))
-        ((_ (e1 ...1) c1 ...2)
-        (if e1
-            (begin ...1)
-            (cond c1 ...2)))))
-
-; (define (hello x)
-;     (cond
-;     ((= x "=") (+ 1 1) (display "!!" x))
-;     ((= x ">") (+ 1 1) (display "??" x))
-;     (else (+ 1 1) (display "else" x) )
-; )
-; )
-; (hello "=")
-; (hello ">")
-; (hello 1)

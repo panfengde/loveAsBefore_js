@@ -545,6 +545,9 @@ class json extends list {
     }
 
     get show() {
+       
+
+
         function iteration(pairs, result = "{") {
             if (is_car_list_cons_json(pairs)) {
                 result += " " + pairs.car.show;
@@ -573,6 +576,7 @@ class json extends list {
     }
 
 }
+
 
 export {
     _null, base, _number, _string, _boolean, lambdaBase, _class, cons, list, json,

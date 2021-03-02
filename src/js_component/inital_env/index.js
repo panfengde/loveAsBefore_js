@@ -1,6 +1,6 @@
 import frame from '../frame/index';
 import { is_car_list, is_cdr_list, is_list, is_car_list_cons_json, judge_arr_exist } from '../../utils/tools';
-import { base, _boolean, _number, _class, cons, list, json } from "../analyze/types/index"
+import { base, _boolean, _number, _class, cons, list, json, _null } from "../analyze/types/index"
 
 
 function inital_env() {
@@ -41,7 +41,7 @@ function inital_env() {
                 if (is_list(pairs)) {
                     return ("    ", pairs.show)
                 } else {
-                    return ("    ", (pairs.value || pairs))
+                    return ("    ", ((pairs && typeof pairs.value !== "undefined") ? pairs.value : pairs))
                 }
             })
             console.log(result.join(","))
@@ -52,9 +52,11 @@ function inital_env() {
             return new list(...elemnts)
         },
         json: function (...elemnts) {
-            console.log(elemnts[0] ? [...elemnts] : [])
-            return new json(elemnts[0] ? [...elemnts] : null)
+            return new json(...elemnts)
         },
+        null: function () {
+            return new _null()
+        }
         /* eval:function(pairs){
              run_eval()
          } */
@@ -78,6 +80,7 @@ function inital_env() {
         "json": new list("original", shemeOp_to_jsOp.json),
         "list": new list("original", shemeOp_to_jsOp.list),
         "nullList": new list("original", shemeOp_to_jsOp.nullList),
+        "null": new list("original", shemeOp_to_jsOp.null),
         /*"true": true,
          "false": false,
          "else": true, */

@@ -4,7 +4,7 @@
 ; (define a 10)
 ; (set! a 15)
 ; a
-
+(display "goo")
 (let* 
     (
         (a 10)
@@ -28,6 +28,7 @@
         ((= n 3) 3)
         (else "other")
     )
+    (display "ok")
 )
 
 (define (pask row)
@@ -53,6 +54,7 @@
     )
     (foreach row row)
 )
+
 
 (define (fib n)
     (cond
@@ -87,6 +89,7 @@
 )
 
 (define a (animal "name-------1111-----"    "aaaa"   111555 ))
+
 (. a "go")
 (. a "name")
 ((. a "a") "123455")

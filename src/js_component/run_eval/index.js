@@ -8,5 +8,4 @@ function run_eval(parsed_code, env) {
     return analyze_entry(parsed_code)(env)
 }
 
-
 export default run_eval

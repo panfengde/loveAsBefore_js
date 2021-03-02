@@ -100,6 +100,7 @@ class analyze {
     }
 
     static set(code_op) {
+        //(set! a 10)
         //let name = code_op.cdr.car;
         let setObj = code_op.cdr.car
         let value = analyze_entry(code_op.cdr.cdr.car);
@@ -110,7 +111,6 @@ class analyze {
                 let result = frame.look_variable_env(name)
                 //console.log(value(env))
                 if (result[0]) {
-                    console.log(result)
                     result[1].value = value(env).value
                 } else {
                     //console.log(frame)
@@ -118,11 +118,9 @@ class analyze {
                 }
             }
         } else {
-            let name = analyze_entry(setObj);
+            //let name = analyze_entry(setObj);
             return function (env) {
-                //console.log("set----", name(env))
-                name(env).value = value(env).value
-                //env.set_variable_value_env(name(env), value(env))
+                env.set_variable_value_env(setObj, value(env))
             }
         }
     }
