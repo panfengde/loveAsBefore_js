@@ -172,7 +172,7 @@ class Parse {
 
 
     static strExp_to_List(exp_str, reulst) {
-       
+        
         if (this.jude_pair(exp_str) || this.jude_quote(exp_str)) {
             if (!reulst) {
                 reulst = new list()

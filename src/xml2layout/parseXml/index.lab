@@ -15,11 +15,12 @@ This text contains
 )
 
 (class html2json
+
     (constructor (sxml) 
         (set! (this "html") sxml)
         (set! (this "result")  ((. this "parse") (. this "html")) )
-       
     )
+
     //html分割
     (define (xml2list xml)
         (define result (list ))
@@ -220,3 +221,5 @@ This text contains
 (define body (html2json xml ))
 
 (. body "result")
+
+(draw)

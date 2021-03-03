@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script>
+        let canvas = document.createElement('canvas');
+        let context = canvas.getContext('2d');
+        canvas.width = document.body.offsetWidth;
+        canvas.height = document.body.offsetHeight;
+        canvas.style.backgroundColor = '#007eff3d';
+        document.body.appendChild(canvas);
+
+        //div
+        //span
+        //img
+        class DrawBase {
+            constructor() {
+                this.elementInfo = {
+                    w: 0,//宽度
+                    h: 0,//高度
+                    backGround: null,//这个要注意，如果自身没用背景，就要用继承的背景色。？对于透明背景，是不是会产生叠加的问题？
+                    lineWidth: null,
+                    lineColor: null,
+                    margin: null,
+                    padding: null,
+                    zindex: null,//index大的最后画
+                }
+
+                this.child = null //存储子元素
+                this.father = null
+                this.bigBrother = null
+                this.brother = null
+            }
+
+            //子元素需要的信息
+            get childNeedInfo() {
+                return {
+                    x: this.layoutInfo.x,//this.layoutInfo.x+margin+padding
+                    y: this.layoutInfo.y,//相对坐标y//this.layoutInfo.x+margin+padding
+                    w: 0,//可以用的宽度
+                    h: 0,//可以用的高度
+                }
+            }
+
+
+            get layoutInfo() {
+                if (this.father) {
+                    let father_childNeedInfo = this.father.childNeedInfo
+                    return {
+                        x: father_childNeedInfo.x,//起始坐标x
+                        y: father_childNeedInfo.y,//起始坐标y 
+                    }
+                } else {
+                    return {
+                        x: 0,//起始坐标x
+                        y: 0,//起始坐标y 
+                    }
+                }
+
+            }
+
+            //弟弟元素需要的信息
+            get brotherNeedInfo() {
+                return {
+                    x: 0,//相对坐标x
+                    y: 0,//相对坐标y
+                    w: 0,//可以用的宽度
+                    h: 0,//可以用的高度
+                }
+            }
+
+            reDraw() {
+                //重绘，并激活全部子元素重绘
+            }
+
+            clearSelf() {
+                //清空自身
+            }
+
+            clearReDraw() {
+                //清空自身，并重绘
+            }
+
+            chooseTxt() { }
+
+            ___drawSelf(x, y, w, h) {
+                //备份
+                //let context = this.context;
+                context.beginPath();
+                context.rect(this.father.childNeedInfo.x, this.father.childNeedInfo.y, 600, this.elementInfo.h);
+                context.strokeStyle = 'orange';
+                context.lineWidth = 18;
+                context.stroke();
+                context.fillStyle = 'purple';
+                context.fill();
+                context.font = 'italic 20px Calibri';
+                context.fillStyle = 'gold';
+                context.fillText('hello canvasText', x, y + 18);
+            }
+
+            render() {
+                this.drawSelf()
+                if (this.child) {
+                    this.child.forEach(element => {
+                        element.render()
+                    });
+                }
+            }
+        }
+
+        class BlockLevel extends DrawBase {
+            drawSelf(x, y, w, h) {
+                //let context = this.context;
+                context.beginPath();
+                context.rect(this.layoutInfo.x, this.layoutInfo.y, 600, this.elementInfo.h);
+                context.strokeStyle = 'orange';
+                context.lineWidth = 1;
+                context.stroke();
+                /* context.fillStyle = 'purple';
+                context.fill(); */
+            }
+        }
+
+        class lineLevel extends DrawBase {
+
+        }
+
+        class txtLevel extends DrawBase {
+            constructor(content, style) {
+                super()
+                this.content = content;
+            }
+
+            drawSelf(x, y, w, h) {
+                //let context = this.context;
+                /*  context.beginPath();
+                 context.font = 'italic 20px Calibri';
+                 context.fillStyle = 'gold';
+                 context.fillText(this.content, this.father.childNeedInfo.x, this.father.childNeedInfo.y + 18); */
+            }
+
+        }
+        /* 
+            BlockLevel.drawRect(100, 100, 200, 20);
+            BlockLevel.drawRect(100, 120 + 9, 200, 20); 
+        */
+
+        let domJson = [
+            {
+                tag: "div",
+                child: [
+                    {
+                        tag: "div",
+                        child: [
+                            {
+                                tag: "txt",
+                                content: "hello lab111111111"
+                            }
+                        ]
+                    },
+                    {
+                        tag: "div",
+                        child: [
+                            {
+                                tag: "txt",
+                                content: "hello lab111111111"
+                            }
+                        ]
+                    },
+                    {
+                        tag: "div",
+                        child: [
+                            {
+                                tag: "txt",
+                                content: "hello lab111111111"
+                            }
+                        ]
+                    },
+                ]
+            },
+            {
+                tag: "div",
+                child: [
+                    {
+                        tag: "div",
+                        child: [
+                            {
+                                tag: "txt",
+                                content: "hello lab111111111"
+                            }
+                        ]
+                    },
+                ]
+            },
+            {
+                tag: "div",
+                child: [
+                    {
+                        tag: "div",
+                        child: [
+                            {
+                                tag: "txt",
+                                content: "hello lab111111111"
+                            }
+                        ]
+                    },
+                ]
+            }
+        ]
+
+        function parseEleInfoTree(eleLists, father) {
+            let result;
+            let temp;
+            let _thisOne;
+            for (let i = 0, length = eleLists.length; i < length; i++) {
+                let element = eleLists[i]
+                switch (element.tag) {
+                    case "div":
+                        _thisOne = new BlockLevel()
+                        _thisOne.child = parseEleInfoTree(element.child, _thisOne)
+                        break
+                    case "span":
+                        _thisOne = new lineLevel()
+                        _thisOne.child = parseEleInfoTree(element.child, _thisOne)
+                        break
+                    case "txt":
+                        _thisOne = new txtLevel(element.content)
+
+                        break
+                    default:
+                        console.error("??")
+
+                }
+                _thisOne.father = father
+                if (i === 0) {
+                    result = _thisOne;
+                    temp = _thisOne;
+                } else {
+                    temp.brother = _thisOne;
+                    _thisOne.bigBrother = temp;
+                    temp = _thisOne
+                }
+            }
+            return result
+        }
+
+        let result = parseEleInfoTree(domJson)
+        console.log(result)
+
+    </script>
+</body>
+
+</html>

@@ -1,6 +1,7 @@
 import frame from '../frame/index';
 import { is_car_list, is_cdr_list, is_list, is_car_list_cons_json, judge_arr_exist } from '../../utils/tools';
 import { base, _boolean, _number, _class, cons, list, json, _null } from "../analyze/types/index"
+import { DrawLabel } from '../drawComponents/index'
 
 
 function inital_env() {
@@ -14,6 +15,7 @@ function inital_env() {
         less: _number.__less,
         greater: _number.__greater,
         not_equal: base.__not_equal,
+        draw: DrawLabel.drawRect,
         remainder: function (a, b) {
             return a % b
         },
@@ -56,7 +58,8 @@ function inital_env() {
         },
         null: function () {
             return new _null()
-        }
+        },
+
         /* eval:function(pairs){
              run_eval()
          } */
@@ -81,9 +84,12 @@ function inital_env() {
         "list": new list("original", shemeOp_to_jsOp.list),
         "nullList": new list("original", shemeOp_to_jsOp.nullList),
         "null": new list("original", shemeOp_to_jsOp.null),
-        /*"true": true,
-         "false": false,
-         "else": true, */
+        "draw": new list("original", shemeOp_to_jsOp.draw),
+        /*
+        "true": true,
+        "false": false,
+        "else": true, 
+         */
     }
 
     let names = []
