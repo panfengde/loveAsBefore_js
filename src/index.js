@@ -19,9 +19,9 @@ function component() {
   //loveAsBefore(baseTest)
   //loveAsBefore(test)
     
-  loveAsBefore(macro)
+  loveAsBefore(macro,parseXml)
 
-  loveAsBefore(parseXml)
+  //loveAsBefore()
 
   console.timeEnd(1)
 

@@ -22,13 +22,11 @@ function parse_txt(txt) {
         //单引号
         //txt = txt.replace(/(^\s*\n*)|(\n*\s*$)|(\r\n)|\n/g, "")
         txt = txt.replace(/^\s*|\s*$/g, "")
-
         //双引号语句的处理
         if (/^\"/.test(txt)) {
             reult.push(txt.match(/^\"[^\"]*\"/)[0])
             return txt.replace(/^\"[^\"]*\"/, "")
         }
-
         let quote = ""
         //正则则替换'
         if (/^'/.test(txt)) {

@@ -22,7 +22,24 @@ function loveAsBefore(...labCodeFiles) {
     })
 }
 
+function loveAsBefore__(...labCodeFiles) {
+    let result=[]
+    console.time("解析")
+    labCodeFiles.forEach((labCodes) => {
+        parse_txt(labCodes).forEach((code) => {
 
+            result.push(Parse.strExp_to_List(code))
+        })
+    })
+    console.timeEnd("解析")
+    console.time("运行")
+    result.forEach((code)=>{
+        let result_ = run_eval(code, global_env)
+        let _theshow = result_ ? (result_.show || result_.value) : result_
+            console.log(_theshow)
+    })
+    console.timeEnd("运行")
+}
 
 export {
     loveAsBefore

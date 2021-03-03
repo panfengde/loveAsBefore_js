@@ -14,8 +14,6 @@ This text contains
 </body>"
 )
 
-
-
 (class html2json
     (constructor (sxml) 
         (set! (this "html") sxml)
@@ -83,7 +81,7 @@ This text contains
         result
     )
 
-    //"解析html字符串，获取tag和child字符串"
+    //解析html字符串，获取tag和child字符串
     (define (parseComponents xml )
         (define tagResult "")
         (define _start false)
@@ -157,7 +155,7 @@ This text contains
         componentResult
     )
 
-    "解析html组件，获取到组件标签、属性、并继续解析child"
+    //解析html组件，获取到组件标签、属性、并继续解析child
     (define (parseTag tagIngo)
         (define tag "")
         (define tagEnd false)
@@ -202,7 +200,7 @@ This text contains
         ((. arrInfo "insert") (: "tag" tag))
         arrInfo
     )
-
+    
     (define (parse xml)
         (define result (list ))
         (let 
