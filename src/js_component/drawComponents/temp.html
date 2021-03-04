@@ -42,47 +42,51 @@
                     padding: null,
                     zindex: null,//index大的最后画
                 }
-
                 this.child = null //存储子元素
                 this.father = null
                 this.bigBrother = null
                 this.brother = null
-            }
-
-            //子元素需要的信息
-            get childNeedInfo() {
-                return {
-                    x: this.layoutInfo.x,//this.layoutInfo.x+margin+padding
-                    y: this.layoutInfo.y,//相对坐标y//this.layoutInfo.x+margin+padding
-                    w: 0,//可以用的宽度
-                    h: 0,//可以用的高度
+                this.layoutInfo = {
+                    x: 0,//起始坐标x
+                    y: 0,//起始坐标y 
+                    end_x: 0,
+                    end_y: this.elementInfo.h,
                 }
             }
 
 
-            get layoutInfo() {
+
+
+            //自身的起始位置x,y
+            CountLayoutInfo() {
+                let father_layoutInfo;
+                let bigBrother_layoutInfo;
                 if (this.father) {
-                    let father_childNeedInfo = this.father.childNeedInfo
-                    return {
-                        x: father_childNeedInfo.x,//起始坐标x
-                        y: father_childNeedInfo.y,//起始坐标y 
-                    }
+                    father_layoutInfo = this.father.layoutInfo
                 } else {
-                    return {
+                    father_layoutInfo = {
                         x: 0,//起始坐标x
                         y: 0,//起始坐标y 
+                        end_x: 0,
+                        end_y: 0,
                     }
                 }
 
-            }
-
-            //弟弟元素需要的信息
-            get brotherNeedInfo() {
-                return {
-                    x: 0,//相对坐标x
-                    y: 0,//相对坐标y
-                    w: 0,//可以用的宽度
-                    h: 0,//可以用的高度
+                if (this.bigBrother) {
+                    bigBrother_layoutInfo = this.bigBrother.layoutInfo
+                } else {
+                    bigBrother_layoutInfo = {
+                        x: father_layoutInfo.end_x,//起始坐标x
+                        y: father_layoutInfo.y,//起始坐标y 
+                        end_x: father_layoutInfo.end_x,
+                        end_y: father_layoutInfo.y,
+                    }
+                }
+                this.layoutInfo = {
+                    x: bigBrother_layoutInfo.x, // 行类元素应该是 father_childNeedInfo.x + bigBrother_layoutInfo.x,//起始坐标x
+                    y: bigBrother_layoutInfo.end_y,//起始坐标y 
+                    end_x: father_layoutInfo.x,
+                    end_y: bigBrother_layoutInfo.end_y + this.elementInfo.h,
                 }
             }
 
@@ -100,41 +104,32 @@
 
             chooseTxt() { }
 
-            ___drawSelf(x, y, w, h) {
-                //备份
-                //let context = this.context;
-                context.beginPath();
-                context.rect(this.father.childNeedInfo.x, this.father.childNeedInfo.y, 600, this.elementInfo.h);
-                context.strokeStyle = 'orange';
-                context.lineWidth = 18;
-                context.stroke();
-                context.fillStyle = 'purple';
-                context.fill();
-                context.font = 'italic 20px Calibri';
-                context.fillStyle = 'gold';
-                context.fillText('hello canvasText', x, y + 18);
-            }
-
             render() {
+                this.CountLayoutInfo()
                 this.drawSelf()
                 if (this.child) {
-                    this.child.forEach(element => {
-                        element.render()
-                    });
+                    this.child.render()
                 }
+                if (this.brother) {
+                    this.brother.render()
+                }
+
             }
         }
 
         class BlockLevel extends DrawBase {
             drawSelf(x, y, w, h) {
                 //let context = this.context;
+                console.log("this.layoutInfothis.layoutInfothis.layoutInfothis.layoutInfo", this.layoutInfo)
                 context.beginPath();
+                console.log(this.layoutInfo)
                 context.rect(this.layoutInfo.x, this.layoutInfo.y, 600, this.elementInfo.h);
                 context.strokeStyle = 'orange';
-                context.lineWidth = 1;
+                context.lineWidth = 0;
                 context.stroke();
-                /* context.fillStyle = 'purple';
-                context.fill(); */
+                //context.fillStyle = 'purple';
+                context.fillStyle = '#' + Math.random().toString(16).substr(2, 6).toUpperCase();;
+                context.fill();
             }
         }
 
@@ -150,10 +145,10 @@
 
             drawSelf(x, y, w, h) {
                 //let context = this.context;
-                /*  context.beginPath();
-                 context.font = 'italic 20px Calibri';
-                 context.fillStyle = 'gold';
-                 context.fillText(this.content, this.father.childNeedInfo.x, this.father.childNeedInfo.y + 18); */
+                context.beginPath();
+                context.font = 'italic 20px Calibri';
+                context.fillStyle = 'gold';
+                context.fillText(this.content, this.layoutInfo.x, this.layoutInfo.y + 20);
             }
 
         }
@@ -171,8 +166,8 @@
                         child: [
                             {
                                 tag: "txt",
-                                content: "hello lab111111111"
-                            }
+                                content: "hello labaaaaaaaaaaaaaaaaaaaaaaaa"
+                            },
                         ]
                     },
                     {
@@ -180,8 +175,8 @@
                         child: [
                             {
                                 tag: "txt",
-                                content: "hello lab111111111"
-                            }
+                                content: "hello labbbbbbbbbbbbbbbbbb2"
+                            },
                         ]
                     },
                     {
@@ -189,7 +184,7 @@
                         child: [
                             {
                                 tag: "txt",
-                                content: "hello lab111111111"
+                                content: "hello labcccc"
                             }
                         ]
                     },
@@ -199,13 +194,8 @@
                 tag: "div",
                 child: [
                     {
-                        tag: "div",
-                        child: [
-                            {
-                                tag: "txt",
-                                content: "hello lab111111111"
-                            }
-                        ]
+                        tag: "txt",
+                        content: "hello lab2222222"
                     },
                 ]
             },
@@ -213,18 +203,13 @@
                 tag: "div",
                 child: [
                     {
-                        tag: "div",
-                        child: [
-                            {
-                                tag: "txt",
-                                content: "hello lab111111111"
-                            }
-                        ]
-                    },
+                        tag: "txt",
+                        content: "hello lab33333"
+                    }
                 ]
-            }
-        ]
+            },
 
+        ]
         function parseEleInfoTree(eleLists, father) {
             let result;
             let temp;
@@ -242,7 +227,6 @@
                         break
                     case "txt":
                         _thisOne = new txtLevel(element.content)
-
                         break
                     default:
                         console.error("??")
@@ -262,7 +246,36 @@
         }
 
         let result = parseEleInfoTree(domJson)
+
+
+        function freaEachChild() {
+
+        }
+        //计算每个元素的大小
+        function parseEleInfo(elmentObj) {
+            //分析后代
+            if (elmentObj.child) {
+                parseEleInfo(elmentObj.child)
+            } else {
+                elmentObj.elementInfo.w = elmentObj.content.length * 15;
+                elmentObj.elementInfo.h = 24;
+            }
+
+            //分析兄弟
+            if (elmentObj.brother) {
+                parseEleInfo(elmentObj.brother)
+            }
+
+            //一个元素对父亲的英雄
+            if (elmentObj.father) {
+                elmentObj.father.elementInfo.w += elmentObj.elementInfo.w
+                elmentObj.father.elementInfo.h += elmentObj.elementInfo.h
+            }
+        }
+        parseEleInfo(result)
         console.log(result)
+        result.render()
+
 
     </script>
 </body>
