@@ -1,6 +1,6 @@
-(display "开始")
 
-(class DrawBase
+
+(class BlockLevel
     (constructor (a)
         (set! (. this "elementInfo") 
             (json 
@@ -15,8 +15,8 @@
         (set! (. this "layoutInfo") (json 
                 (: "x" 0 )
                 (: "y" 0 )
-                (: "endX" 0 )
-                (: "endY" 0 )
+                (: "endx" 0 )
+                (: "endy" 0 )
             )
         )
     )
@@ -37,20 +37,20 @@
         (if (. this "bigBrother")
             (set! bigBrotherLayoutInfo  (. (. this "bigBrother") "layoutInfo"))  
             (set! bigBrotherLayoutInfo  (json 
-                    (: "x" (. fatherLayoutInfo "endx") )
-                    (: "y" (. fatherLayoutInfo "y") )
-                    (: "endx" (. fatherLayoutInfo "endx") )
-                    (: "endy" (. fatherLayoutInfo "y") )
+                    (: "x" ((. fatherLayoutInfo "get") "endx") )
+                    (: "y" ((. fatherLayoutInfo "get") "y") )
+                    (: "endx" ((. fatherLayoutInfo "get") "endx") )
+                    (: "endy" ((. fatherLayoutInfo "get") "y") )
                 )
             )  
         )
 
         (set! (. this "layoutInfo") 
             (json 
-                    (: "x" (. bigBrotherLayoutInfo "x") )
-                    (: "y" (. bigBrotherLayoutInfo "endy") )
-                    (: "endx" (. fatherLayoutInfo "x") )
-                    (: "endy" (+ (. bigBrotherLayoutInfo "endy") (. (. this "elementInfo") "h")) )
+                    (: "x" ((. bigBrotherLayoutInfo "get") "x") )
+                    (: "y" ((. bigBrotherLayoutInfo "get") "endy") )
+                    (: "endx" ((. fatherLayoutInfo "get") "x") )
+                    (: "endy" (+ ((. bigBrotherLayoutInfo "get") "endy") ((. (. this "elementInfo") "get") "h")) )
             )
         
         )
@@ -60,40 +60,106 @@
         ((. this "CountLayoutInfo"))
         ((. this "drawSelf"))
         (if (. this "child")
+             ((. (. this "child") "render"))
+        )
+
+        (if (. this "brother")
+            ((. (. this "brother") "render"))
+        )
+    )
+
+    (define (drawSelf)
+        ((. canvas "rect") 
+            ((. (. this "layoutInfo") "get")  "x")
+            ((. (. this "layoutInfo") "get")  "y")
+            600
+            ((. (. this "elementInfo") "get")  "h")
+        )
+    )
+
+
+)
+
+
+(class txtLevel
+    (constructor (a)
+        (set! (. this "elementInfo") 
+            (json 
+                (: "w" 0 )
+                (: "h" 0 )
+            )
+        )
+        (set! (. this "child") (null))
+        (set! (. this "father") (null))
+        (set! (. this "bigBrother") (null))
+        (set! (. this "brother") (null))
+        (set! (. this "layoutInfo") (json 
+                (: "x" 0 )
+                (: "y" 0 )
+                (: "endx" 0 )
+                (: "endy" 0 )
+            )
+        )
+    )
+    
+    (define (CountLayoutInfo)
+        (define fatherLayoutInfo )
+        (define bigBrotherLayoutInfo)
+        (if (. this "father")
+            (set! fatherLayoutInfo  (. this "layoutInfo"))  
+            (set! fatherLayoutInfo  (json 
+                    (: "x" 0 )
+                    (: "y" 0 )
+                    (: "endx" 0 )
+                    (: "endy" 0 )
+                )
+            )  
+        )
+
+        (if (. this "bigBrother")
+            (set! bigBrotherLayoutInfo  (. (. this "bigBrother") "layoutInfo"))  
+            (set! bigBrotherLayoutInfo  (json 
+                    (: "x" ((. fatherLayoutInfo "get") "endx") )
+                    (: "y" ((. fatherLayoutInfo "get") "y") )
+                    (: "endx" ((. fatherLayoutInfo "get") "endx") )
+                    (: "endy" ((. fatherLayoutInfo "get") "y") )
+                )
+            )  
+        )
+       
+        (set! (. this "layoutInfo") 
+            (json 
+                    (: "x" ((. bigBrotherLayoutInfo "get") "x") )
+                    (: "y" ((. bigBrotherLayoutInfo "get") "endy") )
+                    (: "endx" ((. fatherLayoutInfo "get") "x") )
+                    (: "endy" ( + ((. bigBrotherLayoutInfo "get") "endy") ((. (. this "elementInfo") "get") "h")) )
+            )
+        )
+    )
+
+    (define (render)
+        ((. this "CountLayoutInfo"))
+        ((. this "drawSelf"))
+        (display "render------------------------------txtLevel")
+        (display (. this "child"))
+        (if (. this "child")
             ((. (. this "child") "render"))
         )
 
         (if (. this "brother")
             ((. (. this "brother") "render"))
         )
-    
     )
 
+    (define (drawSelf)
+        ((. canvas "fillText") 
+            ((. (. this "layoutInfo") "get")  "x")
+            ((. (. this "layoutInfo") "get")  "y")
+        )
+    )
 )
 
 
-(class BlockLevel
-    (constructor (b) 
-        (+ 1 1)
-    )
-    (display "0---")
-)
-
-(class lineLevel
-    (constructor (v) 
-        (+ 1 1)
-    )
-    (display "0---")
-)
-
-
-
-(class txtLevel
-    (constructor (d) 
-        (+ 1 1)
-    )
-    (display "0---")
-)
 
 
 
@@ -107,11 +173,11 @@
             (define tag ((. element "get") "tag" ))
             (cond 
                 ((= tag "div") 
-                    (set! _thisOne (DrawBase "1"))
+                    (set! _thisOne (BlockLevel "1"))
                     (set!  (. _thisOne "child")  (parseEleInfoTree ((. element "get") "child") _thisOne) )
                 )
                 ((= tag "txt") 
-                    (set! _thisOne (DrawBase "1"))
+                    (set! _thisOne (txtLevel "1"))
                 )
             )
             (if (= i 0)
@@ -128,19 +194,16 @@
             )
         )
     )
-    (display "------------------------")
-    (display result)
     result
 )
     
 
 (define (parseEleInfo elmentObj)
-    (display "hhhhhhhhhhhhhhhhhh")
     (if (. elmentObj "child")
         (parseEleInfo (. elmentObj "child"))
         (begin
-            (set! (. (. elmentObj "elementInfo") "w") 10)
-            (set! (. (. elmentObj "elementInfo") "h") 20)
+            ((. (. elmentObj "elementInfo")  "set")  "w" 500)
+            ((. (. elmentObj "elementInfo")  "set")  "h" 20)
         )
     )
 
@@ -148,24 +211,33 @@
         (parseEleInfo (. elmentObj "brother"))
     )
 
-
      (if (. elmentObj "father")
          (begin
-            (set! (. (. (. elmentObj "father") "elementInfo") "w")  (. (. elmentObj "elementInfo") "w"))
-            (set! (. (. (. elmentObj "father") "elementInfo") "h")  (. (. elmentObj "elementInfo") "h"))
-         )
+            ( (. (. (. elmentObj "father") "elementInfo") "set")
+                 "w"
+                (+ 
+                    ((. (. (. elmentObj "father") "elementInfo") "get") "w")
+                    ((. (. elmentObj "elementInfo") "get") "w")
+                )
+            )
+            ( (. (. (. elmentObj "father") "elementInfo") "set") 
+                "h" 
+                (+ 
+                    ((. (. (. elmentObj "father") "elementInfo") "get") "h" )
+                    ((. (. elmentObj "elementInfo") "get") "h")
+                )
+            )
+        )
     )
-    (display "????????????")
 )
 
 
-
 (define helloOk (parseEleInfoTree (. body "result") (null)))
-(display "看结果--parseEleInfo")
- (display "看结果--parseEleInfo")
+
+ 
 (parseEleInfo helloOk)
- (display "看结果")
-helloOk
+ 
+((. helloOk "render") 1 )
 
 
 

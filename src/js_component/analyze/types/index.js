@@ -305,7 +305,7 @@ class list extends cons {
         }
         return this
     }
-    
+
     getClone() {
         function iteration(pair) {
             if (is_list(pair)) {
@@ -495,7 +495,6 @@ class json extends list {
         if (elemnts[0]) {
             if (typeof elemnts[0].car === "object") {
                 //lab语言中，用这个
-                console.log("xxxxxxx---------------------------", elemnts)
                 for (let i = 0; i < elemnts.length; i++) {
                     let _temp = elemnts[i]
                     this.insert_key_value(_temp.car.value, _temp.cdr);
@@ -574,7 +573,16 @@ class json extends list {
             this.push(new cons(keyValue.car.value, keyValue.cdr))
         }
     }
-    
+
+    __set(key, value) {
+        let index = this.findIndex((_key) => _key.car == key.value)
+        if (index == -1) {
+            this.push(new cons(key.value, value))
+        } else {
+            this.set_by_index(index, new cons(key.value, value))
+        }
+    }
+
     __get(key) {
         let index = this.findIndex((_key) => _key.car == key.value)
         if (index != -1) {

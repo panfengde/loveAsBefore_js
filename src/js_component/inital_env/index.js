@@ -2,13 +2,8 @@ import frame from '../frame/index';
 import { is_car_list, is_cdr_list, is_list, is_car_list_cons_json, judge_arr_exist } from '../../utils/tools';
 import { base, _boolean, _number, _class, cons, list, json, _null } from "../analyze/types/index"
 import { DrawLabel } from '../drawComponents/index'
+import { example } from '../drawComponents/canvas'
 
-let canvas = document.createElement('canvas');
-let context = canvas.getContext('2d');
-canvas.width = 700;
-canvas.height = 600;
-canvas.style.backgroundColor = '#007eff3d';
-document.body.appendChild(canvas);
 
 function inital_env() {
     let shemeOp_to_jsOp = {
@@ -21,7 +16,6 @@ function inital_env() {
         less: _number.__less,
         greater: _number.__greater,
         not_equal: base.__not_equal,
-        draw: DrawLabel.drawRect,
         remainder: function (a, b) {
             return a % b
         },
@@ -52,6 +46,7 @@ function inital_env() {
 
 
         },
+        canvas: example,
         list: function (...elemnts) {
             return new list(...elemnts)
         },
@@ -61,9 +56,6 @@ function inital_env() {
         null: function () {
             return new _null()
         },
-        context:function(){
-            context
-        }
 
         /* eval:function(pairs){
              run_eval()
@@ -89,7 +81,7 @@ function inital_env() {
         "list": new list("original", shemeOp_to_jsOp.list),
         "nullList": new list("original", shemeOp_to_jsOp.nullList),
         "null": new list("original", shemeOp_to_jsOp.null),
-        "draw": new list("original", shemeOp_to_jsOp.draw),
+        "canvas": shemeOp_to_jsOp.canvas,
         /*
         "true": true,
         "false": false,

@@ -75,9 +75,17 @@ class analyze {
                         return result;
                     }
                 } else {
-                    return new _null()
+                    return new _null();
                 }
-            } else {
+            } else if (true_obj.type == "json") {
+                let result = true_obj.get_value_by_key(true_arr)
+                if (result) {
+                    return result
+                } else {
+                    return new _null();
+                }
+            }
+            else {
                 //调用类的原生方法
                 /**
                  * 对于原生的方法，可能传递回调函数进去运行
@@ -85,13 +93,14 @@ class analyze {
                  * 可能有很多问题的
                  * @params 参数 @env 环境 @eval_app 运行入口
                  */
-                //console.log("__" + true_arr)
-                return new list("original", (params,) => { return true_obj["__" + true_arr](params, env, eval_app) });
+                /* console.log("__" + true_arr)
+                console.log(true_obj) */
+                return new list("original", (...params) => { return true_obj["__" + true_arr].call(true_obj, ...params, env, eval_app) });
             }
             //return env.look_variable_env(code_op)
         }
     }
-
+    
     static quote(code_op) {
         //console.log(code_op);
         return function (env) {
@@ -128,9 +137,6 @@ class analyze {
                         frame.insert_key_value(name, value(env))
                     }
                 }
-
-
-
             }
         } else {
             //let name = analyze_entry(setObj);
@@ -193,7 +199,8 @@ class analyze {
         } */
         false_action = analyze_entry(false_action);
         return function (env) {
-            if (prediction(env).value) {
+            let predictionValue = prediction(env)
+            if (predictionValue.type == "frame" || predictionValue.type == "json" || predictionValue.value) {
                 return true_action(env)
             } else {
                 return false_action(env)
