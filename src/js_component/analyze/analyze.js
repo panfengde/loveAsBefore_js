@@ -5,7 +5,7 @@ import run_eval from '../run_eval/index'
 import tools from './tools.js'
 import global_env from '../inital_env/index.js';
 import { base, _number, _string, _boolean, lambdaBase, _class, cons, list, json, _null } from './types/index'
-import { is_cdr_list, is_car_list, is_list } from "../../utils/tools"
+import { is_cdr_list, is_car_list, is_list, is_json, is_frame } from "../../utils/tools"
 
 
 let null_list = new list()
@@ -41,8 +41,8 @@ class analyze {
     static variable(code_op) {
         return function (env) {
             let result = env.look_variable_env(code_op)
-            if (result[0]) {
-                return result[1]
+            if (result) {
+                return result
             } else {
                 return new _null()
             }
@@ -67,12 +67,12 @@ class analyze {
             // console.log("true_arr", true_arr)
             if (true_obj.type == "frame") {
                 let result = true_obj.look_variable_env(true_arr)
-                if (result[0]) {
-                    if (is_list(result[1]) && result[1].car == "compound") {
-                        result[1].cdr.car = result[1].cdr.car.call(true_obj);
-                        return result[1]
+                if (result) {
+                    if (is_list(result) && result.car == "compound") {
+                        result.cdr.car = result.cdr.car.call(true_obj);
+                        return result
                     } else {
-                        return result[1];
+                        return result;
                     }
                 } else {
                     return new _null()
@@ -104,18 +104,33 @@ class analyze {
         //let name = code_op.cdr.car;
         let setObj = code_op.cdr.car
         let value = analyze_entry(code_op.cdr.cdr.car);
+
         if (is_list(setObj)) {
+            // (set! (. this "html") sxml)
+            setObj = setObj.cdr
             return function (env) {
                 let frame = analyze_entry(setObj.car)(env);
                 let name = analyze_entry(setObj.cdr.car)(env).value;
-                let result = frame.look_variable_env(name)
-                //console.log(value(env))
-                if (result[0]) {
-                    result[1].value = value(env).value
-                } else {
-                    //console.log(frame)
-                    frame.user_insert_var_value(name, value(env))
+                //做兼容处理
+                if (is_json(frame)) {
+                    let result = frame.get_value_by_key(name)
+                    //console.log(value(env))
+                    if (result) {
+                        frame.set_value_by_key(name, value(env))
+                    } else {
+                        frame.insert_key_value(name, value(env))
+                    }
+                } else if (is_frame(frame)) {
+                    let result = frame.look_variable_env(name)
+                    if (result) {
+                        frame.set_value_by_key(name, value(env))
+                    } else {
+                        frame.insert_key_value(name, value(env))
+                    }
                 }
+
+
+
             }
         } else {
             //let name = analyze_entry(setObj);
@@ -129,13 +144,13 @@ class analyze {
         if (is_list(code_op.cdr.car)) {
             //(define (hello a x ..) (....))
             let name = code_op.cdr.car.car;
-            let args = code_op.cdr.car.cdr;
+            let args = code_op.cdr.car.cdr || null_list;
             let body = code_op.cdr.cdr;
             let _lambda = analyze._make_lambda(args, body);
             //console.log(_lambda)
             let ananlyzed_body = analyze_entry(_lambda);
             return function (env) {
-                return env.user_insert_var_value(
+                return env.insert_key_value(
                     name,
                     ananlyzed_body(env)
                 )
@@ -143,9 +158,10 @@ class analyze {
         } else {
             //(define a 1)
             let name = code_op.cdr.car;
-            let value = analyze_entry(code_op.cdr.cdr.car);
+
+            let value = code_op.cdr.cdr ? analyze_entry(code_op.cdr.cdr.car) : analyze_entry("null");
             return function (env) {
-                return env.user_insert_var_value(name, value(env));
+                return env.insert_key_value(name, value(env));
             }
         }
     }
@@ -236,12 +252,12 @@ class analyze {
             let new_env = new frame() //形参和实参构成的框架
             new_env.extend_env(env)
 
-            new_env.user_insert_var_value("this", new_env);
+            new_env.insert_key_value("this", new_env);
             //挂载类的方法
             ananlyzed_methods(new_env)
             //console.log("new_envnew_envnew_envnew_env",new_env)
             let constructor_class = new _class(constructor_args, ananlyzed_constructor_body, new_env);
-            return env.user_insert_var_value(name,
+            return env.insert_key_value(name,
                 new list("compound", constructor_class)
             )
         }
@@ -263,7 +279,7 @@ class analyze {
         let rule_list = syntax_body.cdr.cdr
         if (syntax_body.car == "syntax-rules") {
             return function (env) {
-                return global_env.user_insert_var_value(
+                return global_env.insert_key_value(
                     syntax_name,
                     new list("macro", rule_list)
                 )
@@ -560,12 +576,12 @@ function eval_app(operate, operands, exp, exp_env) {
             if (the_function.type === "class") {
                 let class_example_env = new frame();
                 class_example_env.extend_env(define_env)
-                class_example_env.user_insert_var_value("this", class_example_env);
+                class_example_env.insert_key_value("this", class_example_env);
                 //形参和实参构成的框架
                 function_env.extend_env(class_example_env) //将过程的定义框架，链接入过程定义的环境中
             } else {
                 function_env.extend_env(define_env) //将过程的定义框架，链接入过程定义的环境中
-                function_env.user_insert_var_value("this", function_env);
+                function_env.insert_key_value("this", function_env);
             }
 
             return ananlyzed_body(function_env);

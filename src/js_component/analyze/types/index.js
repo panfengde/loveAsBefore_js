@@ -5,6 +5,7 @@ let string_exp_test = new RegExp(/^\"[\s\S]*\"$/g)
 class _null {
     constructor() {
         this.type = "null"
+        this.value = false
     }
 }
 
@@ -304,7 +305,7 @@ class list extends cons {
         }
         return this
     }
-
+    
     getClone() {
         function iteration(pair) {
             if (is_list(pair)) {
@@ -434,12 +435,15 @@ class list extends cons {
         return iteration(this)
     }
     __forEach(fun, env, eval_app) {
+        let i = 0;
         function iteration(pair) {
+            let index = new _number(i)
+            i += 1;
             if (is_cdr_list(pair)) {
-                eval_app(fun, new list(pair.car), null, env)
+                eval_app(fun, new list(pair.car, index), null, env)
                 iteration(pair.cdr)
             } else {
-                eval_app(fun, new list(pair.car), null, env)
+                eval_app(fun, new list(pair.car, index), null, env)
             }
         }
         iteration(this)
@@ -480,7 +484,6 @@ class list extends cons {
         }
 
     }
-
 }
 
 class json extends list {
@@ -571,7 +574,13 @@ class json extends list {
             this.push(new cons(keyValue.car.value, keyValue.cdr))
         }
     }
-
+    
+    __get(key) {
+        let index = this.findIndex((_key) => _key.car == key.value)
+        if (index != -1) {
+            return this.index(index).cdr;
+        }
+    }
 }
 
 export {

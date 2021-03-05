@@ -1,24 +1,18 @@
 //解析xml字符串，获取信息
 //(define xml "<div id=test ids=texst >loveAsBefore<span>xxxx</span></div>")
-(define xml "<body>
-<b id=test>This text is bold</b>
-<strong>This text is strong</strong>
-<big>This text is big</big>
-<em>This text is emphasized</em>
-<i>This text is italic</i>
-<small>This text is small</small>
-This text contains
-<sub>subscript</sub>
-This text contains
-<sup>superscript</sup>
-</body>"
+(define xml "<div>
+    111111
+    <div>
+    111111
+    </div>
+</div>"
 )
 
-(class html2json
 
+(class html2json
     (constructor (sxml) 
-        (set! (this "html") sxml)
-        (set! (this "result")  ((. this "parse") (. this "html")) )
+        (set! (. this "html") sxml)
+        (set! (. this "result")  ((. this "parse") (. this "html")) )
     )
 
     //html分割
@@ -220,6 +214,4 @@ This text contains
 
 (define body (html2json xml ))
 
-(. body "result")
 
-(draw)

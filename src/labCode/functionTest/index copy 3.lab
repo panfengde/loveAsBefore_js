@@ -1,0 +1,26 @@
+
+(define txt "<div>
+    <span></span>
+</div>"
+)
+
+txt
+(define thel  ((. txt "length")))
+'(1 2 3 4)
+thel
+(define 
+    (CharByaddr txt index)
+    ((. txt "index") index)
+)
+
+((lambda (x) (display x)) 1)
+
+(+ (CharByaddr txt 1) (CharByaddr txt 2))
+
+(define result "")
+
+((. txt "forEach" ) (lambda (x) (set! result (+ result x ))))
+
+result
+
+(display result)

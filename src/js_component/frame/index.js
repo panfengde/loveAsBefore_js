@@ -10,34 +10,28 @@ class frame extends json {
         super()
         this.type = "frame"
         this.father_frame = the_null
-        this.insert_key_value("_arguments", this.user_var_values)
+        //this.insert_key_value("_arguments", this)
         vars.forEach((element, index) => {
             this.insert_key_value(element, values[index])
         });
     }
+
     extend_env(base_env) {
         this.father_frame = base_env;
         //this.frame_and_father_Addr.set_by_index(1, base_env)
     }
-    user_insert_var_value(variable, values) {
-        this.insert_key_value(variable, values)
-    }
+    
     look_vars_frame(variable) {
         if (this.is_key_exist(variable)) {
-            return { find: true, value: this.get_value_by_key(variable) }
-
-        } else {
-            return { find: false, value: the_undefined }
-        }
+            return this.get_value_by_key(variable)
+        } 
     }
     look_variable_env(variable) {
-        let { find, value } = this.look_vars_frame(variable)
-        if (find) {
-            return [true, value];
+        let value = this.look_vars_frame(variable)
+        if (value) {
+            return value;
         } else if (this.father_frame != the_null) {
             return this.father_frame.look_variable_env(variable)
-        } else {
-            return [false]
         }
     }
     set_variable_value_env(variable, value) {

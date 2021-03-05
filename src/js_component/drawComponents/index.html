@@ -35,12 +35,12 @@
                 this.elementInfo = {
                     w: 0,//宽度
                     h: 0,//高度
-                    backGround: null,//这个要注意，如果自身没用背景，就要用继承的背景色。？对于透明背景，是不是会产生叠加的问题？
+                    /* backGround: null,//这个要注意，如果自身没用背景，就要用继承的背景色。？对于透明背景，是不是会产生叠加的问题？
                     lineWidth: null,
                     lineColor: null,
                     margin: null,
                     padding: null,
-                    zindex: null,//index大的最后画
+                    zindex: null,//index大的最后画 */
                 }
 
                 this.child = null //存储子元素
@@ -206,9 +206,10 @@
                 ]
             }
         ]
-
+        
+        
         function parseEleInfoTree(eleLists, father) {
-            return eleLists.map((element,i )=> {
+            return eleLists.map((element)=> {
                 switch (element.tag) {
                     case "div":
                         let temp_balck = new BlockLevel()
@@ -227,6 +228,7 @@
                 }
             });
         }
+
         let result = parseEleInfoTree(domJson)
 
         //计算每个元素的大小

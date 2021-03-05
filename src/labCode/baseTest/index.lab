@@ -1,98 +1,10 @@
+
+
 10
 "字符串"
 false
 true
 (define a 100)
-a
-'(1 2 3)
-(quote (1 2 3))
-//((. 1 "hello"))
-(set! a 1000)
 
-
-(if (= a 1000)
-    (display "set! 和 if ok")
-    (display "set! 和 if  error")
-)
-
-(cons 1 2)
-
-(define x '(1 2 3) )
-
-(car x)
-(cdr x)
-
-(let 
-    (
-        (x 900)
-        (y 100)
-    )
-    (+ x y)
-)
-
-((lambda (x) (+ 1 2) (+ x 900)) 100)
-
-(define (go x) (+ 1 2) (+ x 900) )
-(go 100)
-
-(define-syntax let*
-    (syntax-rules ()
-      ((_ ((p v)) b ...)
-       (let ((p v)) b ...))
-      ((_ ((p1 v1) (p2 v2) ...) b ...)
-       (let ((p1 v1))
-         (let* ((p2 v2) ...)
-          b ...))))
-          )
-
-(let* 
-    (
-        (a 10)
-        (b (+ a 10))
-    )
-    (display b)
-    (display (+ a b))
-)
-
-(display "if")
-(if true
-    1
-    2
-)
-
-(display "*******nullList")
-(nullList  '(1 2 3))
-(nullList  '())
-
-
-(begin ((lambda (x) (display (+ x 10))) 90))
-
-(begin  
-    '(1 2 3 4)  
-    (+ 1 1)
-    )
-
-
-(if (nullList  '())
-        (display "----空----------")
-        (display "----错误----------")   
-)
-
-
-(if (nullList '(1))
-        (display "----错误----------")
-        (display "----非空----------")
-)
-
-(display "*******forEach")
-
-(define (forEach list fun)
-         (if (nullList  list)
-            '()
-            (begin (fun (car list) ) (forEach (cdr list) fun))
-        )
-)
-
-(forEach  '(1 2 3 4)  (lambda (x) (display (+ x 10))))
 
 

@@ -28,7 +28,6 @@
                 ))
     )
 )
-
 (define-syntax do
     (syntax-rules ()
         ((_ e b) 
@@ -39,7 +38,6 @@
         )
     )
 )
-
 
 (define-syntax :
     (syntax-rules ()
@@ -60,9 +58,6 @@
         ((_ a b ...) (begin (set! a (- a b ...)) a))
     )
 )
-
-
-
 
 
 ; (define-syntax  cond

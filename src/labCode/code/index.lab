@@ -82,9 +82,9 @@
 
 (class animal2
     (constructor (name_num mouse_num go) 
-        (set! (this "name") name_num)
-        (set! (this "mouse") mouse_num)
-        (set! (this "go") go)       
+        ((set! (. this "name") name_num)
+        ((set! (. this "mouse") mouse_num)
+        ((set! (. this "go") go)       
     )
     (define (a x) (display x (. this "go") "-------") (display "hhhhhh"))
 )

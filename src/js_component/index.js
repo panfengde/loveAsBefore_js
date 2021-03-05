@@ -11,12 +11,13 @@ function loveAsBefore(...labCodeFiles) {
             //console.log(code)
             //console.log(Parse.strExp_to_List(code))
             let result = run_eval(Parse.strExp_to_List(code), global_env)
-            let _theshow = result ? (result.show || result.value) : result
-            console.log(_theshow)
+            
+            console.log(result)
             /* try {
-                JSON.parse(_theshow)
-            } catch (e) {
+                let _theshow = result ? (result.show || result.value) : result
                 console.log(_theshow)
+            } catch (e) {
+                console.log(result)
             } */
 
         })

@@ -1,26 +1,18 @@
 
-(define txt "<div>
-    <span></span>
-</div>"
+
+
+(class animal
+    (constructor (color_1 wheel_1) 
+        (set! (. this "color") color_1)
+        (set! (. this "wheel") wheel_1)
+    )
+    (define (a x) (display (. this "color")  x "okokokokok??????????"))
 )
 
-txt
-(define thel  ((. txt "length")))
-'(1 2 3 4)
-thel
-(define 
-    (CharByaddr txt index)
-    ((. txt "index") index)
-)
+(define one (animal "aaa" 11111))
 
-((lambda (x) (display x)) 1)
+(set! (. one "color") "?????")
 
-(+ (CharByaddr txt 1) (CharByaddr txt 2))
+(. one "color")
 
-(define result "")
-
-((. txt "forEach" ) (lambda (x) (set! result (+ result x ))))
-
-result
-
-(display result)
+one

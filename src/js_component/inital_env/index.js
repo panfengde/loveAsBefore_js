@@ -3,6 +3,12 @@ import { is_car_list, is_cdr_list, is_list, is_car_list_cons_json, judge_arr_exi
 import { base, _boolean, _number, _class, cons, list, json, _null } from "../analyze/types/index"
 import { DrawLabel } from '../drawComponents/index'
 
+let canvas = document.createElement('canvas');
+let context = canvas.getContext('2d');
+canvas.width = 700;
+canvas.height = 600;
+canvas.style.backgroundColor = '#007eff3d';
+document.body.appendChild(canvas);
 
 function inital_env() {
     let shemeOp_to_jsOp = {
@@ -32,21 +38,17 @@ function inital_env() {
         },
         nullList: _boolean.__nullList,
         display: function (...pairsAll) {
-            /*  pairsAll.forEach((pairs) => {
-                 if (is_list(pairs)) {
-                     console.log("    ", pairs.show)
-                 } else {
-                     console.log("    ", pairs && (pairs.value || pairs))
-                 }
-             }) */
-            let result = pairsAll.map((pairs) => {
-                if (is_list(pairs)) {
-                    return ("    ", pairs.show)
-                } else {
-                    return ("    ", ((pairs && typeof pairs.value !== "undefined") ? pairs.value : pairs))
-                }
+            pairsAll.forEach((pairs) => {
+                console.log(pairs)
             })
-            console.log(result.join(","))
+            /*  let result = pairsAll.map((pairs) => {
+                 if (is_list(pairs)) {
+                     return ("    ", pairs.show)
+                 } else {
+                     return ("    ", ((pairs && typeof pairs.value !== "undefined") ? pairs.value : pairs))
+                 }
+             })
+             console.log(result.join(",")) */
 
 
         },
@@ -59,6 +61,9 @@ function inital_env() {
         null: function () {
             return new _null()
         },
+        context:function(){
+            context
+        }
 
         /* eval:function(pairs){
              run_eval()

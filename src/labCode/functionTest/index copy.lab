@@ -57,5 +57,5 @@
 ; (set! (. this "name") name_num)
 ; (set! (. this "mouse") mouse_num)
 
- (set! (this "name")  "mouse" a)
+ ((set! (. this "name")  "mouse" a)
 

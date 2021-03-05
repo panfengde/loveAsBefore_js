@@ -8,6 +8,16 @@ function is_list(obj) {
     return (obj instanceof Object) && obj.type == "list";
 }
 
+function is_json(obj) {
+    //数据结构导致，cdr存在时，它的数据类型就是list
+    return (obj instanceof Object) && obj.type == "json";
+}
+
+function is_frame(obj) {
+    //数据结构导致，cdr存在时，它的数据类型就是list
+    return (obj instanceof Object) && obj.type == "frame";
+}
+
 function is_cdr_list(obj, key) {
     //数据结构导致，cdr存在时，它的数据类型就是list
     if (judge_arr_exist(obj, "cdr") && obj.cdr.type !== "list") {
@@ -45,4 +55,4 @@ function is_car_list(obj, key) {
     }
 } */
 
-export { judge_arr_exist, is_cdr_list, is_car_list_cons_json, is_list, is_car_list }
+export { judge_arr_exist, is_cdr_list, is_car_list_cons_json, is_list, is_car_list ,is_json,is_frame}

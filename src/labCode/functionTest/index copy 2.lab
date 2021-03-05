@@ -3,8 +3,8 @@
 
 (class animal_2
     (constructor (color_1 wheel_1) 
-        (set! (this "color") color_1)
-        (set! (this "wheel") wheel_1)
+        ((set! (. this "color") color_1)
+        ((set! (. this "wheel") wheel_1)
     )
     (define (a x) (display (. this "color")  x "okokokokok??????????"))
 )
@@ -12,8 +12,8 @@
 ;定义类
 (class animal
     (constructor (name_num mouse_num) 
-        (set! (this "name") name_num)
-        (set! (this "mouse") mouse_num)
+        ((set! (. this "name") name_num)
+        ((set! (. this "mouse") mouse_num)
     )
     (define (a x) (display (. this "name")  x "okokokokok??????????"))
 )
