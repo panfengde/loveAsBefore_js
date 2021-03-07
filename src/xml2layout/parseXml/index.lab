@@ -214,4 +214,7 @@
 
 (define body (html2json xml ))
 
+(. body "parse")
 
+
+(. body "result")

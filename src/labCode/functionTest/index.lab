@@ -14,5 +14,6 @@
 (set! (. one "color") "?????")
 
 (. one "color")
+(. one "wheel")
 
 one

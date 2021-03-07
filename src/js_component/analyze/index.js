@@ -17,8 +17,10 @@ function analyze_entry(parsed_code) {
             return analyze.boolean(parsed_code);
         case "variable":
             return analyze.variable(parsed_code);
-        case "null":
+        /* case "null":
             return analyze.null(parsed_code);
+        case "undefined":
+            return analyze.undefined(parsed_code); */
         case "get":
             return analyze.getArr(parsed_code);
         case "quote":

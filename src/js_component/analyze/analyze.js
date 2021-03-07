@@ -4,13 +4,11 @@ import analyze_entry from './index'
 import run_eval from '../run_eval/index'
 import tools from './tools.js'
 import global_env from '../inital_env/index.js';
-import { base, _number, _string, _boolean, lambdaBase, _class, cons, list, json, _null,_undefined } from './types/index'
+import { base, _number, _string, _boolean, lambdaBase, _class, cons, list, json, _null, _undefined } from './types/index'
 import { is_cdr_list, is_car_list, is_list, is_json, is_frame } from "../../utils/tools"
 
 
 let null_list = new list()
-let undefined_list = new _undefined()
-
 /**
  *表达式的操作符所对应的分析和操作逻辑
  */
@@ -33,11 +31,17 @@ class analyze {
         }
     }
 
-    static null(code_op) {
+    /* static null(code_op) {
         return function (env) {
             return code_op
         }
     }
+
+    static undefined(code_op) {
+        return function (env) {
+            return code_op
+        }
+    } */
 
     static variable(code_op) {
         return function (env) {
@@ -66,6 +70,14 @@ class analyze {
             let true_arr = arr(env).value
             // console.log("true_obj",true_obj)
             // console.log("true_arr", true_arr)
+
+            if (true_obj.type == "undefined") {
+                console.log(true_obj)
+                throw SyntaxError("不能get undefined 的属性")
+            }
+
+            console.log("------", true_obj)
+
             if (true_obj.type == "frame") {
                 let result = true_obj.look_variable_env(true_arr)
                 if (result) {
@@ -76,14 +88,33 @@ class analyze {
                         return result;
                     }
                 } else {
-                    return new _undefined();
+                    if (("__" + true_arr) in true_obj) {
+                        //判断是否继承了该方法
+                        return new list("original", (...params) => { return true_obj["__" + true_arr].call(true_obj, ...params, env, eval_app) });
+                    } else {
+                        let _undefinedTemp = new _undefined();
+                        _undefinedTemp.father = true_obj
+                        _undefinedTemp.arr = true_arr
+                        return _undefinedTemp;
+
+                    }
                 }
             } else if (true_obj.type == "json") {
                 let result = true_obj.get_value_by_key(true_arr)
                 if (result) {
                     return result
                 } else {
-                    return new _undefined();
+
+                    if (("__" + true_arr) in true_obj) {
+                        //判断是否继承了该方法
+                        return new list("original", (...params) => { return true_obj["__" + true_arr].call(true_obj, ...params, env, eval_app) });
+                    } else {
+                        let _undefinedTemp = new _undefined();
+                        _undefinedTemp.father = true_obj
+                        _undefinedTemp.arr = true_arr
+                        return _undefinedTemp;
+                    }
+
                 }
             }
             else {
@@ -101,7 +132,7 @@ class analyze {
             //return env.look_variable_env(code_op)
         }
     }
-    
+
     static quote(code_op) {
         //console.log(code_op);
         return function (env) {
@@ -114,23 +145,27 @@ class analyze {
         //let name = code_op.cdr.car;
         let setObj = code_op.cdr.car
         let valueFn = analyze_entry(code_op.cdr.cdr.car);
-        
+
         if (is_list(setObj)) {
             // (set! (. this "html") sxml)
             let trueObjFn = analyze_entry(setObj);
-            
+
             return function (env) {
                 let trueObj = trueObjFn(env);
                 let trueValue = valueFn(env);
-                
+
                 //console.log(value(env))
-                if (trueObj.type=="undefined") {
-                    throw SyntaxError("不能set! undefined ")
+                if (trueObj.type == "undefined") {
+                    //当没有这个属性时，插入值
+
+                    // let father = setObj.cdr.car;
+                    // let arr = setObj.cdr.cdr.car;
+                    trueObj.father.insert_key_value(trueObj.arr, trueValue)
                 } else {
                     Reflect.ownKeys(trueObj).forEach((key) => {
                         delete trueObj[key]
                     })
-            
+
                     Reflect.ownKeys(trueValue).forEach((key) => {
                         trueObj[key] = trueValue[key]
                     })
@@ -140,7 +175,7 @@ class analyze {
         } else {
             //let name = analyze_entry(setObj);
             return function (env) {
-                env.set_variable_value_env(setObj, value(env))
+                env.set_variable_value_env(setObj, valueFn(env))
             }
         }
     }
@@ -599,7 +634,7 @@ function eval_app(operate, operands, exp, exp_env) {
             //console.log("宏替换结果", marco_replace_result)
             return run_eval(marco_replace_result, exp_env)
         default:
-            console.error("错误的操作符", operate)
+            console.error("错误的操作符", operate, exp)
     }
 }
 

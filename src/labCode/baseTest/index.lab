@@ -1,22 +1,11 @@
-(define a (json 
-    (: "hello" "????")
-    (: "hello2" 2)
-    (: "hello3" (lambda (x) (display x)))
-    )
-)
-
-(define b (json 
-    (: "geta" a)
-    )
-)
-
-
 (define c (json 
     (: "getb" b)
     
     )
 )
-(set! (. c "getb" "geta" "hello") "okokokok")
 
- (. c "getb" "geta" "hello")
- (. a "hello")
+ (set! (. c "world") "okoko")
+
+ ((. c "insert") (: "xxx" "okoko"))
+
+ c

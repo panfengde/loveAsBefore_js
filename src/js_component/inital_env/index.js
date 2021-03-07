@@ -1,6 +1,6 @@
 import frame from '../frame/index';
 import { is_car_list, is_cdr_list, is_list, is_car_list_cons_json, judge_arr_exist } from '../../utils/tools';
-import { base, _boolean, _number, _class, cons, list, json, _null } from "../analyze/types/index"
+import { base, _boolean, _number, _class, cons, list, json, _null, _undefined } from "../analyze/types/index"
 import { DrawLabel } from '../drawComponents/index'
 import { example } from '../drawComponents/canvas'
 
@@ -53,8 +53,11 @@ function inital_env() {
         json: function (...elemnts) {
             return new json(...elemnts)
         },
-        null: function () {
+        _null: function () {
             return new _null()
+        },
+        _undefined: function () {
+            return new _undefined()
         },
 
         /* eval:function(pairs){
@@ -80,7 +83,8 @@ function inital_env() {
         "json": new list("original", shemeOp_to_jsOp.json),
         "list": new list("original", shemeOp_to_jsOp.list),
         "nullList": new list("original", shemeOp_to_jsOp.nullList),
-        "null": new list("original", shemeOp_to_jsOp.null),
+        "null": new list("original", shemeOp_to_jsOp._null),
+        "undefined": new list("original", shemeOp_to_jsOp._undefined),
         "canvas": shemeOp_to_jsOp.canvas,
         /*
         "true": true,
