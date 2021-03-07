@@ -9,6 +9,12 @@ class _null {
     }
 }
 
+class _undefined {
+    constructor() {
+        this.type = "undefined"
+        this.value = false
+    }
+}
 
 /**
  * !重要提示
@@ -592,5 +598,5 @@ class json extends list {
 }
 
 export {
-    _null, base, _number, _string, _boolean, lambdaBase, _class, cons, list, json,
+    _null,_undefined, base, _number, _string, _boolean, lambdaBase, _class, cons, list, json,
 }

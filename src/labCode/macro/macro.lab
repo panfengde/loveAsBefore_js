@@ -59,11 +59,11 @@
     )
 )
 
-(define-syntax ..
+(define-syntax .
     (syntax-rules   ()
-        ((_ a b) (. a b))
-        ((_ a b c) (. (. a b) c))
-        ((_ a b c ...) (. (. a b) c) ...)
+        ((_ a b) (get a b))
+        ((_ a b c) (get (get a b) c))
+        ((_ a b c ...) (get (get (get a b) c) ...))
     )
 )
 

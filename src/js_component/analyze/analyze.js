@@ -4,11 +4,12 @@ import analyze_entry from './index'
 import run_eval from '../run_eval/index'
 import tools from './tools.js'
 import global_env from '../inital_env/index.js';
-import { base, _number, _string, _boolean, lambdaBase, _class, cons, list, json, _null } from './types/index'
+import { base, _number, _string, _boolean, lambdaBase, _class, cons, list, json, _null,_undefined } from './types/index'
 import { is_cdr_list, is_car_list, is_list, is_json, is_frame } from "../../utils/tools"
 
 
 let null_list = new list()
+let undefined_list = new _undefined()
 
 /**
  *表达式的操作符所对应的分析和操作逻辑
@@ -75,14 +76,14 @@ class analyze {
                         return result;
                     }
                 } else {
-                    return new _null();
+                    return new _undefined();
                 }
             } else if (true_obj.type == "json") {
                 let result = true_obj.get_value_by_key(true_arr)
                 if (result) {
                     return result
                 } else {
-                    return new _null();
+                    return new _undefined();
                 }
             }
             else {
@@ -112,30 +113,28 @@ class analyze {
         //(set! a 10)
         //let name = code_op.cdr.car;
         let setObj = code_op.cdr.car
-        let value = analyze_entry(code_op.cdr.cdr.car);
-
+        let valueFn = analyze_entry(code_op.cdr.cdr.car);
+        
         if (is_list(setObj)) {
             // (set! (. this "html") sxml)
-            setObj = setObj.cdr
+            let trueObjFn = analyze_entry(setObj);
+            
             return function (env) {
-                let frame = analyze_entry(setObj.car)(env);
-                let name = analyze_entry(setObj.cdr.car)(env).value;
-                //做兼容处理
-                if (is_json(frame)) {
-                    let result = frame.get_value_by_key(name)
-                    //console.log(value(env))
-                    if (result) {
-                        frame.set_value_by_key(name, value(env))
-                    } else {
-                        frame.insert_key_value(name, value(env))
-                    }
-                } else if (is_frame(frame)) {
-                    let result = frame.look_variable_env(name)
-                    if (result) {
-                        frame.set_value_by_key(name, value(env))
-                    } else {
-                        frame.insert_key_value(name, value(env))
-                    }
+                let trueObj = trueObjFn(env);
+                let trueValue = valueFn(env);
+                
+                //console.log(value(env))
+                if (trueObj.type=="undefined") {
+                    throw SyntaxError("不能set! undefined ")
+                } else {
+                    Reflect.ownKeys(trueObj).forEach((key) => {
+                        delete trueObj[key]
+                    })
+            
+                    Reflect.ownKeys(trueValue).forEach((key) => {
+                        trueObj[key] = trueValue[key]
+                    })
+                    trueObj.__proto__ = trueValue.__proto__
                 }
             }
         } else {

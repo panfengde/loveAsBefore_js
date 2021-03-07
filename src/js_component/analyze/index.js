@@ -19,7 +19,7 @@ function analyze_entry(parsed_code) {
             return analyze.variable(parsed_code);
         case "null":
             return analyze.null(parsed_code);
-        case ".":
+        case "get":
             return analyze.getArr(parsed_code);
         case "quote":
             return analyze.quote(parsed_code);

@@ -93,7 +93,7 @@ let tools = {
                 "cons",
                 "let",
                 "'",
-                ".",
+                "get",
             ])
             if (keyword.has(code_pairs.car)) {
                 return code_pairs.car
