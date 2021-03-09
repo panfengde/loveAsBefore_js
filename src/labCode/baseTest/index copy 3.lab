@@ -1,12 +1,9 @@
- 
- (define x 1000)
-
  (class TestNumber 
     (constructor (x)
         (set! (. this "number") x)
         (set! (. this "a") 1)
     )
-    
+
     (define (go x) (set! (. this "number") x))
  )
 
@@ -16,4 +13,20 @@
 
  (define two (new TestNumber 2 ) ) 
 
-(. one "x")
+
+((. one "go") 10)
+
+(+= (. one "number") (. two "number"))
+(. one "number")
+(. two "number")
+
+
+
+(define aa 100)
+(define bb (json
+    (: "aaa" aa)
+))
+(set! aa 5000)
+
+aa
+bb

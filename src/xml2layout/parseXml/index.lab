@@ -1,11 +1,15 @@
 //解析xml字符串，获取信息
-//(define xml "<div id=test ids=texst >loveAsBefore<span>xxxx</span></div>")
+//(define xml333 "<div id=test ids=texst >loveAsBefore<span>xxxx</span></div>")
 (define xml "<div>
     111111
-    <div>
-    111111
-    </div>
-</div>"
+</div>
+<div>
+    222
+</div>
+<div>
+    333
+</div>
+"
 )
 
 
@@ -214,7 +218,7 @@
 
 (define body (html2json xml ))
 
-(. body "parse")
+
 
 
 (. body "result")

@@ -70,18 +70,15 @@ class analyze {
             let true_arr = arr(env).value
             // console.log("true_obj",true_obj)
             // console.log("true_arr", true_arr)
-
             if (true_obj.type == "undefined") {
-                console.log(true_obj)
                 throw SyntaxError("不能get undefined 的属性")
             }
-
-            console.log("------", true_obj)
-
             if (true_obj.type == "frame") {
                 let result = true_obj.look_variable_env(true_arr)
                 if (result) {
                     if (is_list(result) && result.car == "compound") {
+                        //传入函数执行时，所挂载的对象，动态改变this
+                        //return new list("compound", result.cdr.car.call(true_obj))
                         result.cdr.car = result.cdr.car.call(true_obj);
                         return result
                     } else {
@@ -96,7 +93,6 @@ class analyze {
                         _undefinedTemp.father = true_obj
                         _undefinedTemp.arr = true_arr
                         return _undefinedTemp;
-
                     }
                 }
             } else if (true_obj.type == "json") {
@@ -148,19 +144,22 @@ class analyze {
 
         if (is_list(setObj)) {
             // (set! (. this "html") sxml)
+
             let trueObjFn = analyze_entry(setObj);
 
             return function (env) {
+
                 let trueObj = trueObjFn(env);
                 let trueValue = valueFn(env);
+                
 
-                //console.log(value(env))
                 if (trueObj.type == "undefined") {
                     //当没有这个属性时，插入值
-
                     // let father = setObj.cdr.car;
                     // let arr = setObj.cdr.cdr.car;
+                    trueValue = base.clone(trueValue)
                     trueObj.father.insert_key_value(trueObj.arr, trueValue)
+            
                 } else {
                     Reflect.ownKeys(trueObj).forEach((key) => {
                         delete trueObj[key]
@@ -170,12 +169,17 @@ class analyze {
                         trueObj[key] = trueValue[key]
                     })
                     trueObj.__proto__ = trueValue.__proto__
+                
                 }
             }
         } else {
             //let name = analyze_entry(setObj);
+           
+            
             return function (env) {
-                env.set_variable_value_env(setObj, valueFn(env))
+                let trueValue=valueFn(env)
+                trueValue = base.clone(trueValue)
+                env.set_variable_value_env(setObj, trueValue)
             }
         }
     }
@@ -201,7 +205,8 @@ class analyze {
 
             let value = code_op.cdr.cdr ? analyze_entry(code_op.cdr.cdr.car) : analyze_entry("null");
             return function (env) {
-                return env.insert_key_value(name, value(env));
+                let trueValue = value(env)
+                return env.insert_key_value(name, base.clone(trueValue));
             }
         }
     }
@@ -271,7 +276,6 @@ class analyze {
         let args = code_op.cdr.car;
         let body = code_op.cdr.cdr;
         //let body = code_op.cdr.cdr.car;
-
         let ananlyzed_body = this._sequences_analyze(body)
         return function (env) {
             return new list("compound", new lambdaBase(args, ananlyzed_body, env))
@@ -288,20 +292,31 @@ class analyze {
         let ananlyzed_methods = this._sequences_analyze(methods)
         //分析方法并插入作用域中
         let ananlyzed_constructor_body = this._sequences_analyze(constructor_body)
+
         return function (env) {
             //这个域用来存储公用的方法
             let new_env = new frame() //形参和实参构成的框架
-            new_env.extend_env(env)
+            new_env.extend_env(env);
 
-            new_env.insert_key_value("this", new_env);
+            //动态改变this的指向
             //挂载类的方法
-            ananlyzed_methods(new_env)
+            ananlyzed_methods(new_env);
             //console.log("new_envnew_envnew_envnew_env",new_env)
             let constructor_class = new _class(constructor_args, ananlyzed_constructor_body, new_env);
             return env.insert_key_value(name,
-                new list("compound", constructor_class)
+                new list("class", constructor_class)
             )
+
         }
+    }
+
+    static _new(code_op) {
+        let trueExp = code_op.cdr
+        let classParse = analyze_entry(trueExp);
+        return function (env) {
+            return classParse(env)
+        }
+
     }
 
     static defineSyntax(code_op) {
@@ -613,23 +628,52 @@ function eval_app(operate, operands, exp, exp_env) {
             console.log("实际参数", operands) */
             let ananlyzed_body = the_function.ananlyzed_body //被分析后的过程
             let define_env = the_function.define_env //过程的定义环境
-            let function_env = new frame(args, params) //形参和实参构成的框架
-            if (the_function.type === "class") {
-                let class_example_env = new frame();
-                class_example_env.extend_env(define_env)
-                class_example_env.insert_key_value("this", class_example_env);
-                //形参和实参构成的框架
-                function_env.extend_env(class_example_env) //将过程的定义框架，链接入过程定义的环境中
-            } else {
-                function_env.extend_env(define_env) //将过程的定义框架，链接入过程定义的环境中
-                function_env.insert_key_value("this", function_env);
-            }
 
+            //console.log("define_env----", define_env)
+
+            let function_env = new frame(args, params) //形参和实参构成的框架
+            function_env.extend_env(define_env) //将过程的定义框架，链接入过程定义的环境中
+            //console.log("function_env----", function_env)
+            //getArr 会执行函数的call，this指向就好变化
+            //函数的call方法 会动态改变this的指向
+            
+            function_env.insert_key_value("this", define_env);
             return ananlyzed_body(function_env);
+        case "class":
+            //实例一个对象
+            let class_function = operate.cdr.car;//实例化的获取函数对象
+            //list("compound", args, ananlyzed_body, env)
+            let class_args = tools.list_to_array(class_function.args) //形式参数
+            let class_params = tools.list_to_array(operands) //实际参数
+
+            /*
+            console.log("形式参数", args)
+            console.log("实际参数", operands)
+            */
+
+            let class_ananlyzed_body = class_function.ananlyzed_body //被分析后的过程
+            let class_define_env = class_function.define_env //过程的定义环境
+
+            let arags_params_env = new frame(class_args, class_params) //形参和实参构成的框架
+
+
+            let new_construtor_env = new frame();//实例的环境
+
+            //class_example_env.insert_key_value("this", class_example_env);
+            new_construtor_env.insert_key_value("this", new_construtor_env);
+            new_construtor_env.insert_key_value("——————****——————", "类的返回框架" + Math.random(10));
+
+            arags_params_env.extend_env(new_construtor_env)
+            //class_function_env.insert_key_value("this", class_example_env);
+            //形参和实参构成的框架
+            new_construtor_env.extend_env(class_define_env) //将过程的定义框架，链接入过程定义的环境中
+
+            return class_ananlyzed_body(arags_params_env);
+
+
         case "macro":
             let macro_params = exp.cdr
             let rule_list = operate.cdr.car
-
             let marco_replace_result = analyze.parse_macro(rule_list, macro_params)
             //console.log("宏替换结果", marco_replace_result)
             return run_eval(marco_replace_result, exp_env)
@@ -637,6 +681,5 @@ function eval_app(operate, operands, exp, exp_env) {
             console.error("错误的操作符", operate, exp)
     }
 }
-
 
 export default analyze

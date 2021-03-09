@@ -98,3 +98,48 @@ a
 (forEach  '(1 2 3 4)  (lambda (x) (display (+ x 10))))
 
 
+
+
+
+; (define c (json 
+;     (: "getb" 1)
+    
+;     )
+; )
+
+;  (set! (. c "world") "okoko")
+
+;  ((. c "insert") (: "xxx" "okoko"))
+
+;  (+= (. c "getb") 10)
+
+;  (. c "getb")
+
+
+#|  (class testclass 
+    (constructor (x)
+        (set! (get this "name") x)
+        (set! (get this "a") 10)
+    )
+
+    (define (xx) (display "---"))
+    (define (xx2) (display "2222"))
+ )
+
+
+ (define one (new testclass "one" ) )
+
+
+
+ (define oneTree (new testclass "two" ) ) 
+
+
+;  (set! (. one "a") 5000)
+(display "one-----")
+one
+oneTree |#
+; oneTree
+; (. one2 "a")
+; (. one "a")
+; (. oneTree "a")
+

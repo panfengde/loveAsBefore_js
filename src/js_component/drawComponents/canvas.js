@@ -13,7 +13,10 @@ class theCanvas {
         this.context = canvas.getContext('2d');
     }
     __rect(x, y, w, h) {
-        console.log("canvas---------------------------rect", x, y, w, h)
+        console.log("canvas---------------------------rect", x.value,
+            y.value,
+            w.value,
+            h.value)
         this.context.beginPath();
         this.context.rect(
             x.value,
@@ -32,13 +35,13 @@ class theCanvas {
         this.context.fillStyle = '#' + Math.random().toString(16).substr(2, 6).toUpperCase();;
         this.context.fill();
     }
-
-    __fillText(x, y) {
-        console.log("canvas--------------fillText", x, y)
+    __fillText(txt, x, y) {
+        console.log("canvas--------------fillText", x.value,
+            y.value)
         this.context.beginPath();
         this.context.font = 'italic 20px Calibri';
         this.context.fillStyle = 'gold';
-        this.context.fillText("hello loveAsBefor", x.value, y.value + 20,)
+        this.context.fillText(txt.value, x.value, y.value + 20,)
     }
 }
 

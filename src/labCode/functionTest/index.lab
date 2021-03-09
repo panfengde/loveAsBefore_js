@@ -9,11 +9,12 @@
     (define (a x) (display (. this "color")  x "okokokokok??????????"))
 )
 
-(define one (animal "aaa" 11111))
+(define one (new animal "aaa" 11111))
 
 (set! (. one "color") "?????")
 
 (. one "color")
 (. one "wheel")
+
 
 one

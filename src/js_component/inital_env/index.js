@@ -35,7 +35,7 @@ function inital_env() {
             pairsAll.forEach((pairs) => {
                 console.log(pairs)
             })
-            /*  let result = pairsAll.map((pairs) => {
+             /* let result = pairsAll.map((pairs) => {
                  if (is_list(pairs)) {
                      return ("    ", pairs.show)
                  } else {

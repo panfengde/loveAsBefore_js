@@ -1,0 +1,30 @@
+
+ (class testclass 
+    (constructor (x)
+        (set! (get this "name") x)
+        (display "-----------------------------------------------------------")
+        (set! (get this "a") 10)
+    )
+
+    (define (xx) (display "---"))
+    (define (xx2) (display "2222"))
+ )
+
+
+ (define one (new testclass "one" ) )
+
+
+
+ (define oneTree (new testclass "two" ) ) 
+
+
+;  (set! (. one "a") 5000)
+(display "one-----")
+one
+oneTree 
+; oneTree
+; (. one2 "a")
+; (. one "a")
+; (. oneTree "a")
+
+

@@ -32,8 +32,6 @@ class base {
 
     static setTypeValue(valueString) {
         //console.log(valueString, string_exp_test.test(valueString))
-
-
         if (valueString[0] == "\"") {
             valueString = valueString.slice(1, -1)
             return (new _string(valueString))
@@ -103,6 +101,15 @@ class base {
     }
     static __reverse(a) {
         return new _boolean(!a.value)
+    }
+
+    static clone(data) {
+        if (data instanceof base) {
+            
+            return new data.constructor(data.value)
+        }else{
+            return data
+        }
     }
 }
 
@@ -185,9 +192,11 @@ class lambdaBase {
         this.define_env = env;//定义时的环境
         this.type = "lambda"
     }
-    call(env) {
-        return new lambdaBase(this.args, this.ananlyzed_body, env)
+
+    call(newenv) {
+        return new lambdaBase(this.args, this.ananlyzed_body, newenv)
     }
+
 }
 
 class _class {
@@ -598,5 +607,5 @@ class json extends list {
 }
 
 export {
-    _null,_undefined, base, _number, _string, _boolean, lambdaBase, _class, cons, list, json,
+    _null, _undefined, base, _number, _string, _boolean, lambdaBase, _class, cons, list, json,
 }
