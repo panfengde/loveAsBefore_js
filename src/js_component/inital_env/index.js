@@ -20,8 +20,8 @@ function inital_env() {
             return a % b
         },
         cons_scheme: function (a, b) {
-            alert(1)
-            console.log(a, b)
+            //debugger
+            //console.log(a, b)
             return new cons(a, b)
         },
         car_scheme: function (cons) {
@@ -32,17 +32,20 @@ function inital_env() {
         },
         nullList: _boolean.__nullList,
         display: function (...pairsAll) {
-            pairsAll.forEach((pairs) => {
+           /*  pairsAll.forEach((pairs) => {
                 console.log(pairs)
+            }) */
+            let result = pairsAll.map((pairs) => {
+                if (is_list(pairs)) {
+                    return ("    ", pairs.show)
+                } else if (pairs.type == "frame" || pairs.type == "classFrame") {
+                    return pairs
+                }
+                else {
+                    return ("    ", ((pairs && typeof pairs.value !== "undefined") ? pairs.value : pairs))
+                }
             })
-             /* let result = pairsAll.map((pairs) => {
-                 if (is_list(pairs)) {
-                     return ("    ", pairs.show)
-                 } else {
-                     return ("    ", ((pairs && typeof pairs.value !== "undefined") ? pairs.value : pairs))
-                 }
-             })
-             console.log(result.join(",")) */
+            console.log(result.join(","))
 
 
         },
@@ -57,6 +60,9 @@ function inital_env() {
             return new _null()
         },
         _undefined: function () {
+            return new _undefined()
+        },
+        debugger: function () {
             return new _undefined()
         },
 
@@ -86,11 +92,7 @@ function inital_env() {
         "null": new list("original", shemeOp_to_jsOp._null),
         "undefined": new list("original", shemeOp_to_jsOp._undefined),
         "canvas": shemeOp_to_jsOp.canvas,
-        /*
-        "true": true,
-        "false": false,
-        "else": true, 
-         */
+        "debugger": new list("original", shemeOp_to_jsOp.debugger),
     }
 
     let names = []

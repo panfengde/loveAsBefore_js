@@ -1,17 +1,14 @@
 //解析xml字符串，获取信息
 //(define xml "<div id=test ids=texst >loveAsBefore<span>xxxx</span></div>")
-(define xml "<body>
-<b id=test>This text is bold</b>
-<strong>This text is strong</strong>
-<big>This text is big</big>
-<em>This text is emphasized</em>
-<i>This text is italic</i>
-<small>This text is small</small>
-This text contains
-<sub>subscript</sub>
-This text contains
-<sup>superscript</sup>
-</body>"
+(define xml "<div>
+    渲染
+    <div>
+        子元素渲染1
+    </div>
+    <div>
+        子元素渲染2
+    </div>
+</div>"
 )
 
 
@@ -89,6 +86,7 @@ This text contains
     (define _getChild "")
     (define childResult "")
     (define componentResult null)
+    (display "---------------------" xml)
     (if (= ((. xml "index") 0) "<")
         (begin
              ((. xml "forEach")

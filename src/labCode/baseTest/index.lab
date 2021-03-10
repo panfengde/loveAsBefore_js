@@ -1,19 +1,33 @@
  
- (define x 1000)
+; (define ax (null))
+; (define a 99999900)
 
- (class TestNumber 
-    (constructor (x)
-        (set! (. this "number") x)
-        (set! (. this "a") 1)
+;  (class TestNumber 
+;     (constructor ()
+;         (set! (. this "data") (json
+;             (: "number" 1)
+;         ))
+;     )
+;     (define (go ) (+ 1 1))
+; )
+
+; (define one (new TestNumber ) )
+; (define two (new TestNumber ) )
+; (define three (new TestNumber ) )
+; (define four (new TestNumber ) )
+
+; (set! (. one "data" "number") 5)
+; two
+; three
+
+(define number 1)
+(define (teset )
+    (define a (json (: "number" 1)))
+    (if (= number 1)
+        (begin (set! (. a "number" ) 100) (display "----"))
     )
-    
-    (define (go x) (set! (. this "number") x))
- )
-
-
- (define one (new TestNumber 2 ) )
-
-
- (define two (new TestNumber 2 ) ) 
-
-(. one "x")
+    (+= number 1)
+    a
+)
+(teset )
+(teset )

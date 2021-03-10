@@ -21,13 +21,13 @@ import json2canvas from './js_component/drawComponents/index.lab'
 function component() {
   console.time(1)
   // lodash，现在通过一个 script 引入
-   loveAsBefore(macro)
-   loveAsBefore(baseTest)
+   /* loveAsBefore(macro)
+   loveAsBefore(baseTest) */
 
-  /* loveAsBefore(macro)
+ /*  loveAsBefore(macro)
   loveAsBefore(parseXml)
   loveAsBefore(json2canvas) */
-
+  loveAsBefore(macro,parseXml,json2canvas)
   //loveAsBefore()
   console.timeEnd(1)
   //下面不要动

@@ -13,10 +13,10 @@ class theCanvas {
         this.context = canvas.getContext('2d');
     }
     __rect(x, y, w, h) {
-        console.log("canvas---------------------------rect", x.value,
+       /*  console.log("canvas---------------------------rect", x.value,
             y.value,
             w.value,
-            h.value)
+            h.value) */
         this.context.beginPath();
         this.context.rect(
             x.value,
@@ -36,8 +36,8 @@ class theCanvas {
         this.context.fill();
     }
     __fillText(txt, x, y) {
-        console.log("canvas--------------fillText", x.value,
-            y.value)
+       /*  console.log("canvas--------------fillText", x.value,
+            y.value) */
         this.context.beginPath();
         this.context.font = 'italic 20px Calibri';
         this.context.fillStyle = 'gold';

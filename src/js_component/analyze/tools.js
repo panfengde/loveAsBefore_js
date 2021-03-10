@@ -90,7 +90,7 @@ let tools = {
                 "lambda",
                 "class",
                 "define-syntax",
-                "cons",
+                //"cons",
                 "let",
                 "'",
                 "new",

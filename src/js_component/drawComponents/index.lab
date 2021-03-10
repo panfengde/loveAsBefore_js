@@ -169,7 +169,6 @@
 
     ((.  eleLists "forEach") (lambda (element i)
             (define tag (. element "tag"))
-            
             (cond 
                 ((= tag  "div") 
                     (set! _thisOne (new BlockLevel "1"))
@@ -181,7 +180,7 @@
             )
             
             (set! (. _thisOne "father") father)
-            (display father)
+
             (if (= i 0)
                 (begin 
                     (set! result _thisOne)
@@ -211,29 +210,32 @@
     (if (. elmentObj "brother")
         (parseEleInfo (. elmentObj "brother"))
     ) 
-    
-     
+    (display (. elmentObj "father"))
+    (debugger)
     (if (. elmentObj "father")
         (begin
             (+= (. elmentObj "father" "elementInfo" "w")
-               (. elmentObj "elementInfo" "w")
+                (. elmentObj "elementInfo" "w")
             )
             (+= (. elmentObj "father" "elementInfo" "h" ) 
                 (. elmentObj "elementInfo" "h")
             )
+            (display "-----------------------")
         )
+        (display "-xxxxxxxxxxxxxxxxxxx")
     )
+    (display (. elmentObj "father" "elementInfo" "h" ) )
 )
 
 
 (define helloOk (parseEleInfoTree (. body "result") (null)))
 
-helloOk
+
  
 (parseEleInfo helloOk)
  
 ((. helloOk "render") 1 )
-
+helloOk
 
 
 

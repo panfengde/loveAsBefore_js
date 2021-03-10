@@ -47,9 +47,25 @@ class base {
         if (!isNaN(Number(valueString))) {
             return (new _number(valueString))
         }
-
         return valueString
     }
+
+    static judgeTypeAndClean(valueString) {
+        if (valueString[0] == "\"") {
+            valueString = valueString.slice(1, -1)
+            return { tag: "string", valueString: valueString }
+        }
+        if (valueString === "false" || valueString === "true" || valueString === "else") {
+            return { tag: "boolean", valueString: valueString }
+        }
+
+        if (!isNaN(Number(valueString))) {
+            return { tag: "number", valueString: valueString }
+        }
+
+        return { tag: "variable", valueString: valueString }
+    }
+
 
     static __add(...datas) {
         //加法
@@ -105,9 +121,8 @@ class base {
 
     static clone(data) {
         if (data instanceof base) {
-            
             return new data.constructor(data.value)
-        }else{
+        } else {
             return data
         }
     }
@@ -118,6 +133,7 @@ class _number extends base {
         super(props)
         this.type = "number"
         this.value = Number(props)
+        this.index = Math.random()
     }
     hello() {
         alert("hello")
@@ -185,16 +201,17 @@ class _boolean extends base {
 }
 
 class lambdaBase {
-    constructor(args, body, env) {
+    constructor(args, body, env, _this) {
         this.value = "[lambda native code]"
         this.args = args;
         this.ananlyzed_body = body;
         this.define_env = env;//定义时的环境
         this.type = "lambda"
+        this._this = _this
     }
 
-    call(newenv) {
-        return new lambdaBase(this.args, this.ananlyzed_body, newenv)
+    call(_this) {
+        return new lambdaBase(this.args, this.ananlyzed_body, this.define_env, _this)
     }
 
 }
@@ -216,6 +233,7 @@ class cons {
         }
         typeof car != "undefined" && (this.car = car);
         typeof cdr != "undefined" && (this.cdr = cdr);
+        this.value = true
         this.type = "cons"
     }
 

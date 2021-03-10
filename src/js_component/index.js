@@ -12,19 +12,19 @@ function loveAsBefore(...labCodeFiles) {
             //console.log(Parse.strExp_to_List(code))
             let result = run_eval(Parse.strExp_to_List(code), global_env)
             
-            console.log(result)
-            /* try {
+            //console.log(result)
+            try {
                 let _theshow = result ? (result.show || result.value) : result
                 console.log(_theshow)
             } catch (e) {
                 console.log(result)
-            } */
+            }
 
         })
     })
 }
 
-function loveAsBefore__(...labCodeFiles) {
+function loveAsBefore_(...labCodeFiles) {
     let result = []
     console.time("解析")
     labCodeFiles.forEach((labCodes) => {
@@ -37,8 +37,8 @@ function loveAsBefore__(...labCodeFiles) {
     console.time("运行")
     result.forEach((code) => {
         let result_ = run_eval(code, global_env)
-        let _theshow = result_ ? (result_.show || result_.value) : result_
-        console.log(_theshow)
+        /* let _theshow = result_ ? (result_.show || result_.value) : result_
+        console.log(_theshow) */
     })
     console.timeEnd("运行")
 }

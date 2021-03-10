@@ -151,7 +151,6 @@ class Parse {
                         temp.pop()
                     )
                 }
-
                 if (!car_over) {
                     car += world
                 } else {
@@ -188,7 +187,7 @@ class Parse {
             //reulst.push(Parse.strExp_to_List(cdr))
         } else {
             reulst = base.setTypeValue(exp_str)
-
+            
             //exp_str = this.kill_startEnd_rubbish(exp_str)
             /* if (exp_str == "false") {
                 reulst = false

@@ -6,7 +6,6 @@ function parse_txt(txt) {
     txt = txt.replace(/^[\/\/]+.*|^\;+.*|^\#+.*/mg, "")
     txt = txt.replace(/\r\n|\n/g, " ")
     txt = txt.replace(/^\s*|\s*$|\n/g, "")
-
     let reult = []
 
     //终止

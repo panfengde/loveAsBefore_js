@@ -1,17 +1,40 @@
 //解析xml字符串，获取信息
-//(define xml333 "<div id=test ids=texst >loveAsBefore<span>xxxx</span></div>")
-(define xml "<div>
-    111111
+
+(define xml "
+<div>
+    loveAsBefore
+    <div>
+    loveAsBefore
 </div>
 <div>
-    222
+    类测试
 </div>
 <div>
-    333
+    loveAsBefore
+</div>
+<div>
+    类测试
+    <div>
+    loveAsBefore
+</div>
+<div>
+    类测试
+    <div>
+    loveAsBefore
+</div>
+<div>
+    类测试
+</div>
+</div>
+</div>
+</div>
+<div>
+    类测试
 </div>
 "
 )
 
+(display xml)
 
 (class html2json
     (constructor (sxml) 
@@ -213,12 +236,7 @@
         )
         result
     )
-
 )
 
-(define body (html2json xml ))
-
-
-
-
+(define body (new html2json xml ))
 (. body "result")
