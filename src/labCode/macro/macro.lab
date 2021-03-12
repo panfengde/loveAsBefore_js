@@ -60,7 +60,7 @@
 )
 
 (define-syntax .
-    (syntax-rules   ()
+    (syntax-rules  ()
         ((_ a b) (get a b))
         ((_ a b c) (get (get a b) c))
         ((_ a b c ...) (get (get (get a b) c) ...))
