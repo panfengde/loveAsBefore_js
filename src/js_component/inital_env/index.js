@@ -32,7 +32,8 @@ function inital_env() {
         },
         nullList: _boolean.__nullList,
         display: function (...pairsAll) {
-           /*  pairsAll.forEach((pairs) => {
+            //console.log(pairsAll)
+            /* pairsAll.forEach((pairs) => {
                 console.log(pairs)
             }) */
             let result = pairsAll.map((pairs) => {

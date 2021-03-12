@@ -13,6 +13,7 @@ import labTest from './labCode/labTest/index.lab'
 
 import parseXml from './xml2layout/parseXml/index.lab'
 import json2canvas from './js_component/drawComponents/index.lab'
+import compiler from './labCode/compiler/index.lab'
 
 
 
@@ -31,7 +32,8 @@ function component() {
 
   //loveAsBefore(labTest)
   //loveAsBefore(macro, code)
-  loveAsBefore(macro, parseXml, json2canvas)
+  //loveAsBefore(macro, parseXml, json2canvas)
+  loveAsBefore(compiler)
   //loveAsBefore()
   console.timeEnd(1)
   //下面不要动

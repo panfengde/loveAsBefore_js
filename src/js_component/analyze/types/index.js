@@ -133,7 +133,6 @@ class _number extends base {
         super(props)
         this.type = "number"
         this.value = Number(props)
-        this.index = Math.random()
     }
     hello() {
         alert("hello")
@@ -593,7 +592,7 @@ class json extends list {
         }
         return iteration(this)
     }
-
+    
     __insert(keyValue) {
         // !!注意：
         //这里需要用快速算法，按规则插入

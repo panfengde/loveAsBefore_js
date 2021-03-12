@@ -4,7 +4,7 @@ import global_env from './inital_env/index.js';
 import run_eval from './run_eval/index.js';
 
 
-function loveAsBefore_(...labCodeFiles) {
+function loveAsBefore(...labCodeFiles) {
     labCodeFiles.forEach((labCodes) => {
         //strExp_to_List 优化空间非常大
         
@@ -25,7 +25,7 @@ function loveAsBefore_(...labCodeFiles) {
     })
 }
 
-function loveAsBefore(...labCodeFiles) {
+function loveAsBefore_(...labCodeFiles) {
     let result = []
     console.time("解析")
     labCodeFiles.forEach((labCodes) => {

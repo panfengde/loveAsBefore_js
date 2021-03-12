@@ -134,7 +134,7 @@ function parse_txt(txt) {
                 Sstart = true
             } else if (char == "'") {
                 quoteStart = true
-                oneExp += char;
+                oneExp = "'";
                 continue
             } else if (char == "\"") {
                 stringStart = true
@@ -168,18 +168,27 @@ function parse_txt(txt) {
             continue
 
         } else if (quoteStart) {
-
-            oneExp += char;
-            if (char == "(") {
-                bracketsFlag.push(1)
-            } else if (char == ")") {
-                bracketsFlag.pop()
-            }
-            //!S表达式中的字符串中有（）时会产生bug------------------------
-            if (bracketsFlag.length == 0) {
-                quoteStart = false;
-                result.push(oneExp)
-                oneExp = ""
+            if (oneExp[1] == "(") {
+                oneExp += char;
+                if (char == "(") {
+                    bracketsFlag.push(1)
+                } else if (char == ")") {
+                    bracketsFlag.pop()
+                }
+                //!S表达式中的字符串中有（）时会产生bug------------------------
+                if (bracketsFlag.length == 0) {
+                    quoteStart = false;
+                    result.push(oneExp)
+                    oneExp = ""
+                }
+            } else {
+                oneExp += char;
+                //                console.log("------", /[a-zA-Z0-9']/.test(txt[index + 1]), txt[index + 1])
+                if (!(/[a-zA-Z0-9']/.test(txt[index + 1]))) {
+                    quoteStart = false;
+                    result.push(oneExp)
+                    oneExp = ""
+                }
             }
             continue
         } else if (stringStart) {
@@ -206,7 +215,7 @@ function parse_txt(txt) {
     if (oneExp != "") {
         result.push(oneExp)
     }
-
+    console.log(result)
     return result
 }
 
