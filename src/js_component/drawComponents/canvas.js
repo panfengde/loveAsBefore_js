@@ -39,10 +39,11 @@ class theCanvas {
        /*  console.log("canvas--------------fillText", x.value,
             y.value) */
         this.context.beginPath();
-        this.context.font = 'italic 20px Calibri';
+        this.context.font = 'normal 20px Calibri';
         this.context.fillStyle = 'gold';
         this.context.fillText(txt.value, x.value, y.value + 20,)
     }
+    
 }
 
 let example = new theCanvas()

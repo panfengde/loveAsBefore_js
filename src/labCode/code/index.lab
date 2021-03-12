@@ -74,43 +74,12 @@
     (/ (square 1.618 n) 2.2360679774998)
 )
 
+
 (fib 5) 
 (fib 16)  
 (fib2 5)
 (fib2 16) 
 
-
-(class animal2
-    (constructor (name_num mouse_num go) 
-        ((set! (. this "name") name_num)
-        ((set! (. this "mouse") mouse_num)
-        ((set! (. this "go") go)       
-    )
-    (define (a x) (display x (. this "go") "-------") (display "hhhhhh"))
-)
-
-(define xxx "hello class")
-
-(define temp_ (animal2 "pf" 1 xxx))
-((. temp_ "a") 1)
-
-(define a (animal "name-------1111-----"    "aaaa"   111555 ))
-
-(. a "go")
-(. a "name")
-((. a "a") "123455")
-
-(define b (animal "name-------222-----"     "bbbbb" 22))
-(. b "name")
-((. b "a") "xcvbn")
-
-(define (forEach list fun)
-    (if (nullList  list)
-        '()
-        (begin (fun (car list) ) (forEach (cdr list) fun))
-    )
-)
-(forEach  '(1 2 3 4)  (lambda (x) (display (+ x 10))))
 
 
 
