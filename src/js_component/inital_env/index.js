@@ -46,7 +46,7 @@ function inital_env() {
                     return ("    ", ((pairs && typeof pairs.value !== "undefined") ? pairs.value : pairs))
                 }
             })
-            console.log(result.join(","))
+            console.log("display-----------", result.join(","))
 
 
         },
@@ -104,13 +104,17 @@ function inital_env() {
         name_ops.push(inital_op[name])
     }
 
-    return new frame(
+    let inital_env = new frame(
         names,
         name_ops
     );
+    let env = new frame();
+    env.extend_env(inital_env);
+    return env;
 
 }
 let global_env = inital_env()
+
 export default global_env
 
 

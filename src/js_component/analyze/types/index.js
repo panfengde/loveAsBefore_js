@@ -451,6 +451,54 @@ class list extends cons {
         iteration(this)
         return length;
     }
+    _literal() {
+        function iteration(pairs, result = "[") {
+            if (is_car_list(pairs)) {
+                result += `${pairs.car.literal()},`;
+                return iteration(pairs.cdr, result)
+            } else if (is_cdr_list(pairs)) {
+                result += `"${(pairs.car && (pairs.car.value || pairs.car))}",`
+                return iteration(pairs.cdr, result)
+            } else {
+                if (pairs) {
+                    result += `"${pairs.car && (pairs.car.value || pairs.car)}"`
+                }
+                return result += "]"
+            }
+        }
+        return iteration(this)
+    }
+
+    literal() {
+        function iteration(pair, result = "[") {
+            if (is_cdr_list(pair)) {
+                //result += `${(pair.car instanceof _string)?`"${pair.car}"`:pair.car}+ ,`
+                result += pair.car + ","
+                return iteration(pair.cdr, result)
+            } else {
+                result += pair.car + "]"
+                return result
+            }
+        }
+        return iteration(this)
+    }
+
+
+    static parseLiteral(elements) {
+        //parseLiteral接受数组
+        function iteration(elements) {
+            return new list(...elements.map((ele) => {
+                if (ele instanceof Array) {
+                    return iteration(...ele)
+                } else {
+                    return ele
+                }
+            }))
+
+        }
+        return iteration(elements)
+    }
+
 
     get show() {
         function iteration(pairs, result = "[") {
@@ -592,7 +640,7 @@ class json extends list {
         }
         return iteration(this)
     }
-    
+
     __insert(keyValue) {
         // !!注意：
         //这里需要用快速算法，按规则插入

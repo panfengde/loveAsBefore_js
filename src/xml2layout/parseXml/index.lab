@@ -41,7 +41,7 @@
         (set! (. this "html") sxml)
         (set! (. this "result")  ((. this "parse") (. this "html")) )
     )
-
+    
     //html分割
     (define (xml2list xml)
         (define result (list ))

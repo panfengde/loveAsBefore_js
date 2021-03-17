@@ -1,6 +1,6 @@
 
 import tools from './tools.js'
-import analyze from './analyze.js'
+import analyze from './compilerAnalyze.js'
 
 /**
  *  根据代码的操作符，选择相应的逻辑
@@ -8,7 +8,6 @@ import analyze from './analyze.js'
 function analyze_entry(parsed_code) {
     let tag = tools.checkTag_and_packageClass(parsed_code)
     //console.log("****",tag,parsed_code)
-    
     switch (tag) {
         case "number":
             return analyze.number(parsed_code);
@@ -53,7 +52,5 @@ function analyze_entry(parsed_code) {
             throw SyntaxError();
     }
 }
-
-
 
 export default analyze_entry

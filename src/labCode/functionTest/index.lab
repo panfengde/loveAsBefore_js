@@ -11,6 +11,9 @@
 
 (define one (new animal "aaa" 11111))
 
+(. one "color")
+(. one "wheel")
+
 (set! (. one "color") "?????")
 
 (. one "color")

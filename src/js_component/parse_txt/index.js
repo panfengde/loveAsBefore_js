@@ -215,7 +215,7 @@ function parse_txt(txt) {
     if (oneExp != "") {
         result.push(oneExp)
     }
-    console.log(result)
+    //console.log(result)
     return result
 }
 

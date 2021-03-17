@@ -25,7 +25,7 @@ function component() {
   // lodash，现在通过一个 script 引入
   // loveAsBefore(macro)
   // loveAsBefore(baseTest)
-
+  
   /*  loveAsBefore(macro)
    loveAsBefore(parseXml)
    loveAsBefore(json2canvas) */
