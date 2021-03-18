@@ -17,9 +17,6 @@ import compiler from './labCode/compiler/index.lab'
 
 
 
-
-
-
 function component() {
   console.time(1)
   // lodash，现在通过一个 script 引入
