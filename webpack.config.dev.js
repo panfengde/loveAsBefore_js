@@ -27,10 +27,20 @@ module.exports = {
   },
   module: {
     rules: [
-        {
-            test: /\.lab/,
-            type: 'asset/source',
+      {
+        test: /\.m?js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ['@babel/preset-env']
+          }
         }
+      },
+      {
+        test: /\.lab/,
+        type: 'asset/source',
+      }
     ]
-},
+  },
 };

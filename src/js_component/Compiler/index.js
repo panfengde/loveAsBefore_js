@@ -5,7 +5,6 @@ import analyze_entry from "../analyze/index"
  */
 function Compiler(parsed_code, env) {
     /// let code_pairs = exp_parse(code_str)
-    console.log(parsed_code)
     return analyze_entry(parsed_code)
 }
 

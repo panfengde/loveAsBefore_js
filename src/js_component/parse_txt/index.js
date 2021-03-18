@@ -96,7 +96,6 @@ function parse_txt(txt) {
     let result = []
 
     for (let index = 0; index < length; index++) {
-
         let char = txt[index];
         if (noteStart) {
             //注释标志开始了
@@ -168,26 +167,36 @@ function parse_txt(txt) {
             continue
 
         } else if (quoteStart) {
-            if (oneExp[1] == "(") {
+            if(oneExp.length>1){
+                if (oneExp[1] == "(") {
+                    oneExp += char;
+                    if (char == "(") {
+                        bracketsFlag.push(1)
+                    } else if (char == ")") {
+                        bracketsFlag.pop()
+                    }
+                    //!S表达式中的字符串中有（）时会产生bug------------------------
+                    if (bracketsFlag.length == 0) {
+                        quoteStart = false;
+                        result.push(oneExp)
+                        oneExp = ""
+                    }
+                } else {
+                    oneExp += char;
+                    //                console.log("------", /[a-zA-Z0-9']/.test(txt[index + 1]), txt[index + 1])
+                    if (!(/[a-zA-Z0-9']/.test(txt[index + 1]))) {
+                        quoteStart = false;
+                        result.push(oneExp)
+                        oneExp = ""
+                    }
+                }
+            }else{
                 oneExp += char;
+                
                 if (char == "(") {
                     bracketsFlag.push(1)
                 } else if (char == ")") {
                     bracketsFlag.pop()
-                }
-                //!S表达式中的字符串中有（）时会产生bug------------------------
-                if (bracketsFlag.length == 0) {
-                    quoteStart = false;
-                    result.push(oneExp)
-                    oneExp = ""
-                }
-            } else {
-                oneExp += char;
-                //                console.log("------", /[a-zA-Z0-9']/.test(txt[index + 1]), txt[index + 1])
-                if (!(/[a-zA-Z0-9']/.test(txt[index + 1]))) {
-                    quoteStart = false;
-                    result.push(oneExp)
-                    oneExp = ""
                 }
             }
             continue

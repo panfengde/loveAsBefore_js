@@ -369,7 +369,6 @@ class list extends cons {
 
 
     last_items() {
-
         function iteration(pair) {
             if (is_cdr_list(pair)) {
                 return iteration(pair.cdr)
@@ -377,7 +376,6 @@ class list extends cons {
                 return pair
             }
         }
-
         return iteration(this)
 
     }

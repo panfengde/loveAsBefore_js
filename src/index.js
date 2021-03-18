@@ -22,13 +22,14 @@ function component() {
   // lodash，现在通过一个 script 引入
   // loveAsBefore(macro)
   // loveAsBefore(baseTest)
-  
+
   /*  loveAsBefore(macro)
    loveAsBefore(parseXml)
    loveAsBefore(json2canvas) */
 
   //loveAsBefore(labTest)
   //loveAsBefore(macro, code)
+  //loveAsBefore(macro, parseXml)
   //loveAsBefore(macro, parseXml, json2canvas)
   loveAsBefore(compiler)
   //loveAsBefore()

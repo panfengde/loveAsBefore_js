@@ -6,6 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack serve --open --config webpack.config.dev.js ",
+    "_compiler": "webpack  --config webpack.config.compiler.js ",
+    "compiler": "babel-node src/compilerEntry.js",
     "build": "webpack"
   },
   "repository": {
@@ -26,5 +28,9 @@
     "webpack": "^5.20.1",
     "webpack-cli": "^4.5.0",
     "webpack-dev-server": "^3.11.2"
+  },
+  "devDependencies": {
+    "@babel/node": "^7.13.10",
+    "@babel/core": "^7.13.10"
   }
 }

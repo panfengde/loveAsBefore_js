@@ -13,15 +13,11 @@ let null_list = new list()
 console.time("编译好的代码运行时间");
 //--------------
 (function (env) {
-    return "ok"
-})(global_env);(analyze.parseClass("animal",["color_1","wheel_1"],function (env) {
-    (function (env) {
-    (analyze.parseListSet(analyze.parseGetArr(analyze.parseVariable("this"),analyze.parseString("color")),analyze.parseVariable("color_1")))(env);
-    return (analyze.parseListSet(analyze.parseGetArr(analyze.parseVariable("this"),analyze.parseString("wheel")),analyze.parseVariable("wheel_1")))(env);
-})(env);
-    return (analyze.parseVariable("this"))(env);
-},analyze.parseLambdaDefine("a",analyze.parseLambda(analyze.parseOperandsApp(analyze.parseVariable("display"),[analyze.parseGetArr(analyze.parseVariable("this"),analyze.parseString("color")),analyze.parseVariable("x"),analyze.parseString("okokokokok??????????")]),["x"]))))(global_env);(analyze.parseValueDefine("one",analyze.parseNew(analyze.parseOperandsApp(analyze.parseVariable("animal"),[analyze.parseString("aaa"),analyze.parseNumber(11111)]))))(global_env);(analyze.parseOperandsApp(analyze.parseVariable("display"),[analyze.parseGetArr(analyze.parseVariable("one"),analyze.parseString("color"))]))(global_env);(analyze.parseOperandsApp(analyze.parseVariable("display"),[analyze.parseGetArr(analyze.parseVariable("one"),analyze.parseString("wheel"))]))(global_env);(analyze.parseListSet(analyze.parseGetArr(analyze.parseVariable("one"),analyze.parseString("color")),analyze.parseString("?????")))(global_env);(analyze.parseOperandsApp(analyze.parseVariable("display"),[analyze.parseGetArr(analyze.parseVariable("one"),analyze.parseString("color"))]))(global_env);(analyze.parseOperandsApp(analyze.parseVariable("display"),[analyze.parseGetArr(analyze.parseVariable("one"),analyze.parseString("wheel"))]))(global_env);
-
+    return "ok";
+  })(global_env);(analyze.parseIf(analyze.parseOperandsApp(analyze.parseVariable("="),[analyze.parseNumber(5),analyze.parseNumber(1)]),analyze.parseOperandsApp(analyze.parseVariable("display"),[analyze.parseString("error")]),function (env) {
+          (analyze.parseOperandsApp(analyze.parseVariable("display"),[analyze.parseString("error")]))(env);
+          return (ok)(env);
+      }))(global_env);
 //--------------
 console.timeEnd("编译好的代码运行时间");
 function loveAsBefore(...labCodeFiles) {
@@ -29,8 +25,6 @@ function loveAsBefore(...labCodeFiles) {
     labCodeFiles.forEach((labCodes) => {
         //strExp_to_List 优化空间非常大
         parse_txt(labCodes).forEach((code) => {
-            //console.log(code)
-            //console.log(Parse.strExp_to_List(code))
             result += `(${Compiler(Parse.strExp_to_List(code))})(global_env);`
         })
         return result

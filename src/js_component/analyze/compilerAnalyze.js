@@ -6,6 +6,7 @@ import global_env from '../inital_env/index.js';
 import { base, _number, _string, _boolean, lambdaBase, _class, cons, list, json, _null, _undefined } from './types/index'
 import { is_cdr_list, is_car_list, is_list, is_json, is_frame } from "../../utils/tools"
 
+let test = {}
 let syntaxFrame = new frame()
 let null_list = new list()
 /**
@@ -55,7 +56,7 @@ class analyze {
             if (result) {
                 return result
             } else {
-                return new _null()
+                return new _boolean(false)
             }
         }
     }
@@ -138,7 +139,7 @@ class analyze {
     }
 
     static quote(code_op) {
-        //console.log(code_op);
+        console.log(code_op);
         let quoteBody = code_op.cdr.car;
         quoteBody = quoteBody.literal();
         return `analyze.parseQuote(${quoteBody})`;
@@ -203,7 +204,7 @@ class analyze {
             let ananlyzed_body = analyze_entry(_lambda);
             return `analyze.parseLambdaDefine(${name},${ananlyzed_body})`;
 
-            
+
         } else {
             //(define a 1)
             let name = code_op.cdr.car;
@@ -211,7 +212,7 @@ class analyze {
             let value = code_op.cdr.cdr ? analyze_entry(code_op.cdr.cdr.car) : analyze_entry("null");
             return `analyze.parseValueDefine(${name},${value})`;
 
-            
+
         }
     }
 
@@ -243,7 +244,7 @@ class analyze {
     static _if(code_op) {
         let prediction = analyze_entry(code_op.cdr.car);
         let true_action = analyze_entry(code_op.cdr.cdr.car);
-        var false_action = code_op.cdr.cdr.cdr ? code_op.cdr.cdr.cdr.car : new list("quote", "()")
+        var false_action = code_op.cdr.cdr.cdr ? code_op.cdr.cdr.cdr.car : new _boolean(false)
         //if (code_op.cdr.cdr.cdr == "()") {
         //console.log(false_action)
         /* if (typeof false_action == "undefined") {
@@ -258,7 +259,7 @@ class analyze {
         } */
         false_action = analyze_entry(false_action);
         return `analyze.parseIf(${prediction},${true_action},${false_action})`;
-       
+
     }
 
     static parseIf(prediction, true_action, false_action) {
@@ -284,7 +285,7 @@ class analyze {
         let parsed_let = analyze_entry(let_to_lambda)
         return `analyze.parseLet(${parsed_let})`;
 
-        
+
     }
 
     static parseLet(parsed_let) {
@@ -311,7 +312,7 @@ class analyze {
         //let body = code_op.cdr.cdr.car;
         let ananlyzed_body = this._sequences_analyze(body)
         return `analyze.parseLambda(${ananlyzed_body},${args})`;
-        
+
     }
 
     static parseLambda(ananlyzed_body, args) {
@@ -336,7 +337,7 @@ class analyze {
         //分析方法并插入作用域中
         let ananlyzed_constructor_body = this._sequences_analyze(constructor_body);
         return `analyze.parseClass(${name},${constructor_args},${ananlyzed_constructor_body},${ananlyzed_methods})`;
-       
+
     }
 
     static parseClass(name, constructor_args, ananlyzed_constructor_body, ananlyzed_methods) {
@@ -582,7 +583,9 @@ class analyze {
 
             let cloneVars = vars.getClone();
 
-
+            /* console.log("找到的宏-------", condition)
+            console.log("找到的宏params-------", params)
+            debugger */
             let result = replace(cloneVars, template, params)
             //console.log("宏替换结果-------", result)
             return result
@@ -639,23 +642,26 @@ class analyze {
             //  console.log("----", code_op)
             if (!is_list(code_op.car) && syntaxFrame.is_key_exist(code_op.car)) {
                 //宏
+                console.log(code_op.car)
+                if (test[code_op.car]) {
+                    return test[code_op.car]
+                }
                 let marcro = syntaxFrame.look_vars_frame(code_op.car)
                 let macro_params = code_op.cdr
                 let rule_list = marcro.cdr.car
                 let marco_replace_result = analyze.parse_macro(rule_list, macro_params)
                 //console.log("宏替换结果", marco_replace_result)
-                return analyze_entry(marco_replace_result)
+                test[code_op.car] = { value: "ok" };
+                let result = analyze_entry(marco_replace_result)
+                test[code_op.car] = { value: result };
+                return result
             } else {
                 let operands = code_op.cdr.map(analyze_entry);
-
                 return `analyze.parseOperandsApp(${operate},${operands.literal()})`;
-
-                
-
             }
         } else {
             return `analyze.parseNoOperandsApp(${operate})`;
-            
+
         }
     }
 
@@ -868,7 +874,7 @@ class oldAnalyze {
             if (result) {
                 return result
             } else {
-                return new _null()
+                return new _boolean(false)
             }
         }`
     }

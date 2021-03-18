@@ -7,12 +7,11 @@
          (let* ((p2 v2) ...1)
           b ...2)))))
 
+
 (define-syntax when
     (syntax-rules ()
       ((_ pred b1 ...)
-       (if pred (begin b1 ...) '()))))
-
-
+       (if pred (begin b1 ...) false))))
 
 
 (define-syntax and
@@ -28,6 +27,7 @@
                 ))
     )
 )
+
 (define-syntax do
     (syntax-rules ()
         ((_ e b) 
@@ -67,20 +67,6 @@
     )
 )
 
-; (define-syntax  cond
-;     (syntax-rules ()
-;         (
-;             (_ (e1 ...1) ) (if e1 (begin ...1))
-;         )
-;         (
-;             (_ (e1 ...1) ...2)
-;             (if e1
-;                 (begin ...1)
-;                 (cond (...2))
-;             )
-;         )
-;     )
-; )
 
 (define-syntax cond
     (syntax-rules ()
@@ -91,13 +77,3 @@
             (begin ...1)
             (cond c1 ...2)))))
 
-; (define (hello x)
-;     (cond
-;     ((= x "=") (+ 1 1) (display "!!" x))
-;     ((= x ">") (+ 1 1) (display "??" x))
-;     (else (+ 1 1) (display "else" x) )
-; )
-; )
-; (hello "=")
-; (hello ">")
-; (hello 1)

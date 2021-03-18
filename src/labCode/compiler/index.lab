@@ -54,26 +54,42 @@
 
 ; (display (. a "hello"))
 
-(define-syntax .
-    (syntax-rules  ()
-        ((_ a b) (get a b))
-        ((_ a b c) (get (get a b) c))
-        ((_ a b c ...) (get (get (get a b) c) ...))
+
+; (define-syntax .
+;     (syntax-rules  ()
+;         ((_ a b) (get a b))
+;         ((_ a b c) (get (get a b) c))
+;         ((_ a b c ...) (get (get (get a b) c) ...))
+;     )
+; )
+
+; (class animal
+;     (constructor (color_1 wheel_1) 
+;         (set! (. this "color") color_1)
+;         (set! (. this "wheel") wheel_1)
+;     )
+;     (define (a x) (display (. this "color")  x  "okokokokok??????????" ))
+; )
+
+; (define one (new animal "aaa" 11111) )
+
+; (display (. one "color"))
+; (display (. one "wheel"))
+; (set! (. one "color") "?????")
+; (display (. one "color"))
+; (display (. one "wheel"))
+
+
+
+(define-syntax do
+    (syntax-rules ()
+        ((_ e b) 
+            (if e 
+                b
+                (begin b (do e b) ) 
+            )
+        )
     )
 )
 
-(class animal
-    (constructor (color_1 wheel_1) 
-        (set! (. this "color") color_1)
-        (set! (. this "wheel") wheel_1)
-    )
-    (define (a x) (display (. this "color")  x  "okokokokok??????????" ))
-)
-
-(define one (new animal "aaa" 11111) )
-
-(display (. one "color"))
-(display (. one "wheel"))
-(set! (. one "color") "?????")
-(display (. one "color"))
-(display (. one "wheel"))
+(do (= 5 1) (display "error"))
