@@ -108,9 +108,11 @@ function inital_env() {
         names,
         name_ops
     );
-    let env = new frame();
-    env.extend_env(inital_env);
-    return env;
+    let macroFrame = new frame();
+    macroFrame.extend_env(inital_env);
+    let global_env = new frame();
+    global_env.extend_env(macroFrame);
+    return global_env;
 
 }
 let global_env = inital_env()
