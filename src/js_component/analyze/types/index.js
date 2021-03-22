@@ -481,6 +481,29 @@ class list extends cons {
         return iteration(this)
     }
 
+    AllLiteral() {
+        function iteration(pair, result = "[") {
+            if (is_cdr_list(pair)) {
+                //result += `${(pair.car instanceof _string)?`"${pair.car}"`:pair.car}+ ,`
+                if (is_list(pair.car)) {
+                    result += pair.car.AllLiteral() + ","
+                } else {
+                    result += ((pair.car instanceof base) ? pair.car.value : pair.car) + ","
+                }
+                return iteration(pair.cdr, result)
+            } else {
+                if (is_list(pair.car)) {
+                    result += pair.car.AllLiteral() + "]"
+                } else {
+                    result += ((pair.car instanceof base) ? pair.car.value : pair.car) + "]"
+                }
+                return result
+            }
+        }
+        return iteration(this)
+    }
+
+
 
     static parseLiteral(elements) {
         //parseLiteral接受数组
@@ -494,7 +517,14 @@ class list extends cons {
             }))
 
         }
-        return iteration(elements)
+        //不应该有这个if判断
+        //这里有bug
+        if (elements instanceof Array) {
+            return iteration(elements)
+        } else {
+            return elements
+        }
+
     }
 
 

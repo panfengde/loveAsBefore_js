@@ -1,31 +1,13 @@
-//(+ 1 1)
-
-/* (function (env) {
-    global.look_variable_env("a").(
-        (function (env) {
-            env.look_variable_env(a)
-        })(env),
-        1
+/* (define (fib n)
+    (cond
+        ((= n 0) 0)
+        ((= n 1) 1)
+        (else  (+ (fib (- n 1)) (fib (- n 2))))
     )
+)
 
-}
-)(global) */
+(fib 100)
 
-let global = {
-    a: function (a, b) { console.log(a + b) },
-    number: 1,
-    xx: 1
-};
+ */
 
-(function (env) {
-    global.a(
-        (function (env) {
-            return env.xx
-        })(env),
-        (function (env) {
-            return env.number
-        })(env)
-    )
-}
-)(global)
 

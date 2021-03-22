@@ -1,3 +1,5 @@
+"use strict";
+
 import _ from 'lodash';
 import {
   loveAsBefore
@@ -29,9 +31,9 @@ function component() {
 
   //loveAsBefore(labTest)
   //loveAsBefore(macro, code)
-  //loveAsBefore(macro, parseXml)
+  loveAsBefore(macro, parseXml)
   //loveAsBefore(macro, parseXml, json2canvas)
-  loveAsBefore(compiler)
+  //loveAsBefore(compiler)
   //loveAsBefore()
   console.timeEnd(1)
   //下面不要动

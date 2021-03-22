@@ -1,33 +1,9 @@
- 
-; (define ax (null))
-; (define a 99999900)
-
-;  (class TestNumber 
-;     (constructor ()
-;         (set! (. this "data") (json
-;             (: "number" 1)
-;         ))
-;     )
-;     (define (go ) (+ 1 1))
-; )
-
-; (define one (new TestNumber ) )
-; (define two (new TestNumber ) )
-; (define three (new TestNumber ) )
-; (define four (new TestNumber ) )
-
-; (set! (. one "data" "number") 5)
-; two
-; three
-
-(define number 1)
-(define (teset )
-    (define a (json (: "number" 1)))
-    (if (= number 1)
-        (begin (set! (. a "number" ) 100) (display "----"))
+(define (fib n)
+    (cond
+        ((= n 0) 0)
+        ((= n 1) 1)
+        (else  (+ (fib (- n 1)) (fib (- n 2))))
     )
-    (+= number 1)
-    a
 )
-(teset )
-(teset )
+
+(fib 100)

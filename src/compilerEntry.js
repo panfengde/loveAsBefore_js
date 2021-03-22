@@ -5,7 +5,7 @@ import parse_txt from './js_component/parse_txt/index.js';
 import Parse from './js_component/parse_exp/index.js';
 import global_env from './js_component/inital_env/index.js';
 import Compiler from './js_component/Compiler/index.js';
-import { analyze, eval_app } from './js_component/analyze/compilerAnalyze'
+import { analyze, eval_app } from './js_component/analyze/analyze'
 import { base, _number, _string, _boolean, lambdaBase, _class, cons, list, json, _null, _undefined } from './js_component/analyze/types/index'
 
 import { classFrame, frame } from "./js_component/frame/index.js"
@@ -28,8 +28,10 @@ function loveAsBefore(...labCodeFiles) {
 }
 //let file = ["./labCode/compiler/index.lab"];
 let file = [
+    
     "./labCode/macro/macro.lab",
-    "./xml2layout/parseXml/index.lab",
+    "./labCode/baseTest/index.lab",
+    //"./xml2layout/parseXml/index.lab",
 ];
 let txt = [];
 
