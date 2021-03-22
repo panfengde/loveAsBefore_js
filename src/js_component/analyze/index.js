@@ -2,13 +2,13 @@
 import tools from './tools.js'
 import {
     explainAnalyze,
-    compilerAnalyze
+    C
 } from './analyze.js'
 
 /**
  *  根据代码的操作符，选择相应的逻辑
  */
-function explain_entry(parsed_code) {
+function explainObj_entry(parsed_code) {
     let tag = tools.checkTag_and_packageClass(parsed_code)
     //console.log("****",tag,parsed_code)
     switch (tag) {
@@ -56,48 +56,48 @@ function explain_entry(parsed_code) {
     }
 }
 
-function compiler_entry(parsed_code) {
+function compilerObj_entry(parsed_code) {
     let tag = tools.checkTag_and_packageClass(parsed_code)
     //console.log("****",tag,parsed_code)
     switch (tag) {
         case "number":
-            return compilerAnalyze.number(parsed_code);
+            return C.number(parsed_code);
         case "string":
-            return compilerAnalyze.string(parsed_code);
+            return C.string(parsed_code);
         case "boolean":
-            return compilerAnalyze.boolean(parsed_code);
+            return C.boolean(parsed_code);
         case "variable":
-            return compilerAnalyze.variable(parsed_code);
+            return C.variable(parsed_code);
         /* case "null":
-            return compilerAnalyze.null(parsed_code);
+            return C.null(parsed_code);
         case "undefined":
-            return compilerAnalyze.undefined(parsed_code); */
+            return C.undefined(parsed_code); */
         case "get":
-            return compilerAnalyze.getArr(parsed_code);
+            return C.getArr(parsed_code);
         case "quote":
-            return compilerAnalyze.quote(parsed_code);
+            return C.quote(parsed_code);
         case "set!":
-            return compilerAnalyze.set(parsed_code);
+            return C.set(parsed_code);
         case "if":
-            return compilerAnalyze._if(parsed_code);
+            return C._if(parsed_code);
         case "cons":
-            return compilerAnalyze.cons(parsed_code);
+            return C.cons(parsed_code);
         case "define":
-            return compilerAnalyze.define(parsed_code);
+            return C.define(parsed_code);
         case "begin":
-            return compilerAnalyze.begin(parsed_code);
+            return C.begin(parsed_code);
         case "let":
-            return compilerAnalyze._let(parsed_code);
+            return C._let(parsed_code);
         case "lambda":
-            return compilerAnalyze.lambda(parsed_code);
+            return C.lambda(parsed_code);
         case "class":
-            return compilerAnalyze._class(parsed_code);
+            return C._class(parsed_code);
         case "new":
-            return compilerAnalyze._new(parsed_code);
+            return C._new(parsed_code);
         case "define-syntax":
-            return compilerAnalyze.defineSyntax(parsed_code);
+            return C.defineSyntax(parsed_code);
         case "app":
-            return compilerAnalyze.app(parsed_code);
+            return C.app(parsed_code);
         default:
             console.error("未定义的操作符", code_op, parsed_code)
             throw SyntaxError();
@@ -110,19 +110,19 @@ function compiler_entry(parsed_code) {
  */
 function explain(parsed_code, env) {
     /// let code_pairs = exp_parse(code_str)
-    return explain_entry(parsed_code)(env)
+    return explainObj_entry(parsed_code)(env)
 }
 
 
 
 function compiler(parsed_code, env) {
     /// let code_pairs = exp_parse(code_str)
-    return compiler_entry(parsed_code)
+    return compilerObj_entry(parsed_code)
 }
 
 export {
     explain,
     compiler,
-    explain_entry,
-    compiler_entry
+    explainObj_entry,
+    compilerObj_entry
 }

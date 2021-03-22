@@ -1,18 +1,14 @@
 "use strict";
 
 import _ from 'lodash';
-import {
-  loveAsBeforeExplain
-} from './js_component/index.js'
+import loveAsBeforeExplain from './js_component/explain.js'
+require("./runCompileFile.js");
 
 import macro from './labCode/macro/macro.lab'
-
 import code from './labCode/code/index.lab'
 import test from './labCode/functionTest/index.lab'
 import baseTest from './labCode/baseTest/index.lab'
 import labTest from './labCode/labTest/index.lab'
-
-
 import parseXml from './xml2layout/parseXml/index.lab'
 import json2canvas from './js_component/drawComponents/index.lab'
 import compiler from './labCode/compiler/index.lab'
@@ -33,7 +29,7 @@ function component() {
   //loveAsBeforeExplain( code)
   //loveAsBeforeExplain(macro, parseXml)
   //loveAsBeforeExplain(macro, parseXml, json2canvas)
-  loveAsBeforeExplain(compiler)
+  //loveAsBeforeExplain(compiler)
   //loveAsBeforeExplain()
   console.timeEnd(1)
   //下面不要动

@@ -206,12 +206,9 @@
             (set! (.  elmentObj "elementInfo"  "h") 24)
         )
     )
-
     (if (. elmentObj "brother")
         (parseEleInfo (. elmentObj "brother"))
     ) 
-    (display (. elmentObj "father"))
-    (debugger)
     (if (. elmentObj "father")
         (begin
             (+= (. elmentObj "father" "elementInfo" "w")
@@ -220,11 +217,8 @@
             (+= (. elmentObj "father" "elementInfo" "h" ) 
                 (. elmentObj "elementInfo" "h")
             )
-            (display "-----------------------")
         )
-        (display "-xxxxxxxxxxxxxxxxxxx")
     )
-    (display (. elmentObj "father" "elementInfo" "h" ) )
 )
 
 
@@ -233,7 +227,7 @@
 
  
 (parseEleInfo helloOk)
- 
+((. canvas "init") )
 ((. helloOk "render") 1 )
 helloOk
 

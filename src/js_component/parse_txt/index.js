@@ -52,7 +52,7 @@ function parse_txt222(txt) {
 
             //针对变量，字符等
             if (temp == "" || (temp.length > 0 && temp[0] != "(" && temp[0] != ")")) {
-                let s = /[a-zA-Z0-9']/
+                let s = legalWorld
                 // console.log("*************", word, i, txt.length, txt, txt.slice(i + 1) )
                 if (word == " " || word == "(") {
                     reult.push(quote + temp)
@@ -93,10 +93,13 @@ function parse_txt(txt) {
     //记录成对的括号用的，辅助
     let bracketsFlag = []
 
+    let legalWorld = /[a-zA-Z0-9_']/;
+
     let result = []
 
     for (let index = 0; index < length; index++) {
         let char = txt[index];
+        let nextChar = txt[index + 1];
         if (noteStart) {
             //注释标志开始了
             if (/\r\n|\n|\r/.test(char)) {
@@ -116,7 +119,7 @@ function parse_txt(txt) {
                     continue
                 }
 
-                if (char == "/" && txt[index + 1] == "/") {
+                if (char == "/" && nextChar == "/") {
                     noteStart = true
                     continue
                 }
@@ -167,7 +170,7 @@ function parse_txt(txt) {
             continue
 
         } else if (quoteStart) {
-            if(oneExp.length>1){
+            if (oneExp.length > 1) {
                 if (oneExp[1] == "(") {
                     oneExp += char;
                     if (char == "(") {
@@ -183,16 +186,15 @@ function parse_txt(txt) {
                     }
                 } else {
                     oneExp += char;
-                    //                console.log("------", /[a-zA-Z0-9']/.test(txt[index + 1]), txt[index + 1])
-                    if (!(/[a-zA-Z0-9']/.test(txt[index + 1]))) {
+                    //                console.log("------", legalWorld.test(nextChar), nextChar)
+                    if (!(legalWorld.test(nextChar))) {
                         quoteStart = false;
                         result.push(oneExp)
                         oneExp = ""
                     }
                 }
-            }else{
+            } else {
                 oneExp += char;
-                
                 if (char == "(") {
                     bracketsFlag.push(1)
                 } else if (char == ")") {
@@ -210,21 +212,20 @@ function parse_txt(txt) {
             }
             continue
         } else if (otherStart) {
-            //其他
-            if (/\w/.test(char)) {
-                oneExp += char;
-            } else {
+            oneExp += char;
+            if (!nextChar || !(legalWorld.test(nextChar))) {
                 result.push(oneExp)
                 otherStart = false;
                 oneExp = ""
             }
+
             continue
         }
     }
     if (oneExp != "") {
         result.push(oneExp)
     }
-    console.log(result)
+
     return result
 }
 

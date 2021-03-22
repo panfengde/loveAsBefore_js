@@ -533,4 +533,3 @@
 )
 
 (define body (new html2json xml ))
-(display (. body "result"))

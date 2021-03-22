@@ -1,8 +1,8 @@
 
 import { classFrame, frame } from '../frame/index'
 import {
-    explain_entry,
-    compiler_entry
+    explainObj_entry,
+    compilerObj_entry
 } from './index'
 import tools from './tools.js'
 import global_env from '../inital_env/index.js';
@@ -16,9 +16,9 @@ let null_list = new list()
 /**
  *表达式的操作符所对应的分析和操作逻辑
  */
-class compilerAnalyze {
+class C {
     static number(code_op) {
-        return `compilerAnalyze.parseNumber(${code_op.value})`;
+        return `C.parseNumber(${code_op.value})`;
     }
 
     static parseNumber(value) {
@@ -28,7 +28,7 @@ class compilerAnalyze {
     }
 
     static string(code_op) {
-        return `compilerAnalyze.parseString("${code_op.value}")`;
+        return `C.parseString("${code_op.value}")`;
     }
 
     static parseString(value) {
@@ -38,7 +38,7 @@ class compilerAnalyze {
     }
 
     static boolean(code_op) {
-        return `compilerAnalyze.parseBboolean(${code_op.value})`;
+        return `C.parseBboolean(${code_op.value})`;
     }
 
     static parseBboolean(value) {
@@ -49,7 +49,7 @@ class compilerAnalyze {
 
 
     static variable(code_op) {
-        return `compilerAnalyze.parseVariable("${code_op}")`;
+        return `C.parseVariable("${code_op}")`;
 
     }
     static parseVariable(varibal) {
@@ -70,9 +70,9 @@ class compilerAnalyze {
         //(. Number "hello")
         //(. class "hello")
         //console.log("code_op",code_op)
-        let obj = compiler_entry(code_op.cdr.car);
-        let arr = compiler_entry(code_op.cdr.cdr.car);
-        return `compilerAnalyze.parseGetArr(${obj},${arr})`;
+        let obj = compilerObj_entry(code_op.cdr.car);
+        let arr = compilerObj_entry(code_op.cdr.cdr.car);
+        return `C.parseGetArr(${obj},${arr})`;
 
     }
 
@@ -144,7 +144,7 @@ class compilerAnalyze {
         console.log(code_op);
         let quoteBody = code_op.cdr.car;
         quoteBody = quoteBody.literal();
-        return `compilerAnalyze.parseQuote(${quoteBody})`;
+        return `C.parseQuote(${quoteBody})`;
 
     }
 
@@ -156,13 +156,13 @@ class compilerAnalyze {
 
     static set(code_op) {
         let setObj = code_op.cdr.car
-        let valueFn = compiler_entry(code_op.cdr.cdr.car);
+        let valueFn = compilerObj_entry(code_op.cdr.cdr.car);
         if (is_list(setObj)) {
-            let trueObjFn = compiler_entry(setObj);
-            return `compilerAnalyze.parseListSet(${trueObjFn},${valueFn})`;
+            let trueObjFn = compilerObj_entry(setObj);
+            return `C.parseListSet(${trueObjFn},${valueFn})`;
         } else {
-            //let name = compiler_entry(setObj);
-            return `compilerAnalyze.parseValueSet("${setObj}",${valueFn})`;
+            //let name = compilerObj_entry(setObj);
+            return `C.parseValueSet("${setObj}",${valueFn})`;
         }
 
     }
@@ -201,18 +201,18 @@ class compilerAnalyze {
             name = `"${name}"`;
             let args = code_op.cdr.car.cdr || null_list;
             let body = code_op.cdr.cdr;
-            let _lambda = compilerAnalyze._make_lambda(args, body);
+            let _lambda = C._make_lambda(args, body);
             //console.log(_lambda)
-            let ananlyzed_body = compiler_entry(_lambda);
-            return `compilerAnalyze.parseLambdaDefine(${name},${ananlyzed_body})`;
+            let ananlyzed_body = compilerObj_entry(_lambda);
+            return `C.parseLambdaDefine(${name},${ananlyzed_body})`;
 
 
         } else {
             //(define a 1)
             let name = code_op.cdr.car;
             name = `"${name}"`;
-            let value = code_op.cdr.cdr ? compiler_entry(code_op.cdr.cdr.car) : compiler_entry("null");
-            return `compilerAnalyze.parseValueDefine(${name},${value})`;
+            let value = code_op.cdr.cdr ? compilerObj_entry(code_op.cdr.cdr.car) : compilerObj_entry("null");
+            return `C.parseValueDefine(${name},${value})`;
 
 
         }
@@ -244,8 +244,8 @@ class compilerAnalyze {
     }
 
     static _if(code_op) {
-        let prediction = compiler_entry(code_op.cdr.car);
-        let true_action = compiler_entry(code_op.cdr.cdr.car);
+        let prediction = compilerObj_entry(code_op.cdr.car);
+        let true_action = compilerObj_entry(code_op.cdr.cdr.car);
         var false_action = code_op.cdr.cdr.cdr ? code_op.cdr.cdr.cdr.car : new _boolean(false)
         //if (code_op.cdr.cdr.cdr == "()") {
         //console.log(false_action)
@@ -257,10 +257,10 @@ class compilerAnalyze {
                 return false;
             }
         } else {
-            false_action = compiler_entry(false_action);
+            false_action = compilerObj_entry(false_action);
         } */
-        false_action = compiler_entry(false_action);
-        return `compilerAnalyze.parseIf(${prediction},${true_action},${false_action})`;
+        false_action = compilerObj_entry(false_action);
+        return `C.parseIf(${prediction},${true_action},${false_action})`;
 
     }
 
@@ -281,11 +281,11 @@ class compilerAnalyze {
         let args_name = arg_partment.map((arg_exp_cons) => (arg_exp_cons.car))
         let args_value = arg_partment.map((arg_exp_cons) => (arg_exp_cons.cdr.car))
 
-        let _lambda = compilerAnalyze._make_lambda(args_name, body_sequence)
+        let _lambda = C._make_lambda(args_name, body_sequence)
         let let_to_lambda = new list(_lambda).concat(args_value)
         //((lambda (a b) (+ a b) ) 1 2)
-        let parsed_let = compiler_entry(let_to_lambda)
-        return `compilerAnalyze.parseLet(${parsed_let})`;
+        let parsed_let = compilerObj_entry(let_to_lambda)
+        return `C.parseLet(${parsed_let})`;
 
 
     }
@@ -298,8 +298,8 @@ class compilerAnalyze {
 
     /* static cons(code_op) {
         // (cons a b)
-        let car_data = compiler_entry(code_op.cdr.car)
-        let cdr_data = compiler_entry(code_op.cdr.cdr.car)
+        let car_data = compilerObj_entry(code_op.cdr.car)
+        let cdr_data = compilerObj_entry(code_op.cdr.cdr.car)
         return function (env) {
             return new cons(car_data(env), cdr_data(env))
         }
@@ -313,7 +313,7 @@ class compilerAnalyze {
         let body = code_op.cdr.cdr;
         //let body = code_op.cdr.cdr.car;
         let ananlyzed_body = this._sequences_analyze(body)
-        return `compilerAnalyze.parseLambda(${ananlyzed_body},${args})`;
+        return `C.parseLambda(${ananlyzed_body},${args})`;
 
     }
 
@@ -338,7 +338,7 @@ class compilerAnalyze {
         let ananlyzed_methods = this._sequences_analyze(methods)
         //分析方法并插入作用域中
         let ananlyzed_constructor_body = this._sequences_analyze(constructor_body);
-        return `compilerAnalyze.parseClass(${name},${constructor_args},${ananlyzed_constructor_body},${ananlyzed_methods})`;
+        return `C.parseClass(${name},${constructor_args},${ananlyzed_constructor_body},${ananlyzed_methods})`;
 
     }
 
@@ -366,8 +366,8 @@ class compilerAnalyze {
 
     static _new(code_op) {
         let trueExp = code_op.cdr
-        let classParse = compiler_entry(trueExp);
-        return `compilerAnalyze.parseNew(${classParse})`;
+        let classParse = compilerObj_entry(trueExp);
+        return `C.parseNew(${classParse})`;
     }
     static parseNew(classParse) {
         return function (env) {
@@ -596,7 +596,7 @@ class compilerAnalyze {
     }
 
     static _app(code_op) {
-        let operate = compiler_entry(code_op.car)
+        let operate = compilerObj_entry(code_op.car)
         if (is_cdr_list(code_op)) {
             return function (env) {
                 let true_operate = operate(env)
@@ -611,8 +611,8 @@ class compilerAnalyze {
                 } else {
                     //需要确认操作不是宏的时候，再去执行参数分析，不然会错误
                     //原来，是将参数的分析，放在外面，导致宏参数分析报错
-                    //let operands = code_op.cdr ? code_op.cdr.map(compiler_entry) : new list()
-                    let operands = code_op.cdr.map(compiler_entry)
+                    //let operands = code_op.cdr ? code_op.cdr.map(compilerObj_entry) : new list()
+                    let operands = code_op.cdr.map(compilerObj_entry)
                     return eval_app(
                         true_operate,
                         operands.map((operand_fun) => {
@@ -638,7 +638,7 @@ class compilerAnalyze {
     }
 
     static app(code_op) {
-        let operate = compiler_entry(code_op.car);
+        let operate = compilerObj_entry(code_op.car);
 
         if (is_cdr_list(code_op)) {
             //  console.log("----", code_op)
@@ -661,9 +661,9 @@ class compilerAnalyze {
                 let marcro = syntaxFrame.look_vars_frame(code_op.car);
                 let macro_params = code_op.cdr;
                 let rule_list = marcro.cdr.car;
-                let marco_replace_result = compilerAnalyze.parse_macro(rule_list, macro_params);
+                let marco_replace_result = C.parse_macro(rule_list, macro_params);
                 macoDic[exp] = { first: true };
-                let result = compiler_entry(marco_replace_result);
+                let result = compilerObj_entry(marco_replace_result);
 
                 result = `function(env){
                     let macro=${result};
@@ -672,11 +672,11 @@ class compilerAnalyze {
                 macoDic[exp].first = false;
                 return result
             } else {
-                let operands = code_op.cdr.map(compiler_entry);
-                return `compilerAnalyze.parseOperandsApp(${operate},${operands.literal()})`;
+                let operands = code_op.cdr.map(compilerObj_entry);
+                return `C.parseOperandsApp(${operate},${operands.literal()})`;
             }
         } else {
-            return `compilerAnalyze.parseNoOperandsApp(${operate})`;
+            return `C.parseNoOperandsApp(${operate})`;
 
         }
     }
@@ -726,7 +726,7 @@ class compilerAnalyze {
             console.error("begin语句错误", sequences)
             throw SyntaxError();
         } else {
-            let analyzed_sequences = sequences.map(compiler_entry)
+            let analyzed_sequences = sequences.map(compilerObj_entry)
             return loop(analyzed_sequences.car, analyzed_sequences.cdr)
         }
     }
@@ -791,8 +791,8 @@ class explainAnalyze {
         //(. Number "hello")
         //(. class "hello")
         //console.log("code_op",code_op)
-        let obj = explain_entry(code_op.cdr.car);
-        let arr = explain_entry(code_op.cdr.cdr.car);
+        let obj = explainObj_entry(code_op.cdr.car);
+        let arr = explainObj_entry(code_op.cdr.cdr.car);
 
         return function (env) {
             let true_obj = obj(env)
@@ -870,12 +870,12 @@ class explainAnalyze {
         //(set! a 10)
         //let name = code_op.cdr.car;
         let setObj = code_op.cdr.car
-        let valueFn = explain_entry(code_op.cdr.cdr.car);
+        let valueFn = explainObj_entry(code_op.cdr.cdr.car);
 
         if (is_list(setObj)) {
             // (set! (. this "html") sxml)
 
-            let trueObjFn = explain_entry(setObj);
+            let trueObjFn = explainObj_entry(setObj);
 
             return function (env) {
 
@@ -899,7 +899,7 @@ class explainAnalyze {
                 }
             }
         } else {
-            //let name = explain_entry(setObj);
+            //let name = explainObj_entry(setObj);
             return function (env) {
                 let trueValue = valueFn(env)
                 trueValue = base.clone(trueValue)
@@ -916,7 +916,7 @@ class explainAnalyze {
             let body = code_op.cdr.cdr;
             let _lambda = explainAnalyze._make_lambda(args, body);
             //console.log(_lambda)
-            let ananlyzed_body = explain_entry(_lambda);
+            let ananlyzed_body = explainObj_entry(_lambda);
             return function (env) {
                 return env.insert_key_value(
                     name,
@@ -927,7 +927,7 @@ class explainAnalyze {
             //(define a 1)
             let name = code_op.cdr.car;
 
-            let value = code_op.cdr.cdr ? explain_entry(code_op.cdr.cdr.car) : explain_entry("null");
+            let value = code_op.cdr.cdr ? explainObj_entry(code_op.cdr.cdr.car) : explainObj_entry("null");
             return function (env) {
                 let trueValue = value(env)
                 return env.insert_key_value(name, base.clone(trueValue));
@@ -945,8 +945,8 @@ class explainAnalyze {
     }
 
     static _if(code_op) {
-        let prediction = explain_entry(code_op.cdr.car);
-        let true_action = explain_entry(code_op.cdr.cdr.car);
+        let prediction = explainObj_entry(code_op.cdr.car);
+        let true_action = explainObj_entry(code_op.cdr.cdr.car);
         var false_action = code_op.cdr.cdr.cdr ? code_op.cdr.cdr.cdr.car : new _boolean(false)
 
         //if (code_op.cdr.cdr.cdr == "()") {
@@ -959,9 +959,9 @@ class explainAnalyze {
                 return false;
             }
         } else {
-            false_action = explain_entry(false_action);
+            false_action = explainObj_entry(false_action);
         } */
-        false_action = explain_entry(false_action);
+        false_action = explainObj_entry(false_action);
         return function (env) {
             let predictionValue = prediction(env)
             if (predictionValue.type == "frame" || predictionValue.type == "json" || predictionValue.value) {
@@ -981,7 +981,7 @@ class explainAnalyze {
         let _lambda = explainAnalyze._make_lambda(args_name, body_sequence)
         let let_to_lambda = new list(_lambda).concat(args_value)
         //((lambda (a b) (+ a b) ) 1 2)
-        let parsed_let = explain_entry(let_to_lambda)
+        let parsed_let = explainObj_entry(let_to_lambda)
         return function (env) {
             return parsed_let(env)
         }
@@ -989,8 +989,8 @@ class explainAnalyze {
 
     /* static cons(code_op) {
         // (cons a b)
-        let car_data = explain_entry(code_op.cdr.car)
-        let cdr_data = explain_entry(code_op.cdr.cdr.car)
+        let car_data = explainObj_entry(code_op.cdr.car)
+        let cdr_data = explainObj_entry(code_op.cdr.cdr.car)
         return function (env) {
             return new cons(car_data(env), cdr_data(env))
         }
@@ -1045,7 +1045,7 @@ class explainAnalyze {
 
     static _new(code_op) {
         let trueExp = code_op.cdr
-        let classParse = explain_entry(trueExp);
+        let classParse = explainObj_entry(trueExp);
         return function (env) {
             return classParse(env)
         }
@@ -1269,7 +1269,7 @@ class explainAnalyze {
 
     static app(code_op) {
        
-        let operate = explain_entry(code_op.car)
+        let operate = explainObj_entry(code_op.car)
         if (is_cdr_list(code_op)) {
             if (!is_list(code_op.car) && global_env.father_frame.is_key_exist(code_op.car)) {
                 //宏
@@ -1289,7 +1289,7 @@ class explainAnalyze {
                 let rule_list = marcro.cdr.car;
                 let marco_replace_result = explainAnalyze.parse_macro(rule_list, macro_params);
                 macoDic[exp] = { first: true };
-                let result = explain_entry(marco_replace_result);
+                let result = explainObj_entry(marco_replace_result);
                 let macor_result = function (env) {
                     let macro = result;
                     return macro(env);
@@ -1298,7 +1298,7 @@ class explainAnalyze {
                 macoDic[exp].first = false;
                 return macor_result;
             } else {
-                let operands = code_op.cdr.map(explain_entry);
+                let operands = code_op.cdr.map(explainObj_entry);
                 return function (env) {
                     let true_operate = operate(env)
                     return eval_app(
@@ -1346,7 +1346,7 @@ class explainAnalyze {
             console.error("begin语句错误", sequences)
             throw SyntaxError();
         } else {
-            let analyzed_sequences = sequences.map(explain_entry)
+            let analyzed_sequences = sequences.map(explainObj_entry)
             return loop(analyzed_sequences.car, analyzed_sequences.cdr)
         }
     }
@@ -1419,7 +1419,7 @@ function eval_app(operate, operands, exp) {
 }
 
 export {
-    compilerAnalyze,
+    C,
     explainAnalyze,
     eval_app
 }
