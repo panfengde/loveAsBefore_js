@@ -1,22 +1,10 @@
+class canvas {
 
-
-
-class theCanvas {
-    constructor() {
-        let canvas = document.createElement('canvas');
-        //let context = canvas.getContext('2d');
-        canvas.width = 700;
-        canvas.height = 600;
-        canvas.style.backgroundColor = '#007eff3d';
-        document.body.appendChild(canvas);
-        console.log("canvas-----apppend")
-        this.context = canvas.getContext('2d');
-    }
-    __rect(x, y, w, h) {
-       /*  console.log("canvas---------------------------rect", x.value,
-            y.value,
-            w.value,
-            h.value) */
+    static __rect(x, y, w, h) {
+        /*  console.log("canvas---------------------------rect", x.value,
+             y.value,
+             w.value,
+             h.value) */
         this.context.beginPath();
         this.context.rect(
             x.value,
@@ -35,17 +23,24 @@ class theCanvas {
         this.context.fillStyle = '#' + Math.random().toString(16).substr(2, 6).toUpperCase();;
         this.context.fill();
     }
-    __fillText(txt, x, y) {
-       /*  console.log("canvas--------------fillText", x.value,
-            y.value) */
+    static __fillText(txt, x, y) {
+        /*  console.log("canvas--------------fillText", x.value,
+             y.value) */
         this.context.beginPath();
         this.context.font = 'normal 20px Calibri';
         this.context.fillStyle = 'gold';
         this.context.fillText(txt.value, x.value, y.value + 20,)
     }
-    
+    static __init() {
+        let canvas = document.createElement('canvas');
+        //let context = canvas.getContext('2d');
+        canvas.width = 700;
+        canvas.height = 600;
+        canvas.style.backgroundColor = '#007eff3d';
+        document.body.appendChild(canvas);
+        console.log("canvas-----apppend")
+        this.context = canvas.getContext('2d');
+    }
 }
 
-let example = new theCanvas()
-
-export { example }
+export default canvas;

@@ -133,7 +133,6 @@ class _number extends base {
         super(props)
         this.type = "number"
         this.value = Number(props)
-        this.index = Math.random()
     }
     hello() {
         alert("hello")
@@ -370,7 +369,6 @@ class list extends cons {
 
 
     last_items() {
-
         function iteration(pair) {
             if (is_cdr_list(pair)) {
                 return iteration(pair.cdr)
@@ -378,7 +376,6 @@ class list extends cons {
                 return pair
             }
         }
-
         return iteration(this)
 
     }
@@ -452,6 +449,84 @@ class list extends cons {
         iteration(this)
         return length;
     }
+    _literal() {
+        function iteration(pairs, result = "[") {
+            if (is_car_list(pairs)) {
+                result += `${pairs.car.literal()},`;
+                return iteration(pairs.cdr, result)
+            } else if (is_cdr_list(pairs)) {
+                result += `"${(pairs.car && (pairs.car.value || pairs.car))}",`
+                return iteration(pairs.cdr, result)
+            } else {
+                if (pairs) {
+                    result += `"${pairs.car && (pairs.car.value || pairs.car)}"`
+                }
+                return result += "]"
+            }
+        }
+        return iteration(this)
+    }
+
+    literal() {
+        function iteration(pair, result = "[") {
+            if (is_cdr_list(pair)) {
+                //result += `${(pair.car instanceof _string)?`"${pair.car}"`:pair.car}+ ,`
+                result += pair.car + ","
+                return iteration(pair.cdr, result)
+            } else {
+                result += pair.car + "]"
+                return result
+            }
+        }
+        return iteration(this)
+    }
+
+    AllLiteral() {
+        function iteration(pair, result = "[") {
+            if (is_cdr_list(pair)) {
+                //result += `${(pair.car instanceof _string)?`"${pair.car}"`:pair.car}+ ,`
+                if (is_list(pair.car)) {
+                    result += pair.car.AllLiteral() + ","
+                } else {
+                    result += ((pair.car instanceof base) ? pair.car.value : pair.car) + ","
+                }
+                return iteration(pair.cdr, result)
+            } else {
+                if (is_list(pair.car)) {
+                    result += pair.car.AllLiteral() + "]"
+                } else {
+                    result += ((pair.car instanceof base) ? pair.car.value : pair.car) + "]"
+                }
+                return result
+            }
+        }
+        return iteration(this)
+    }
+
+
+
+    static parseLiteral(elements) {
+        //parseLiteral接受数组
+        function iteration(elements) {
+            return new list(...elements.map((ele) => {
+                if (ele instanceof Array) {
+                    return iteration(...ele)
+                } else {
+                    return ele
+                }
+            }))
+
+        }
+        //不应该有这个if判断
+        //这里有bug
+        if (elements instanceof Array) {
+            return iteration(elements)
+        } else {
+            return elements
+        }
+
+    }
+
 
     get show() {
         function iteration(pairs, result = "[") {

@@ -492,7 +492,7 @@ class json extends list {
         if (elemnts[0]) {
             if (typeof elemnts[0].car === "object") {
                 //lab语言中，用这个
-                console.log("xxxxxxx---------------------------", elemnts)
+            
                 for (let i = 0; i < elemnts.length; i++) {
                     let _temp = elemnts[i]
                     this.insert_key_value(_temp.car.value, _temp.cdr);

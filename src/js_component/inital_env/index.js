@@ -2,7 +2,7 @@ import frame from '../frame/index';
 import { is_car_list, is_cdr_list, is_list, is_car_list_cons_json, judge_arr_exist } from '../../utils/tools';
 import { base, _boolean, _number, _class, cons, list, json, _null, _undefined } from "../analyze/types/index"
 import { DrawLabel } from '../drawComponents/index'
-import { example } from '../drawComponents/canvas'
+import canvas from '../drawComponents/canvas.js'
 
 
 function inital_env() {
@@ -32,7 +32,8 @@ function inital_env() {
         },
         nullList: _boolean.__nullList,
         display: function (...pairsAll) {
-           /*  pairsAll.forEach((pairs) => {
+            //console.log(pairsAll)
+            /* pairsAll.forEach((pairs) => {
                 console.log(pairs)
             }) */
             let result = pairsAll.map((pairs) => {
@@ -45,11 +46,11 @@ function inital_env() {
                     return ("    ", ((pairs && typeof pairs.value !== "undefined") ? pairs.value : pairs))
                 }
             })
-            console.log(result.join(","))
+            console.log("display-----------", result.join(","))
 
 
         },
-        canvas: example,
+        canvas: canvas,
         list: function (...elemnts) {
             return new list(...elemnts)
         },
@@ -65,7 +66,6 @@ function inital_env() {
         debugger: function () {
             return new _undefined()
         },
-
         /* eval:function(pairs){
              run_eval()
          } */
@@ -103,13 +103,19 @@ function inital_env() {
         name_ops.push(inital_op[name])
     }
 
-    return new frame(
+    let inital_env = new frame(
         names,
         name_ops
     );
+    let macroFrame = new frame();
+    macroFrame.extend_env(inital_env);
+    let global_env = new frame();
+    global_env.extend_env(macroFrame);
+    return global_env;
 
 }
 let global_env = inital_env()
+
 export default global_env
 
 

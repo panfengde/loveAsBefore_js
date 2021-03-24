@@ -1,0 +1,25 @@
+(+ a 1)
+
+1
+
+function (env){
+    function(){
+        (function (env){
+        env.look_variable_env(a)
+        })(env) 
+        + (function (env){
+            env.look_variable_env(a)
+        })(env)
+
+
+    }
+    
+
+   
+}
+
+
+1+1
+
+1
+a  
