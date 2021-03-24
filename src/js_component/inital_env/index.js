@@ -66,7 +66,6 @@ function inital_env() {
         debugger: function () {
             return new _undefined()
         },
-
         /* eval:function(pairs){
              run_eval()
          } */

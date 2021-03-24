@@ -20,6 +20,7 @@
             )
         )
     )
+    
     (define (CountLayoutInfo)
         (define fatherLayoutInfo )
         (define bigBrotherLayoutInfo)
@@ -77,7 +78,6 @@
         )
     )
 )
-
 
 (class txtLevel
     (constructor (txt)
@@ -159,8 +159,6 @@
 
 
 
-
-
 (define (parseEleInfoTree eleLists father)
 
     (define result (null))
@@ -222,14 +220,14 @@
 )
 
 
-(define helloOk (parseEleInfoTree (. body "result") (null)))
+(define elementTree (parseEleInfoTree (. body "result") (null)))
 
 
  
-(parseEleInfo helloOk)
+(parseEleInfo elementTree)
 ((. canvas "init") )
-((. helloOk "render") 1 )
-helloOk
+((. elementTree "render"))
+
 
 
 

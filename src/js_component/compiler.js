@@ -10,7 +10,8 @@ function loveAsBeforeCompiler(compilerTarget, CodeArrays) {
         parse_txt(labCodes).forEach((code) => {
             //console.log(code)
             //console.log(Parse.strExp_to_List(code))
-            let result = `(${compiler(Parse.strExp_to_List(code))})(global_env);`;
+            let result = `(${compiler(Parse.strExp_to_List(code))})(global_env);
+            `;
             fs.appendFileSync(compilerTarget, result);
             //fs.appendFileSync(__dirname + "/../compilerResult/index.js", result);
         })

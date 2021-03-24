@@ -2,7 +2,8 @@
 
 import _ from 'lodash';
 import loveAsBeforeExplain from './js_component/explain.js'
-require("./runCompileFile.js");
+require("./compilerResult/index.js");
+
 
 import macro from './labCode/macro/macro.lab'
 import code from './labCode/code/index.lab'

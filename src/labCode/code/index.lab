@@ -4,7 +4,9 @@
 ; (define a 10)
 ; (set! a 15)
 ; a
+
 (display "goo")
+
 (let* 
     (
         (a 10)
@@ -30,57 +32,4 @@
     )
     (display "ok")
 )
-
-(define (pask row)
-    (define (pask_iter row line)
-        (cond
-            ((= row line) 1)
-            ((= row 1) 1)
-            ((= line 1) 1)
-            (else
-               (+
-                 (pask_iter (- row 1 ) (- line 1))
-                 (pask_iter (- row 1 ) line)
-               )
-            )
-        )
-    )
-    (define (foreach row line)
-            (cond
-                ((= row line 1) (display ""))
-                ((= line 1) (begin (display "\r\n")  (foreach (- row 1) (-  row 1)) ))
-                (else (foreach row (- line 1)))
-            )
-    )
-    (foreach row row)
-)
-
-
-(define (fib n)
-    (cond
-        ((= n 0) 0)
-        ((= n 1) 1)
-        (else  (+ (fib (- n 1)) (fib (- n 2))))
-    )
-)
-
-(define (fib2 n)
-    (define (square a _n)
-        (if (= _n 1)
-            a
-            (* a (square a (- _n 1)))
-        )
-     )
-    (/ (square 1.618 n) 2.2360679774998)
-)
-
-
-(fib 5) 
-(fib 16)  
-(fib2 5)
-(fib2 16) 
-
-
-
-
 

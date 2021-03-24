@@ -705,7 +705,7 @@ class C {
     }
 
     //序列的分析
-    static _sequences_analyze(sequences) {
+    static old_sequences_analyze(sequences) {
         //console.log("sequences",sequences)
         function seqeunces_analyze(first, second) {
             return `function (env) {
@@ -730,6 +730,46 @@ class C {
             return loop(analyzed_sequences.car, analyzed_sequences.cdr)
         }
     }
+
+    static _sequences_analyze(sequences) {
+        //console.log("sequences",sequences)
+        /* function seqeunces_analyze(first, second) {
+            return function (env) {
+                first(env)
+                return second(env)
+            }
+        }
+
+        function loop(first_producer, rest_producers) {
+            if (is_list(rest_producers)) {
+                return loop(seqeunces_analyze(first_producer, rest_producers.car), rest_producers.cdr)
+            } else {
+                return first_producer
+            }
+        } */
+
+        if (!is_list(sequences)) {
+            console.error("begin语句错误", sequences)
+            throw SyntaxError();
+        } else {
+
+            let analyzed_sequences = sequences.map(compilerObj_entry);
+            analyzed_sequences = tools.list_to_array(analyzed_sequences)
+            analyzed_sequences = analyzed_sequences.map((fn, index) => {
+                if (index == (analyzed_sequences.length - 1)) {
+                    return `return (${fn})(env)`
+                } else {
+                    return `(${fn})(env)`
+                }
+            })
+            return `function (env) {
+                ${analyzed_sequences.join(`;
+                `)}
+            }`
+            //return loop(analyzed_sequences.car, analyzed_sequences.cdr)
+        }
+    }
+
 
 
     static _make_lambda(args, body) {
@@ -1268,14 +1308,14 @@ class explainAnalyze {
     }
 
     static app(code_op) {
-       
+
         let operate = explainObj_entry(code_op.car)
         if (is_cdr_list(code_op)) {
             if (!is_list(code_op.car) && global_env.father_frame.is_key_exist(code_op.car)) {
                 //宏
 
                 //console.log("宏----", code_op.car)
-               
+
                 let exp = code_op.AllLiteral();
                 if (macoDic[exp]) {
                     return function (env) {
@@ -1283,7 +1323,7 @@ class explainAnalyze {
                         return (macro)(env);
                     }
                 };
-             
+
                 let marcro = global_env.father_frame.look_vars_frame(code_op.car);
                 let macro_params = code_op.cdr;
                 let rule_list = marcro.cdr.car;
@@ -1346,7 +1386,7 @@ class explainAnalyze {
             console.error("begin语句错误", sequences)
             throw SyntaxError();
         } else {
-            let analyzed_sequences = sequences.map(explainObj_entry)
+            let analyzed_sequences = sequences.map(explainObj_entry);
             return loop(analyzed_sequences.car, analyzed_sequences.cdr)
         }
     }
